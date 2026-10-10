@@ -133,6 +133,23 @@ export interface Guideline {
   detail: string;
 }
 
+/** Today's load against carrying capacity, from the database (visitor counts are simulated in this preview). */
+export interface Pressure {
+  capacity: number;
+  expected: number;
+  /** Travellers who confirmed a trip here today in the Trekne app (already included in `expected`). */
+  planned: number;
+  ratio: number;
+  level: Level;
+  riskScore: number;
+  riskLevel: Level;
+  source: string;
+  /** Community notice in force today, if any. */
+  notice: string | null;
+  closed: boolean;
+  alternatives: { slug: string; name: string; state: string; km: number; risk: number; lesserKnown: boolean }[];
+}
+
 export interface Destination {
   key: DestinationKey;
   tab: string;
@@ -154,6 +171,8 @@ export interface Destination {
   culture: { summary: string; guidelines: Guideline[] };
   /** Search terms that resolve to this destination from the hero search. */
   aliases: string[];
+  /** Live capacity-vs-expected for today; absent when the database is unreachable. */
+  pressure?: Pressure;
 }
 
 export const REPORT_LABEL: Record<ReportStatus, string> = {
@@ -531,12 +550,34 @@ export async function getDestinations(): Promise<Destination[]> {
       .order("created_at", { referencedTable: "reports", ascending: false })
       .limit(6, { referencedTable: "reports" });
     if (error || !data) return DESTINATIONS;
+    const today = new Date(Date.now() + 5.5 * 3600e3).toISOString().slice(0, 10);
+    const { data: overview } = await supabase.rpc("destination_overview", { on_day: today });
+    const pressures = new Map<string, Pressure>();
+    await Promise.all(
+      (overview ?? [])
+        .filter((o) => DESTINATIONS.some((d) => d.key === o.slug) && o.capacity && o.expected != null)
+        .map(async (o) => {
+          const ratio = Number(o.load_ratio ?? 0);
+          const level: Level = ratio >= 0.9 ? "high" : ratio >= 0.6 ? "warn" : "good";
+          const busy = level !== "good" || o.risk_level === "high" || o.community_closed;
+          const { data: alts } = busy
+            ? await supabase.rpc("suggest_alternatives", { dest: o.id, on_day: today, max_results: 3 })
+            : { data: [] };
+          pressures.set(o.slug, {
+            capacity: o.capacity!, expected: o.expected!, planned: o.planned, ratio, level,
+            riskScore: o.risk_score, riskLevel: o.risk_level, source: "Typical count for this weekday (simulated) + planned trips",
+            notice: o.notice, closed: o.community_closed,
+            alternatives: (alts ?? []).map((a) => ({ slug: a.slug, name: a.name, state: a.state_code, km: a.distance_km, risk: a.risk_score, lesserKnown: a.is_lesser_known })),
+          });
+        }),
+    );
     return DESTINATIONS.map((sim) => {
       const row = data.find((d) => d.slug === sim.key);
       if (!row) return sim;
       const rec = row.recommendations;
       return {
         ...sim,
+        pressure: pressures.get(sim.key),
         indicators: row.indicators.length
           ? [...row.indicators]
               .sort((a, b) => KIND_ORDER.indexOf(a.kind) - KIND_ORDER.indexOf(b.kind))

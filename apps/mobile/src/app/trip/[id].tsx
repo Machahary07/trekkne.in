@@ -24,29 +24,33 @@ export default function TripScreen() {
     const stops = await must(supabase.from("trip_stops").select("id,day,position,destination_id,destinations(name,slug,state_code)").eq("trip_id", id).order("day").order("position"));
     const days: string[] = [];
     for (let d = trip.start_date; d <= trip.end_date; d = addDays(d, 1)) days.push(d);
-    const [overviews, events] = await Promise.all([
+    const [overviews, events, notices] = await Promise.all([
       Promise.all(days.map((d) => must(supabase.rpc("destination_overview", { on_day: d })))),
       must(supabase.from("events").select("name,state_code,destination_id,starts_on,ends_on,visitor_impact,open_to_visitors").eq("is_published", true).lte("starts_on", trip.end_date).gte("ends_on", trip.start_date)),
+      must(supabase.from("community_notices").select("destination_id,kind,title,starts_on,ends_on,community").eq("is_active", true).lte("starts_on", trip.end_date).gte("ends_on", trip.start_date)),
     ]);
     const byDay = Object.fromEntries(days.map((d, i) => [d, new Map(overviews[i].map((o) => [o.id, o]))]));
-    return { trip, stops, days, byDay, events };
+    return { trip, stops, days, byDay, events, notices };
   }, [id]);
 
   if (loading && !data) return <Loading />;
   if (!data) return null;
-  const { trip, stops, days, byDay, events } = data;
+  const { trip, stops, days, byDay, events, notices } = data;
   const draft = trip.status === "draft";
 
   function check(o: DestinationOverview | undefined, day: string, destId: string, state: string): Flag[] {
     const flags: Flag[] = [];
     if (!o) return [{ level: "none", text: "No live data for this place" }];
+    notices.filter((n) => n.destination_id === destId && n.starts_on <= day && n.ends_on >= day).forEach((n) =>
+      flags.push({ level: n.kind === "closure" || n.kind === "sacred_day" ? "high" : "warn", text: `${n.title}${n.community ? ` · ${n.community}` : ""}` }));
     const expected = (o.expected ?? 0) + (draft ? trip.party_size : 0);
     const ratio = o.capacity ? expected / o.capacity : null;
     if (ratio == null || o.expected == null) flags.push({ level: "none", text: "Visitor pressure unknown: no reliable count" });
     else if (ratio >= 0.9) flags.push({ level: "high", text: `Over capacity: ~${expected} expected for ${o.capacity} a day` });
     else if (ratio >= 0.6) flags.push({ level: "warn", text: `Busy: ${Math.round(ratio * 100)}% of daily capacity` });
     else flags.push({ level: "good", text: `${Math.round(ratio * 100)}% of capacity: comfortable` });
-    if (o.suitability === "closed") flags.push({ level: "high", text: "Closed to visitors this month" });
+    if (o.community_closed) { /* already listed from the community notice */ }
+    else if (o.suitability === "closed") flags.push({ level: "high", text: "Closed to visitors this month" });
     else if (o.suitability === "poor") flags.push({ level: "high", text: `${SUITABILITY_LABEL.poor}: monsoon or weather limits access` });
     else if (o.suitability === "fair") flags.push({ level: "warn", text: SUITABILITY_LABEL.fair });
     if (o.risk_level === "high") flags.push({ level: "high", text: `High eco-risk (${o.risk_score}/100)` });

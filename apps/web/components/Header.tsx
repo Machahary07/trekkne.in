@@ -9,9 +9,11 @@ import { MobileMenu } from "./MobileMenu";
 
 const LINKS = [
   ["/destinations", "Destinations"],
+  ["/planner", "Plan a trip"],
   ["/how-it-works", "How it works"],
   ["/rangers", "Rangers"],
   ["/business", "For business"],
+  ["/authorities", "Authorities"],
   ["/roadmap", "Roadmap"],
 ] as const;
 

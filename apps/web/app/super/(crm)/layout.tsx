@@ -20,6 +20,7 @@ export default async function CrmLayout({ children }: { children: React.ReactNod
     { group: "Planning", href: "/super/planning", label: "Visitor pressure", icon: "users", perm: "trips.read_all" },
     { group: "Planning", href: "/super/events", label: "Festivals & events", icon: "calendar", perm: "events.manage" },
     { group: "Planning", href: "/super/heritage", label: "Heritage sites", icon: "temple", perm: "heritage.manage" },
+    { group: "Planning", href: "/super/notices", label: "Community notices", icon: "flag", perm: "destinations.manage" },
     { group: "Field", href: "/super/reports", label: "Reports", icon: "shield", perm: "reports.moderate", count: pendingReports },
     { group: "Field", href: "/super/scenes", label: "360 scenes", icon: "sphere", perm: "reports.moderate", count: pendingScenes },
     { group: "People", href: "/super/users", label: "Users", icon: "user", perm: "users.read", count: requests },

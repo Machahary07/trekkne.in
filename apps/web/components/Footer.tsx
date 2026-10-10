@@ -2,8 +2,8 @@ import Link from "next/link";
 import { Eyes, Logo } from "./Eyes";
 
 const COLUMNS = [
-  { title: "Explore", links: [["/destinations", "Destinations"], ["/how-it-works", "How it works"], ["/", "Plan a trip"]] },
-  { title: "Join", links: [["/rangers", "Become a Ranger"], ["/business", "List your business"], ["#join", "Get the app"]] },
+  { title: "Explore", links: [["/destinations", "Destinations"], ["/how-it-works", "How it works"], ["/planner", "Plan a trip"], ["/destinations#seasons", "Seasons & festivals"]] },
+  { title: "Join", links: [["/rangers", "Become a Ranger"], ["/business", "List your business"], ["/authorities", "Authorities & councils"], ["#join", "Get the app"]] },
   { title: "Trust", links: [["/how-it-works#promise-h", "Our promise"], ["/roadmap", "Roadmap"], ["/how-it-works", "How we verify"]] },
 ] as const;
 

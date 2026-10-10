@@ -78,7 +78,7 @@ export function DestinationIntel({ destinations }: { destinations: Destination[]
           <div className="di-col di-right">
             <div className="di-o2 di-scroll"><div className="di-swap" key={`wx-${d.key}`}><WeatherPanel weather={d.weather} /></div></div>
             <div className="di-o4 di-scroll"><div className="di-swap" key={`ins-${d.key}`}><Insights d={d} /></div></div>
-            <div className="di-o5 di-scroll"><div className="di-swap" key={`ev-${d.key}`}><EcoVisitors eco={d.eco} visitors={d.visitors} /></div></div>
+            <div className="di-o5 di-scroll"><div className="di-swap" key={`ev-${d.key}`}><EcoVisitors eco={d.eco} visitors={d.visitors} pressure={d.pressure} /></div></div>
             <div className="di-o6 di-scroll"><div className="di-swap" key={`tl-${d.key}`}>
               <FieldTimeline reports={d.reports} nodes={d.route.nodes} selectedId={selected} onSelect={toggle} />
             </div></div>
