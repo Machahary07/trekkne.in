@@ -1,3 +1,6 @@
+"use client";
+
+import { useEffect, useState } from "react";
 import { Logo } from "./Eyes";
 import { JoinLink } from "./SiteState";
 import { MobileMenu } from "./MobileMenu";
@@ -10,9 +13,35 @@ const LINKS = [
   ["#roadmap", "Roadmap"],
 ] as const;
 
+/** Distance (px) the page must move in one direction before the header reacts. */
+const THRESHOLD = 6;
+
 export function Header() {
+  const [hidden, setHidden] = useState(false);
+
+  // Slide the header away while reading down the page; bring it back on any upward scroll.
+  useEffect(() => {
+    let last = window.scrollY;
+    let ticking = false;
+    const onScroll = () => {
+      if (ticking) return;
+      ticking = true;
+      requestAnimationFrame(() => {
+        const y = window.scrollY;
+        const dy = y - last;
+        if (y < 96) setHidden(false);
+        else if (dy > THRESHOLD) setHidden(true);
+        else if (dy < -THRESHOLD) setHidden(false);
+        if (Math.abs(dy) > THRESHOLD || y < 96) last = y;
+        ticking = false;
+      });
+    };
+    window.addEventListener("scroll", onScroll, { passive: true });
+    return () => window.removeEventListener("scroll", onScroll);
+  }, []);
+
   return (
-    <header className="site-head">
+    <header className="site-head" data-hidden={hidden || undefined} onFocusCapture={() => setHidden(false)}>
       <nav className="nav wrap" aria-label="Main">
         <Logo />
         <ul className="nav-links">

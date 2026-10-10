@@ -102,21 +102,15 @@ export function Hero({ destinations }: { destinations: Destination[] }) {
 
 function HeroArt() {
   return (
-    <svg className="hero-art" viewBox="0 0 1440 640" preserveAspectRatio="xMidYMax slice" aria-hidden="true">
-      <defs>
-        <linearGradient id="sky" x1="0" y1="0" x2="0" y2="1">
-          <stop offset="0" stopColor="#FF6A2B" />
-          <stop offset=".6" stopColor="#FF8A3A" />
-          <stop offset="1" stopColor="#FFB247" />
-        </linearGradient>
-      </defs>
-      <rect width="1440" height="640" fill="url(#sky)" />
-      <circle cx="1110" cy="300" r="118" fill="#FFC21A" />
+    // Hills only: the sky is the .hero background gradient, so the band can sit at the
+    // bottom of a viewport-height card without stretching behind the copy.
+    <svg className="hero-art" viewBox="0 200 1440 440" preserveAspectRatio="xMidYMax slice" aria-hidden="true">
+      <circle cx="1110" cy="335" r="108" fill="#FFC21A" />
       <g fill="#fff" opacity=".9">
-        <rect x="860" y="150" width="150" height="36" rx="18" />
-        <rect x="905" y="128" width="80" height="40" rx="20" />
-        <rect x="1220" y="210" width="120" height="30" rx="15" />
-        <rect x="1250" y="192" width="60" height="34" rx="17" />
+        <rect x="860" y="236" width="150" height="34" rx="17" />
+        <rect x="905" y="216" width="80" height="38" rx="19" />
+        <rect x="1236" y="262" width="120" height="28" rx="14" />
+        <rect x="1266" y="246" width="60" height="32" rx="16" />
       </g>
       <path d="M0 420C120 360 220 330 340 370s180-70 320-60 200 90 320 70 200-80 320-60c80 13 120 40 140 50v270H0z" fill="#7090E4" />
       <path d="M0 470c140-40 260-20 380-50s200 20 340 30 220-50 340-40 240 60 380 40v190H0z" fill="#3D57B5" />

@@ -3,7 +3,8 @@ import type { CSSProperties } from "react";
 export type IconName =
   | "search" | "camera" | "db" | "shield" | "spark" | "pin" | "route" | "leaf" | "users" | "temple"
   | "rain" | "wifioff" | "calendar" | "arrow" | "check" | "backpack" | "store" | "chart" | "phone"
-  | "id" | "shirt" | "rupee" | "chat" | "eye" | "chevron" | "menu" | "close";
+  | "id" | "shirt" | "rupee" | "chat" | "eye" | "chevron" | "menu" | "close"
+  | "clock" | "flag" | "eyeoff" | "info" | "boat" | "car" | "trash";
 
 export function Icon({ name, className = "ico", style }: { name: IconName; className?: string; style?: CSSProperties }) {
   return (
@@ -41,6 +42,13 @@ export function IconSprite() {
         <symbol id="i-shirt" viewBox="0 0 24 24"><path d="M8 3 3 6l2 4 2-1v12h10V9l2 1 2-4-5-3c-.5 1.5-2 2.5-4 2.5S8.5 4.5 8 3z" /></symbol>
         <symbol id="i-rupee" viewBox="0 0 24 24"><path d="M6 4h12M6 9h12M9 4c6 0 6 9 0 9H6l8 7" /></symbol>
         <symbol id="i-chat" viewBox="0 0 24 24"><path d="M4 18V7a3 3 0 0 1 3-3h10a3 3 0 0 1 3 3v7a3 3 0 0 1-3 3H8z" /><path d="M15 5.5 18.5 9M9 10h.01M12 10h.01" /></symbol>
+        <symbol id="i-flag" viewBox="0 0 24 24"><path d="M5 21V4M5 4h11l-2 4 2 4H5" /></symbol>
+        <symbol id="i-clock" viewBox="0 0 24 24"><circle cx="12" cy="12" r="9" /><path d="M12 7v5l3 2" /></symbol>
+        <symbol id="i-eyeoff" viewBox="0 0 24 24"><path d="m3 3 18 18M10.6 5.1A10 10 0 0 1 12 5c6.5 0 10 7 10 7a17 17 0 0 1-3.2 4M6.6 6.6C3.8 8.3 2 12 2 12s3.5 7 10 7c1.8 0 3.4-.5 4.8-1.3M9.9 9.9a3 3 0 0 0 4.2 4.2" /></symbol>
+        <symbol id="i-info" viewBox="0 0 24 24"><circle cx="12" cy="12" r="9" /><path d="M12 11v5M12 8h.01" /></symbol>
+        <symbol id="i-boat" viewBox="0 0 24 24"><path d="M3 15h18l-3 5H6z" /><path d="M12 4v11M12 5l6 8h-6" /></symbol>
+        <symbol id="i-car" viewBox="0 0 24 24"><path d="M5 16V11l2-5h10l2 5v5z" /><path d="M5 11h14M5 16v2M19 16v2" /><circle cx="8" cy="13.5" r=".6" /><circle cx="16" cy="13.5" r=".6" /></symbol>
+        <symbol id="i-trash" viewBox="0 0 24 24"><path d="M4 7h16M9 7V4h6v3M6 7l1 13h10l1-13" /></symbol>
         <symbol id="i-chevron" viewBox="0 0 24 24"><path d="m6 9 6 6 6-6" /></symbol>
         <symbol id="i-menu" viewBox="0 0 24 24"><path d="M4 7h16M4 12h16M4 17h16" /></symbol>
         <symbol id="i-close" viewBox="0 0 24 24"><path d="M6 6l12 12M18 6 6 18" /></symbol>
