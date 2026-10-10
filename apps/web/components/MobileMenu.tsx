@@ -2,6 +2,8 @@
 
 import { useEffect, useRef, useState } from "react";
 import { createPortal } from "react-dom";
+import Link from "next/link";
+import { usePathname } from "next/navigation";
 import { Icon } from "./Icon";
 import { useSiteState } from "./SiteState";
 
@@ -12,6 +14,7 @@ export function MobileMenu({ links }: { links: ReadonlyArray<readonly [href: str
   const button = useRef<HTMLButtonElement>(null);
   const sheet = useRef<HTMLElement>(null);
   const { setJoinRole } = useSiteState();
+  const pathname = usePathname();
 
   const toggle = () => {
     if (!open) setTop(button.current?.closest(".site-head")?.getBoundingClientRect().bottom ?? 72);
@@ -67,17 +70,17 @@ export function MobileMenu({ links }: { links: ReadonlyArray<readonly [href: str
               <ul className="sheet-links">
                 {links.map(([href, label]) => (
                   <li key={href}>
-                    <a href={href} onClick={close}>
+                    <Link href={href} aria-current={pathname === href ? "page" : undefined} onClick={close}>
                       {label}
                       <Icon name="arrow" />
-                    </a>
+                    </Link>
                   </li>
                 ))}
               </ul>
               <div className="sheet-ctas">
-                <a className="btn btn-ghost" href="#rangers" onClick={close}>
+                <Link className="btn btn-ghost" href="/rangers" onClick={close}>
                   Become a Ranger
-                </a>
+                </Link>
                 <a className="btn btn-ink" href="#join" onClick={() => { setJoinRole("traveller"); close(); }}>
                   Get the app
                 </a>
