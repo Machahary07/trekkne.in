@@ -42,7 +42,7 @@
 ::-webkit-scrollbar-thumb { background: var(--orange); border-radius: 999px; border: 2px solid transparent; background-clip: padding-box }
 ::-webkit-scrollbar-thumb:hover { background-color: var(--orange-deep) }
 ::-webkit-scrollbar-corner { background: transparent }
-html { scroll-behavior: smooth; scroll-padding-top: 80px }
+html { scroll-behavior: smooth; scroll-padding-top: 80px; -webkit-tap-highlight-color: transparent }
 body {
   margin: 0; background: var(--bg); color: var(--text);
   font: 400 17px/1.6 var(--body);
@@ -397,7 +397,7 @@ main > section:first-child { padding-top: var(--gutter) }
 .trio figure:hover svg { transform: rotate(-8deg) scale(1.08) }
 .trio figcaption, .tag { font: 600 13px/1 var(--body); background: var(--chip); padding: 7px 11px; border-radius: 999px }
 .t-a h3 { font-size: clamp(24px, 2.2vw, 30px); font-weight: 700 }
-.t-a p { color: var(--muted); margin-top: 8px; font-size: 15.5px }
+.t-a h3 + p { color: var(--muted); margin-top: 8px; font-size: 15.5px }
 .appicon {
   width: 96px; height: 96px; border-radius: 26px; background: var(--green); display: grid; place-items: center; position: relative; color: var(--white);
   box-shadow: 0 14px 26px -14px rgba(45, 197, 110, .9);
@@ -476,9 +476,9 @@ main > section:first-child { padding-top: var(--gutter) }
 .trio figcaption { transition: background .25s, color .25s }
 .trio [data-talking] figcaption { background: var(--text); color: var(--bg) }
 .say-bubble {
-  position: absolute; bottom: calc(100% + 10px); left: 50%; translate: -50% 0; width: max-content; max-width: 210px; z-index: 2;
-  background: var(--text); color: var(--bg); font-size: 13px; font-weight: 600; line-height: 1.3; text-align: center;
-  padding: 9px 12px; border-radius: 14px; transform-origin: 50% 100%; animation: bubble-in .4s cubic-bezier(.3, 1.6, .5, 1) both;
+  position: absolute; bottom: calc(100% + 10px); left: 50%; translate: -50% 0; width: max-content; max-width: 230px; z-index: 2;
+  background: var(--text); color: var(--bg); font-size: 14.5px; font-weight: 700; line-height: 1.3; text-align: center;
+  padding: 10px 14px; border-radius: 14px; transform-origin: 50% 100%; animation: bubble-in .4s cubic-bezier(.3, 1.6, .5, 1) both;
 }
 .say-bubble::after { content: ""; position: absolute; top: 100%; left: 50%; translate: -50% 0; border: 7px solid transparent; border-top-color: var(--text) }
 /* Edge characters anchor their bubble inwards so it never clips against the tile. */
@@ -520,6 +520,20 @@ main > section:first-child { padding-top: var(--gutter) }
 @keyframes sun-glow { 50% { scale: 1.12 } }
 .t-e .blobwin { transition: rotate .55s cubic-bezier(.3, 1.6, .5, 1), scale .55s cubic-bezier(.3, 1.6, .5, 1) }
 .t-e:hover .blobwin { rotate: -4deg; scale: 1.04 }
+/* The hidden hand: pinned at the shoulder, it swings up in an arc from behind the body and waves, once on entering
+   view and for as long as it's hovered. Raise and wave rotate separate groups, so hovering never restarts the entrance. */
+.blobwin .r-arm, .blobwin .r-wave { transform-box: view-box; transform-origin: 114px 226px }
+.blobwin .r-arm { rotate: -141deg; transition: rotate .6s cubic-bezier(.3, 1.4, .5, 1) }
+.t-e:hover .r-arm { rotate: 0deg }
+.t-e[data-in] .r-arm { animation: arm-hello 2.6s .8s backwards }
+.t-e[data-in] .r-wave { animation: arm-wave .4s 1.35s ease-in-out 4 alternate }
+.t-e:hover .r-wave { animation: arm-wave .4s ease-in-out infinite alternate }
+@keyframes arm-hello {
+  0% { rotate: -141deg; animation-timing-function: cubic-bezier(.3, 1.4, .5, 1) }
+  22%, 80% { rotate: 0deg; animation-timing-function: cubic-bezier(.5, 0, .7, .4) }
+  100% { rotate: -141deg }
+}
+@keyframes arm-wave { from { rotate: -10deg } to { rotate: 10deg } }
 
 /* Search tile: tags float, the pill types place names. */
 .float-tags .tag { animation: tag-bob 5s ease-in-out infinite }
