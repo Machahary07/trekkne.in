@@ -1,0 +1,33 @@
+import { Tabs } from "expo-router";
+import type { ColorValue } from "react-native";
+import { Icon, type IconName } from "@/components/icon";
+import { useAuth } from "@/lib/auth";
+import { F, useBrand } from "@/lib/theme";
+
+const tab = (title: string, icon: IconName) => ({
+  title,
+  tabBarIcon: ({ color }: { color: ColorValue }) => <Icon name={icon} size={23} color={String(color)} />,
+});
+
+export default function TabsLayout() {
+  const b = useBrand();
+  const { can } = useAuth();
+  const field = can("reports.field") || can("panoramas.create");
+  return (
+    <Tabs
+      screenOptions={{
+        headerShown: false,
+        tabBarActiveTintColor: b.orange,
+        tabBarInactiveTintColor: b.muted,
+        tabBarLabelStyle: { fontFamily: F.semibold, fontSize: 11.5 },
+        tabBarStyle: { backgroundColor: b.surface, borderTopColor: b.line },
+      }}
+    >
+      <Tabs.Screen name="index" options={tab("Home", "home")} />
+      <Tabs.Screen name="explore" options={tab("Explore", "map")} />
+      <Tabs.Screen name="plan" options={tab("Plan", "route")} />
+      <Tabs.Screen name="ranger" options={{ ...tab("Ranger", "shield"), href: field ? undefined : null }} />
+      <Tabs.Screen name="profile" options={tab("Profile", "user")} />
+    </Tabs>
+  );
+}
