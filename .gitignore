@@ -9,3 +9,5 @@ next-env.d.ts
 # design references (third-party, not for the public repo)
 branding-bold.jpg
 image.png
+
+.vercel
