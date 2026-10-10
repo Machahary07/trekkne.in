@@ -3,7 +3,7 @@ import type { CSSProperties } from "react";
 export type IconName =
   | "search" | "camera" | "db" | "shield" | "spark" | "pin" | "route" | "leaf" | "users" | "temple"
   | "rain" | "wifioff" | "calendar" | "arrow" | "check" | "backpack" | "store" | "chart" | "phone"
-  | "id" | "shirt" | "rupee" | "chat" | "eye";
+  | "id" | "shirt" | "rupee" | "chat" | "eye" | "chevron" | "menu" | "close";
 
 export function Icon({ name, className = "ico", style }: { name: IconName; className?: string; style?: CSSProperties }) {
   return (
@@ -41,6 +41,9 @@ export function IconSprite() {
         <symbol id="i-shirt" viewBox="0 0 24 24"><path d="M8 3 3 6l2 4 2-1v12h10V9l2 1 2-4-5-3c-.5 1.5-2 2.5-4 2.5S8.5 4.5 8 3z" /></symbol>
         <symbol id="i-rupee" viewBox="0 0 24 24"><path d="M6 4h12M6 9h12M9 4c6 0 6 9 0 9H6l8 7" /></symbol>
         <symbol id="i-chat" viewBox="0 0 24 24"><path d="M4 18V7a3 3 0 0 1 3-3h10a3 3 0 0 1 3 3v7a3 3 0 0 1-3 3H8z" /><path d="M15 5.5 18.5 9M9 10h.01M12 10h.01" /></symbol>
+        <symbol id="i-chevron" viewBox="0 0 24 24"><path d="m6 9 6 6 6-6" /></symbol>
+        <symbol id="i-menu" viewBox="0 0 24 24"><path d="M4 7h16M4 12h16M4 17h16" /></symbol>
+        <symbol id="i-close" viewBox="0 0 24 24"><path d="M6 6l12 12M18 6 6 18" /></symbol>
         <symbol id="i-eye" viewBox="0 0 24 24"><path d="M2 12s3.5-7 10-7 10 7 10 7-3.5 7-10 7S2 12 2 12z" /><circle cx="12" cy="12" r="3" /></symbol>
       </defs>
     </svg>

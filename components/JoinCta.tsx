@@ -2,7 +2,14 @@
 
 import { useState } from "react";
 import { Eyes } from "./Eyes";
+import { Dropdown, type DropdownOption } from "./Dropdown";
 import { useSiteState, type JoinRole } from "./SiteState";
+
+const ROLES: ReadonlyArray<DropdownOption<JoinRole>> = [
+  { value: "traveller", label: "I’m travelling", hint: "Trip alerts and guide bookings", icon: "backpack" },
+  { value: "ranger", label: "I’m a guide / Ranger", hint: "Report, earn and get booked", icon: "shield" },
+  { value: "business", label: "I run a business", hint: "Homestay, hotel or tour operator", icon: "store" },
+];
 
 const EMAIL = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 const PHONE = /^\+?[\d\s-]{10,15}$/;
@@ -47,12 +54,7 @@ export function JoinCta() {
                   onChange={(e) => setContact(e.target.value)}
                   required
                 />
-                <label htmlFor="join-role" className="sr-only">I am</label>
-                <select id="join-role" name="role" value={joinRole} onChange={(e) => setJoinRole(e.target.value as JoinRole)}>
-                  <option value="traveller">I’m travelling</option>
-                  <option value="ranger">I’m a guide / Ranger</option>
-                  <option value="business">I run a business</option>
-                </select>
+                <Dropdown id="join-role" label="I am" value={joinRole} options={ROLES} onChange={setJoinRole} />
                 <button className="btn btn-ink" type="submit">Join the list</button>
               </div>
               <p className="join-msg" aria-live="polite">{msg}</p>

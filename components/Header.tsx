@@ -1,5 +1,6 @@
 import { Logo } from "./Eyes";
 import { JoinLink } from "./SiteState";
+import { MobileMenu } from "./MobileMenu";
 
 const LINKS = [
   ["#destinations", "Destinations"],
@@ -22,6 +23,7 @@ export function Header() {
         <div className="nav-cta">
           <a className="btn btn-ghost" href="#rangers">Become a Ranger</a>
           <JoinLink role="traveller" className="btn btn-ink">Get the app</JoinLink>
+          <MobileMenu links={LINKS} />
         </div>
       </nav>
     </header>
