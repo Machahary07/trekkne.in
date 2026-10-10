@@ -537,7 +537,9 @@ section { padding-block: clamp(64px, 9vw, 120px) 0 }
 @media (max-width: 860px) { .cta { grid-template-columns: minmax(0, 1fr) } .cta-face { width: min(100%, 260px); order: -1 } }
 
 /* ---------- footer ---------- */
-.foot { padding-block: clamp(56px, 7vw, 96px) 40px }
+/* Footer keeps the original gutter and 1280px column, even on desktop. */
+.foot { padding-block: clamp(56px, 7vw, 96px) 40px; padding-inline: calc(clamp(16px, 2.6vw, 32px) - var(--gutter)) }
+.foot .wrap { max-width: 1280px }
 .foot-grid { display: grid; grid-template-columns: minmax(0, 1.4fr) repeat(3, minmax(0, 1fr)); gap: 28px }
 .foot-grid h4 { font: 700 13px/1 var(--body); letter-spacing: .12em; text-transform: uppercase; color: var(--muted); margin-bottom: 14px }
 .foot-grid ul { list-style: none; margin: 0; padding: 0; display: grid; gap: 8px }
