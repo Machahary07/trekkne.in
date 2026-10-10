@@ -1,0 +1,136 @@
+/* ============================================================
+   Planning pages: planner, places, calendar, authorities.
+   Built on the site tokens in globals.css.
+   ============================================================ */
+.pl-card { background: var(--surface); border-radius: var(--r-lg); padding: clamp(18px, 2.2vw, 28px); display: grid; gap: 14px; align-content: start; min-width: 0 }
+.pl-card h3 { font-size: clamp(22px, 2.2vw, 28px); font-weight: 800 }
+.pl-sub { color: var(--muted); font-size: 15px; line-height: 1.5 }
+.pl-grid { display: grid; gap: 16px }
+.pl-2 { grid-template-columns: repeat(auto-fit, minmax(min(100%, 420px), 1fr)) }
+.pl-3 { grid-template-columns: repeat(auto-fit, minmax(min(100%, 300px), 1fr)) }
+.pl-kicker { font: 700 12px/1.2 var(--body); letter-spacing: .1em; text-transform: uppercase; color: var(--muted); display: inline-flex; gap: 8px; align-items: center }
+.pl-kicker .ico { width: 16px; height: 16px }
+.pl-mono { font: 500 12px/1.3 var(--mono); color: var(--muted) }
+.pl-row { display: flex; gap: 10px; align-items: center; flex-wrap: wrap }
+.pl-between { display: flex; gap: 10px; align-items: center; justify-content: space-between; flex-wrap: wrap }
+.pl-note { display: flex; gap: 10px; align-items: flex-start; font-size: 14px; line-height: 1.45; color: var(--muted) }
+.pl-note .ico { width: 18px; height: 18px; flex: none; margin-top: 1px }
+
+/* pills */
+.pl-pill { display: inline-flex; align-items: center; gap: 6px; padding: 5px 11px; border-radius: 999px; font-size: 12.5px; font-weight: 700; background: var(--chip); white-space: nowrap; color: var(--text) }
+.pl-pill i { width: 8px; height: 8px; border-radius: 50%; background: var(--muted); flex: none }
+.pl-pill.l-good { background: color-mix(in srgb, var(--green) 22%, var(--surface)) } .pl-pill.l-good i { background: var(--green) }
+.pl-pill.l-warn { background: color-mix(in srgb, var(--yellow) 28%, var(--surface)) } .pl-pill.l-warn i { background: var(--yellow) }
+.pl-pill.l-high { background: color-mix(in srgb, var(--orange) 22%, var(--surface)) } .pl-pill.l-high i { background: var(--orange) }
+.pl-pill.l-none i { background: transparent; box-shadow: inset 0 0 0 2px var(--muted) }
+
+/* all places */
+.pl-states { display: grid; gap: 14px; grid-template-columns: repeat(auto-fit, minmax(min(100%, 260px), 1fr)) }
+.pl-state { background: var(--surface); border-radius: var(--r-md); padding: 18px; display: grid; gap: 10px; align-content: start }
+.pl-state h3 { font-size: 20px; font-weight: 800; display: flex; justify-content: space-between; gap: 8px; align-items: baseline }
+.pl-state ul { list-style: none; margin: 0; padding: 0; display: grid; gap: 8px }
+.pl-state li a { display: grid; gap: 2px; padding: 10px 12px; border-radius: 12px; background: var(--surface-2); text-decoration: none; color: inherit }
+.pl-state li a:hover { box-shadow: inset 0 0 0 2px var(--line) }
+.pl-state li b { font-size: 15px }
+.pl-config { margin-top: 18px; display: grid; gap: 14px; grid-template-columns: minmax(0, 1.3fr) minmax(0, 1fr); background: var(--deep); color: var(--deep-text); border-radius: var(--r-lg); padding: clamp(20px, 3vw, 36px) }
+.pl-config h3 { font-size: clamp(24px, 2.6vw, 34px); font-weight: 800 }
+.pl-config p { color: var(--deep-muted) }
+.pl-config code { font: 500 12.5px/1.6 var(--mono); color: var(--deep-text); background: rgba(255, 255, 255, .06); border-radius: 12px; padding: 14px 16px; display: block; white-space: pre; overflow-x: auto }
+@media (max-width: 860px) { .pl-config { grid-template-columns: minmax(0, 1fr) } }
+
+/* seasons calendar */
+.pl-cal { display: grid; grid-template-columns: minmax(150px, 1.4fr) repeat(12, minmax(26px, 1fr)); gap: 3px; min-width: 640px }
+.pl-cal .h { font: 500 11px/1 var(--mono); color: var(--muted); text-align: center; padding-bottom: 4px }
+.pl-cal .n { font-size: 14px; font-weight: 600; align-self: center; overflow: hidden; text-overflow: ellipsis; white-space: nowrap }
+.pl-cal .n a { color: inherit; text-decoration: none }
+.pl-cal .n a:hover { text-decoration: underline }
+.pl-cal .c { height: 26px; border-radius: 6px; background: var(--chip) }
+.pl-cal .c.now { box-shadow: inset 0 0 0 2px var(--text) }
+.s-good { background: var(--green) !important } .s-fair { background: var(--yellow) !important }
+.s-poor { background: var(--orange) !important } .s-closed { background: var(--text) !important }
+.pl-scroll { overflow-x: auto; margin-inline: -4px; padding-inline: 4px }
+.pl-legend { display: flex; gap: 14px; flex-wrap: wrap; font-size: 13px; color: var(--muted); align-items: center }
+.pl-legend span { display: inline-flex; gap: 6px; align-items: center }
+.pl-legend i { width: 12px; height: 12px; border-radius: 4px; display: inline-block }
+.pl-events { list-style: none; margin: 0; padding: 0; display: grid; gap: 10px }
+.pl-events li { display: grid; grid-template-columns: 64px minmax(0, 1fr) auto; gap: 14px; align-items: start; padding: 14px; border-radius: var(--r-md); background: var(--surface-2) }
+.pl-date { text-align: center; border-radius: 14px; background: var(--orange); color: var(--white); padding: 8px 4px; font: 800 22px/1 var(--display) }
+.pl-date small { display: block; font: 700 11px/1.4 var(--body); letter-spacing: .08em; text-transform: uppercase }
+.pl-events b { font-size: 16px; display: block }
+@media (max-width: 560px) { .pl-events li { grid-template-columns: 56px minmax(0, 1fr) } .pl-events li > :last-child { grid-column: 2 } }
+
+/* heatmap */
+.pl-heat { display: grid; gap: 3px; min-width: 720px }
+.pl-heat .h { font: 500 10.5px/1.15 var(--mono); color: var(--muted); text-align: center }
+.pl-heat .n { font-size: 13.5px; font-weight: 600; align-self: center; white-space: nowrap; overflow: hidden; text-overflow: ellipsis }
+.pl-heat .c { height: 30px; border-radius: 6px; display: grid; place-items: center; font: 600 11px/1 var(--mono); color: var(--ink) }
+.pl-heat .c.l-good { background: var(--green) } .pl-heat .c.l-warn { background: var(--yellow) } .pl-heat .c.l-high { background: var(--orange) }
+.pl-heat .c.l-none { background: var(--chip); color: var(--muted) } .pl-heat .c.closed { background: var(--text); color: var(--bg) }
+
+/* actions + lists */
+.pl-list { list-style: none; margin: 0; padding: 0; display: grid; gap: 8px }
+.pl-list li { display: flex; gap: 12px; align-items: flex-start; padding: 12px 14px; border-radius: 14px; background: var(--surface-2) }
+.pl-list li .ico { width: 20px; height: 20px; flex: none; margin-top: 2px }
+.pl-list li > div { flex: 1; min-width: 0 }
+.pl-list b { display: block; font-size: 15px }
+.pl-list .pl-mono { margin-top: 2px; display: block }
+.pl-ic { width: 40px; height: 40px; border-radius: 13px; display: grid; place-items: center; flex: none; color: var(--ink) }
+.pl-ic .ico { width: 20px; height: 20px; margin: 0 }
+
+/* phone mock (community screen) */
+.pl-phone { width: min(300px, 100%); justify-self: center; border-radius: 40px; background: var(--ink); padding: 12px; box-shadow: 0 30px 50px -24px rgba(16, 19, 31, .55) }
+.pl-phone > div { border-radius: 30px; background: #EEF2F7; color: #10131F; padding: 18px 14px; display: grid; gap: 10px; min-height: 480px; align-content: start }
+.pl-phone h4 { font: 800 22px/1 var(--display); letter-spacing: -.03em }
+.pl-phone .mc { background: #fff; border-radius: 16px; padding: 12px; display: grid; gap: 4px; font-size: 13px }
+.pl-phone .mc b { font-size: 14px }
+.pl-phone .mbtn { border-radius: 999px; padding: 11px; text-align: center; font-weight: 700; font-size: 13.5px; background: #10131F; color: #fff }
+.pl-phone .mseg { display: grid; grid-template-columns: repeat(3, 1fr); background: #E4E9F2; border-radius: 999px; padding: 3px; font-size: 11.5px; font-weight: 700; text-align: center }
+.pl-phone .mseg span { padding: 7px 2px; border-radius: 999px }
+.pl-phone .mseg span:first-child { background: #FFC21A }
+
+/* planner */
+.pln { display: grid; gap: 16px; grid-template-columns: minmax(280px, 380px) minmax(0, 1fr); align-items: start }
+@media (max-width: 960px) { .pln { grid-template-columns: minmax(0, 1fr) } }
+.pln-form { position: sticky; top: calc(var(--head-h) + 12px) }
+@media (max-width: 960px) { .pln-form { position: static } }
+.pln-field { display: grid; gap: 6px }
+.pln-field > span { font: 700 12px/1.2 var(--body); letter-spacing: .08em; text-transform: uppercase; color: var(--muted) }
+.pln-input { width: 100%; border: 0; border-radius: 14px; padding: 12px 14px; background: var(--surface-2); color: var(--text); font: 500 15.5px var(--body); box-shadow: inset 0 0 0 1.5px var(--line); outline: none }
+.pln-input:focus { box-shadow: inset 0 0 0 2px var(--blue) }
+.pln-step { display: flex; align-items: center; gap: 10px }
+.pln-step button { width: 38px; height: 38px; border-radius: 50%; border: 0; background: var(--chip); color: var(--text); font: 800 18px/1 var(--display); cursor: pointer }
+.pln-step output { min-width: 34px; text-align: center; font: 800 20px/1 var(--display) }
+.pln-day { display: grid; gap: 10px; padding: 0 }
+.pln-day > header { display: flex; justify-content: space-between; align-items: baseline; gap: 10px }
+.pln-day h3 { font-size: 22px; font-weight: 800 }
+.pln-stop { background: var(--surface); border-radius: var(--r-md); padding: 16px; display: grid; gap: 10px; box-shadow: inset 0 0 0 2px transparent }
+.pln-stop.bad { box-shadow: inset 0 0 0 2px var(--orange) }
+.pln-stop h4 { font: 800 19px/1.15 var(--display); letter-spacing: -.02em }
+.pln-flags { list-style: none; margin: 0; padding: 0; display: grid; gap: 6px }
+.pln-flags li { display: flex; gap: 8px; align-items: baseline; font-size: 14px; line-height: 1.4 }
+.pln-flags li::before { content: ""; width: 9px; height: 9px; border-radius: 50%; flex: none; transform: translateY(-1px); background: var(--muted) }
+.pln-flags .l-good::before { background: var(--green) } .pln-flags .l-warn::before { background: var(--yellow) } .pln-flags .l-high::before { background: var(--orange) }
+.pln-flags .l-none::before { background: transparent; box-shadow: inset 0 0 0 2px var(--muted) }
+.pln-alts { display: grid; gap: 6px; padding: 12px; border-radius: 14px; background: color-mix(in srgb, var(--green) 14%, var(--surface)) }
+.pln-alt { display: flex; justify-content: space-between; align-items: center; gap: 10px; flex-wrap: wrap; font-size: 14px }
+.pln-add { border: 2px dashed var(--line); border-radius: var(--r-md); padding: 12px; display: flex; gap: 8px; flex-wrap: wrap; align-items: center; background: transparent }
+.pln-add select { flex: 1; min-width: 200px }
+.btn-sm { padding: 9px 14px; font-size: 14px }
+.btn-sm .ico { width: 16px; height: 16px }
+.pln-summary { display: flex; gap: 8px; flex-wrap: wrap }
+.icon-x { border: 0; background: var(--chip); width: 32px; height: 32px; border-radius: 50%; display: grid; place-items: center; cursor: pointer; color: var(--text); flex: none }
+.icon-x .ico { width: 15px; height: 15px }
+
+/* place page */
+.pl-hero { background: var(--orange); border-radius: var(--r-xl); padding: clamp(24px, 4vw, 52px); color: var(--ink); display: grid; gap: 14px; position: relative; overflow: hidden }
+.pl-hero h1 { font-size: clamp(44px, 7vw, 96px); font-weight: 800; line-height: .92; letter-spacing: -.05em; max-width: 14ch }
+.pl-hero p { font-weight: 600; max-width: 60ch }
+.pl-hero .pl-pill { background: var(--white) }
+.pl-guides { list-style: none; margin: 0; padding: 0; display: grid; gap: 8px }
+.pl-guides li { display: flex; gap: 10px; align-items: baseline; font-size: 15px }
+.pl-guides li::before { content: ""; width: 7px; height: 7px; border-radius: 50%; background: var(--green); flex: none; transform: translateY(-2px) }
+.pl-kv { display: grid; grid-template-columns: max-content minmax(0, 1fr); gap: 8px 16px; font-size: 15px }
+.pl-kv dt { color: var(--muted) }
+.pl-kv dd { margin: 0; font-weight: 600 }
+.pl-meter { position: relative; height: 10px; border-radius: 5px; background: var(--chip) }
+.pl-meter i { position: absolute; inset: 0 auto 0 0; border-radius: 5px; background: var(--text) }

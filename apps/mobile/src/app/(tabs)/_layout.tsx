@@ -13,6 +13,7 @@ export default function TabsLayout() {
   const b = useBrand();
   const { can } = useAuth();
   const field = can("reports.field") || can("panoramas.create");
+  const community = can("heritage.propose");
   return (
     <Tabs
       screenOptions={{
@@ -27,6 +28,7 @@ export default function TabsLayout() {
       <Tabs.Screen name="explore" options={tab("Explore", "map")} />
       <Tabs.Screen name="plan" options={tab("Plan", "route")} />
       <Tabs.Screen name="ranger" options={{ ...tab("Ranger", "shield"), href: field ? undefined : null }} />
+      <Tabs.Screen name="community" options={{ ...tab("Community", "flag"), href: community ? undefined : null }} />
       <Tabs.Screen name="profile" options={tab("Profile", "user")} />
     </Tabs>
   );

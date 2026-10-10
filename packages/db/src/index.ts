@@ -20,6 +20,8 @@ export type TripStop = Tables<"trip_stops">;
 export type HeritageSite = Tables<"heritage_sites">;
 export type TourismEvent = Tables<"events">;
 export type DestinationOverview = Rpc<"destination_overview">[number];
+export type Alternative = Rpc<"suggest_alternatives">[number];
+export type CommunityNotice = Tables<"community_notices">;
 
 /** Access in destinations.access (jsonb). */
 export interface DestinationAccess {

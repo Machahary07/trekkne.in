@@ -324,3 +324,19 @@
 .cul-item[open] .cul-chev { rotate: 180deg }
 .cul-item p { padding: 0 14px 14px; font-size: 14px; color: var(--muted); line-height: 1.5 }
 @media (max-width: 760px) { .cul-list { grid-template-columns: minmax(0, 1fr) } }
+
+/* ---------- capacity gauge (live, simulated counts) ---------- */
+.cap { display: grid; gap: 8px }
+.cap-track { position: relative; height: 12px; border-radius: 6px; background: var(--chip); overflow: visible }
+.cap-track i { position: absolute; inset: 0 auto 0 0; border-radius: 6px; transform-origin: left; animation: di-grow-x .6s cubic-bezier(.2, .8, .2, 1) both }
+.cap-track i.m-good { background: var(--green) } .cap-track i.m-warn { background: var(--yellow) } .cap-track i.m-high { background: var(--orange) }
+.cap-track b { position: absolute; top: -4px; bottom: -4px; width: 2px; border-radius: 1px; background: var(--text) }
+.cap-legend { display: flex; justify-content: space-between; gap: 8px; flex-wrap: wrap; font-size: 11.5px; color: var(--muted) }
+.cap-notice { display: flex; gap: 8px; align-items: flex-start; font-size: 13.5px; line-height: 1.4; padding: 10px 12px; border-radius: 12px; background: color-mix(in srgb, var(--yellow) 26%, var(--surface)) }
+.cap-notice .ico { width: 17px; height: 17px; flex: none; margin-top: 1px }
+.cap-alt { display: grid; gap: 6px; padding: 12px; border-radius: 14px; background: color-mix(in srgb, var(--green) 14%, var(--surface)) }
+.cap-alt b { font-size: 13.5px }
+.cap-alt ul { list-style: none; margin: 0; padding: 0; display: grid; gap: 6px }
+.cap-alt li { display: flex; justify-content: space-between; gap: 8px; flex-wrap: wrap; font-size: 14px }
+.cap-alt a { font-weight: 700; color: inherit }
+.cap-alt .mono { font-size: 11.5px; color: var(--muted) }

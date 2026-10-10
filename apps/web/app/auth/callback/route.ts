@@ -1,5 +1,6 @@
 import type { EmailOtpType } from "@supabase/supabase-js";
 import { NextResponse, type NextRequest } from "next/server";
+import { roleHas } from "@trekne/db";
 import { supabaseServer } from "@/lib/supabase/server";
 
 /**
@@ -9,7 +10,7 @@ import { supabaseServer } from "@/lib/supabase/server";
 export async function GET(request: NextRequest) {
   const url = request.nextUrl;
   const next = url.searchParams.get("next");
-  const target = next?.startsWith("/") && !next.startsWith("//") ? next : "/super/dashboard";
+  const explicit = next?.startsWith("/") && !next.startsWith("//") ? next : null;
   const supabase = await supabaseServer();
 
   const code = url.searchParams.get("code");
@@ -28,6 +29,13 @@ export async function GET(request: NextRequest) {
     dest.pathname = "/super";
     dest.searchParams.set("error", "link");
   } else {
+    // Staff go to the CRM; travellers, Rangers and stewards (app users) see the welcome page.
+    let target = explicit;
+    if (!target) {
+      const { data: claims } = await supabase.auth.getClaims();
+      const { data: profile } = await supabase.from("profiles").select("role, roles(permissions)").eq("id", claims?.claims.sub ?? "").maybeSingle();
+      target = roleHas(profile?.roles?.permissions, "crm.access") ? "/super/dashboard" : "/welcome";
+    }
     dest.pathname = target;
   }
   return NextResponse.redirect(dest);

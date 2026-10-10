@@ -26,16 +26,17 @@ export default function DestinationScreen() {
       must(supabase.from("seasonal_conditions").select("month,suitability,note").eq("destination_id", dest.id)),
       must(supabase.from("indicators").select("kind,label,value,level,source,updated_at").eq("destination_id", dest.id)),
       maybe(supabase.from("recommendations").select("body,meta,generated_at").eq("destination_id", dest.id).maybeSingle()),
-      must(supabase.from("heritage_sites").select("id,name,site_type,community,photography,restricted,guidelines,destination_id").eq("is_published", true).eq("state_code", dest.state_code)),
+      must(supabase.from("heritage_sites").select("id,name,site_type,community,photography,restricted,guidelines,destination_id,community_endorsed_at").eq("is_published", true).eq("state_code", dest.state_code)),
       must(supabase.from("events").select("id,name,community,starts_on,ends_on,visitor_impact,open_to_visitors,etiquette,destination_id").eq("is_published", true).eq("state_code", dest.state_code).gte("ends_on", today).lte("starts_on", addDays(today, 120)).order("starts_on")),
       must(supabase.from("reports").select("id,body,status,category,source_label,created_at").eq("destination_id", dest.id).in("status", ["verified", "official", "unverified"]).order("created_at", { ascending: false }).limit(8)),
       must(supabase.from("panoramas").select("id,title,frame_count,captured_at").eq("destination_id", dest.id).eq("status", "published").order("captured_at", { ascending: false }).limit(5)),
       must(supabase.rpc("destination_overview", { on_day: today })),
       must(supabase.from("trips").select("id,title,start_date,end_date,status").gte("end_date", today).neq("status", "cancelled").order("start_date")),
     ]);
+    const notices = await must(supabase.from("community_notices").select("id,kind,title,body,starts_on,ends_on,community").eq("destination_id", dest.id).eq("is_active", true).gte("ends_on", today).order("starts_on"));
     const ov = overview.find((o) => o.id === dest.id) ?? null;
     const alternatives = ov && ov.risk_level !== "good" ? await must(supabase.rpc("suggest_alternatives", { dest: dest.id, on_day: today })) : [];
-    return { dest, seasons, indicators, rec, heritage: heritage.filter((h) => h.destination_id === dest.id).concat(heritage.filter((h) => h.destination_id !== dest.id)).slice(0, 4), events, reports, scenes, ov, trips, alternatives };
+    return { notices, dest, seasons, indicators, rec, heritage: heritage.filter((h) => h.destination_id === dest.id).concat(heritage.filter((h) => h.destination_id !== dest.id)).slice(0, 4), events, reports, scenes, ov, trips, alternatives };
   }, [slug]);
 
   if (loading && !data) return <Loading />;
@@ -65,6 +66,19 @@ export default function DestinationScreen() {
       </View>
 
       <View style={{ padding: 16, gap: 14 }}>
+        {data.notices.length > 0 && (
+          <Card style={{ backgroundColor: b.tint.pending }}>
+            <Row><Icon name="flag" color={b.text} size={20} /><T v="h3">From the community</T></Row>
+            {data.notices.map((n) => (
+              <View key={n.id} style={{ gap: 2 }}>
+                <T style={{ fontFamily: F.bold }}>{n.title}</T>
+                <T v="small" muted>{fmtDay(n.starts_on)}{n.ends_on !== n.starts_on ? ` – ${fmtDay(n.ends_on)}` : ""}{n.community ? ` · ${n.community}` : ""}</T>
+                {n.body ? <T v="small">{n.body}</T> : null}
+              </View>
+            ))}
+          </Card>
+        )}
+
         {ov && (
           <Card>
             <Row style={{ justifyContent: "space-between" }}>
@@ -159,6 +173,7 @@ export default function DestinationScreen() {
                   <Pill level={h.photography === "forbidden" ? "high" : h.photography === "ask" ? "warn" : "good"} label={PHOTO[h.photography as keyof typeof PHOTO]} />
                 </Row>
                 <T v="small" muted>{h.site_type} · {h.community}{h.restricted ? " · some areas closed to visitors" : ""}</T>
+                {h.community_endorsed_at ? <Pill level="good" label="Approved by the community" /> : null}
                 {h.guidelines.map((g) => <T key={g} v="small">• {g}</T>)}
               </View>
             ))}

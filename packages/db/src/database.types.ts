@@ -49,6 +49,63 @@ export type Database = {
           },
         ]
       }
+      community_notices: {
+        Row: {
+          author_id: string | null
+          body: string
+          community: string
+          created_at: string
+          destination_id: string
+          ends_on: string
+          id: string
+          is_active: boolean
+          kind: Database["public"]["Enums"]["notice_kind"]
+          starts_on: string
+          title: string
+        }
+        Insert: {
+          author_id?: string | null
+          body?: string
+          community?: string
+          created_at?: string
+          destination_id: string
+          ends_on: string
+          id?: string
+          is_active?: boolean
+          kind: Database["public"]["Enums"]["notice_kind"]
+          starts_on: string
+          title: string
+        }
+        Update: {
+          author_id?: string | null
+          body?: string
+          community?: string
+          created_at?: string
+          destination_id?: string
+          ends_on?: string
+          id?: string
+          is_active?: boolean
+          kind?: Database["public"]["Enums"]["notice_kind"]
+          starts_on?: string
+          title?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "community_notices_author_id_fkey"
+            columns: ["author_id"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "community_notices_destination_id_fkey"
+            columns: ["destination_id"]
+            isOneToOne: false
+            referencedRelation: "destinations"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       destinations: {
         Row: {
           access: Json
@@ -221,6 +278,8 @@ export type Database = {
       heritage_sites: {
         Row: {
           community: string
+          community_endorsed_at: string | null
+          community_endorsed_by: string | null
           created_at: string
           created_by: string | null
           description: string
@@ -239,6 +298,8 @@ export type Database = {
         }
         Insert: {
           community?: string
+          community_endorsed_at?: string | null
+          community_endorsed_by?: string | null
           created_at?: string
           created_by?: string | null
           description?: string
@@ -257,6 +318,8 @@ export type Database = {
         }
         Update: {
           community?: string
+          community_endorsed_at?: string | null
+          community_endorsed_by?: string | null
           created_at?: string
           created_by?: string | null
           description?: string
@@ -274,6 +337,13 @@ export type Database = {
           state_code?: string
         }
         Relationships: [
+          {
+            foreignKeyName: "heritage_sites_community_endorsed_by_fkey"
+            columns: ["community_endorsed_by"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
           {
             foreignKeyName: "heritage_sites_created_by_fkey"
             columns: ["created_by"]
@@ -898,6 +968,7 @@ export type Database = {
         Args: { on_day?: string }
         Returns: {
           capacity: number
+          community_closed: boolean
           counted: number
           district: string
           ecosystem: string
@@ -909,6 +980,7 @@ export type Database = {
           lng: number
           load_ratio: number
           name: string
+          notice: string
           open_issues: number
           planned: number
           risk_issues: number
@@ -927,6 +999,10 @@ export type Database = {
         Args: { lat1: number; lat2: number; lng1: number; lng2: number }
         Returns: number
       }
+      endorse_heritage: {
+        Args: { endorse: boolean; site: string }
+        Returns: undefined
+      }
       has_perm: { Args: { p: string }; Returns: boolean }
       invite_staff: {
         Args: { p_email: string; p_role: string }
@@ -937,6 +1013,18 @@ export type Database = {
         Returns: undefined
       }
       my_rank: { Args: never; Returns: number }
+      recurring_issues: {
+        Args: { window_days?: number }
+        Returns: {
+          category: Database["public"]["Enums"]["report_category"]
+          destination_id: string
+          last_at: string
+          name: string
+          reports: number
+          slug: string
+          state_code: string
+        }[]
+      }
       set_user_active: {
         Args: { active: boolean; target: string }
         Returns: undefined
@@ -962,6 +1050,7 @@ export type Database = {
     }
     Enums: {
       level: "good" | "warn" | "high" | "none"
+      notice_kind: "closure" | "sacred_day" | "restriction" | "advisory"
       report_category:
         | "road"
         | "trail"
@@ -1109,6 +1198,7 @@ export const Constants = {
   public: {
     Enums: {
       level: ["good", "warn", "high", "none"],
+      notice_kind: ["closure", "sacred_day", "restriction", "advisory"],
       report_category: [
         "road",
         "trail",

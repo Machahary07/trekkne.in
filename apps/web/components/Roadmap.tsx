@@ -31,6 +31,7 @@ export function Roadmap() {
             <div className="bar"><i /></div>
             <h3>Across the Northeast</h3>
             <div className="states">{STATES.map((s) => <span key={s}>{s}</span>)}</div>
+            <p>States, ecosystems and cultural rules are data, so each new state is set up in the CRM, not rebuilt in code. <a href="/destinations#all-places">All 8 are already modelled →</a></p>
           </li>
         </ol>
         <div className="pilot">

@@ -28,7 +28,7 @@ export function Business() {
           <article>
             <span className="ic" style={{ background: "var(--blue)" }}><Icon name="chart" /></span>
             <h3>Destination dashboards</h3>
-            <p>Aggregated insights for operators and destination managers on access, environment and seasonality.</p>
+            <p>Aggregated insights for operators, tourism departments and planners on access, environment and seasonality. <a href="/authorities">See the authority view →</a></p>
             <ul>
               <li><Icon name="check" />Visitor trends where records exist</li>
               <li><Icon name="check" />Recurring access &amp; waste issues</li>
