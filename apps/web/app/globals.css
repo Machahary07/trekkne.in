@@ -58,6 +58,8 @@ p { margin: 0 }
 .mono { font-family: var(--mono); font-size: 12.5px; letter-spacing: -.01em }
 .ico { width: 22px; height: 22px; flex: none; stroke: currentColor; fill: none; stroke-width: 2; stroke-linecap: round; stroke-linejoin: round }
 section { padding-block: clamp(64px, 9vw, 120px) 0 }
+/* A page that opens with a section (not the hero) starts right under the header. */
+main > section:first-child { padding-top: var(--gutter) }
 .sec-head { display: grid; gap: 18px; max-width: 780px; margin-bottom: clamp(32px, 4vw, 52px) }
 .sec-head h2 { font-size: clamp(38px, 5.6vw, 72px); font-weight: 800 }
 .sec-head p, .lede { color: var(--muted); font-size: clamp(17px, 1.5vw, 19px); max-width: 62ch }
@@ -87,7 +89,7 @@ section { padding-block: clamp(64px, 9vw, 120px) 0 }
 .logo-mark { width: 40px; height: 30px; flex: none }
 .nav-links { display: flex; gap: 4px; list-style: none; margin: 0; padding: 0 }
 .nav-links a { text-decoration: none; font-weight: 600; font-size: 15.5px; padding: 10px 14px; border-radius: 999px; transition: background .2s }
-.nav-links a:hover { background: var(--chip) }
+.nav-links a:hover, .nav-links a[aria-current="page"] { background: var(--chip) }
 .nav-cta { display: flex; gap: 10px; align-items: center }
 .nav-cta .btn { padding: 12px 18px; font-size: 15px; white-space: nowrap }
 .menu-btn {
@@ -119,7 +121,7 @@ section { padding-block: clamp(64px, 9vw, 120px) 0 }
   border-radius: var(--r-md); text-decoration: none; font: 800 clamp(24px, 4vw, 32px)/1.1 var(--display); letter-spacing: -.035em;
 }
 .sheet-links a .ico { width: 22px; height: 22px; color: var(--muted); transition: transform .2s, color .2s }
-.sheet-links a:hover, .sheet-links a:focus-visible { background: var(--chip) }
+.sheet-links a:hover, .sheet-links a:focus-visible, .sheet-links a[aria-current="page"] { background: var(--chip) }
 .sheet-links a:hover .ico { transform: translateX(4px); color: var(--orange) }
 .sheet-links li + li { border-top: 1.5px solid var(--line) }
 .sheet-ctas { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; padding: 12px 4px 4px }

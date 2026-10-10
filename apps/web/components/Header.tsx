@@ -1,16 +1,18 @@
 "use client";
 
 import { useEffect, useState } from "react";
+import Link from "next/link";
+import { usePathname } from "next/navigation";
 import { Logo } from "./Eyes";
 import { JoinLink } from "./SiteState";
 import { MobileMenu } from "./MobileMenu";
 
 const LINKS = [
-  ["#destinations", "Destinations"],
-  ["#how", "How it works"],
-  ["#rangers", "Rangers"],
-  ["#business", "For business"],
-  ["#roadmap", "Roadmap"],
+  ["/destinations", "Destinations"],
+  ["/how-it-works", "How it works"],
+  ["/rangers", "Rangers"],
+  ["/business", "For business"],
+  ["/roadmap", "Roadmap"],
 ] as const;
 
 /** Distance (px) the page must move in one direction before the header reacts. */
@@ -18,6 +20,7 @@ const THRESHOLD = 6;
 
 export function Header() {
   const [hidden, setHidden] = useState(false);
+  const pathname = usePathname();
 
   // Slide the header away while reading down the page; bring it back on any upward scroll.
   useEffect(() => {
@@ -46,11 +49,13 @@ export function Header() {
         <Logo />
         <ul className="nav-links">
           {LINKS.map(([href, label]) => (
-            <li key={href}><a href={href}>{label}</a></li>
+            <li key={href}>
+              <Link href={href} aria-current={pathname === href ? "page" : undefined}>{label}</Link>
+            </li>
           ))}
         </ul>
         <div className="nav-cta">
-          <a className="btn btn-ghost" href="#rangers">Become a Ranger</a>
+          <Link className="btn btn-ghost" href="/rangers">Become a Ranger</Link>
           <JoinLink role="traveller" className="btn btn-ink">Get the app</JoinLink>
           <MobileMenu links={LINKS} />
         </div>

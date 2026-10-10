@@ -1,9 +1,10 @@
+import Link from "next/link";
 import { Eyes, Logo } from "./Eyes";
 
 const COLUMNS = [
-  { title: "Explore", links: [["#destinations", "Destinations"], ["#how", "How it works"], ["#top", "Plan a trip"]] },
-  { title: "Join", links: [["#rangers", "Become a Ranger"], ["#business", "List your business"], ["#join", "Get the app"]] },
-  { title: "Trust", links: [["#promise-h", "Our promise"], ["#roadmap", "Roadmap"], ["#destinations", "How we verify"]] },
+  { title: "Explore", links: [["/destinations", "Destinations"], ["/how-it-works", "How it works"], ["/", "Plan a trip"]] },
+  { title: "Join", links: [["/rangers", "Become a Ranger"], ["/business", "List your business"], ["#join", "Get the app"]] },
+  { title: "Trust", links: [["/how-it-works#promise-h", "Our promise"], ["/roadmap", "Roadmap"], ["/how-it-works", "How we verify"]] },
 ] as const;
 
 export function Footer() {
@@ -18,7 +19,7 @@ export function Footer() {
           {COLUMNS.map((c) => (
             <div key={c.title}>
               <h4>{c.title}</h4>
-              <ul>{c.links.map(([href, label]) => <li key={label}><a href={href}>{label}</a></li>)}</ul>
+              <ul>{c.links.map(([href, label]) => <li key={label}><Link href={href}>{label}</Link></li>)}</ul>
             </div>
           ))}
         </div>

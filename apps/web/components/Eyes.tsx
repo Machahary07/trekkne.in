@@ -1,4 +1,5 @@
 import type { CSSProperties } from "react";
+import Link from "next/link";
 
 /** The Trekne mascot's eyes. Pupils follow the pointer via <EyeTracker>. */
 export function Eyes({ style, className = "eyes" }: { style?: CSSProperties; className?: string }) {
@@ -24,9 +25,9 @@ export function LogoMark() {
 
 export function Logo() {
   return (
-    <a className="logo" href="#top" aria-label="Trekne home">
+    <Link className="logo" href="/" aria-label="Trekne home">
       <LogoMark />
       trekne
-    </a>
+    </Link>
   );
 }
