@@ -246,8 +246,10 @@ export function Planner({ places, events, notices, initialAdd, initialTrip = {},
                 const bad = f.some((x) => x.level === "high");
                 const key = `${s.idx}-${s.id}-${day}`;
                 const a = alts[key];
+                const photo = placePhoto(place.slug, place.cover_url);
                 return (
-                  <article key={key} className={`pln-stop${bad ? " bad" : ""}`}>
+                  <article key={key} className={`pln-stop${bad ? " bad" : ""}`} data-img={photo ? "" : undefined}
+                    style={photo ? ({ "--img": `url("${photoThumb(photo)}")` } as React.CSSProperties) : undefined}>
                     <div className="pl-between">
                       <div>
                         <h4><Link href={`/places/${place.slug}`} style={{ color: "inherit" }}>{place.name}</Link></h4>
