@@ -194,7 +194,7 @@ export default function DestinationScreen() {
               <Pressable key={s.id} onPress={() => router.push(`/scene/${s.id}`)} style={{ flexDirection: "row", alignItems: "center", gap: 10, padding: 12, borderRadius: radius.sm, backgroundColor: b.surface2 }}>
                 <Icon name="sphere" color={b.orange} />
                 <View style={{ flex: 1 }}><T style={{ fontFamily: F.semibold }}>{s.title || "360 scene"}</T><T v="small" muted>{s.frame_count} photos · {ago(s.captured_at)}</T></View>
-                <Icon name="chevron" size={18} color={b.muted} />
+                <Icon name="chevronRight" size={18} color={b.muted} />
               </Pressable>
             ))}
           </Card>

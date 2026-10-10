@@ -48,8 +48,17 @@ export const icons = {
   alert: [p("M12 4 2.5 20h19z"), p("M12 10v4M12 17h.01")],
   key: [c(8, 15, 4), p("m11 12 9-9M17 6l3 3M14 9l2 2")],
   sphere: [c(12, 12, 9), { t: "ellipse", cx: 12, cy: 12, rx: 9, ry: 3.5 }, p("M12 3c2.2 2.4 3.3 5.4 3.3 9s-1.1 6.6-3.3 9")],
-  chevron: [p("m9 6 6 6-6 6")],
+  chevron: [p("m6 9 6 6 6-6")],
+  chevronRight: [p("m9 6 6 6-6 6")],
   filter: [p("M4 5h16l-6 7.5V19l-4 1.5v-8z")],
+  menu: [p("M4 7h16M4 12h16M4 17h16")],
+  clock: [c(12, 12, 9), p("M12 7v5l3 2")],
+  flag: [p("M5 21V4M5 4h11l-2 4 2 4H5")],
+  eyeoff: [p("m3 3 18 18M10.6 5.1A10 10 0 0 1 12 5c6.5 0 10 7 10 7a17 17 0 0 1-3.2 4M6.6 6.6C3.8 8.3 2 12 2 12s3.5 7 10 7c1.8 0 3.4-.5 4.8-1.3M9.9 9.9a3 3 0 0 0 4.2 4.2")],
+  info: [c(12, 12, 9), p("M12 11v5M12 8h.01")],
+  boat: [p("M3 15h18l-3 5H6z"), p("M12 4v11M12 5l6 8h-6")],
+  car: [p("M5 16V11l2-5h10l2 5v5z"), p("M5 11h14M5 16v2M19 16v2"), c(8, 13.5, 0.6), c(16, 13.5, 0.6)],
+  trash: [p("M4 7h16M9 7V4h6v3M6 7l1 13h10l1-13")],
 } as const satisfies Record<string, readonly IconShape[]>;
 
 export type IconName = keyof typeof icons;

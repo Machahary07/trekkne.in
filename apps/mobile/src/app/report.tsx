@@ -70,7 +70,7 @@ export default function NewReport() {
     <ScrollView style={{ flex: 1, backgroundColor: b.bg }} contentContainerStyle={{ padding: 16, gap: 14, paddingBottom: 60 }}>
       <Card>
         <T v="label">Destination</T>
-        <Pressable onPress={() => setPicking(true)}><Row style={{ justifyContent: "space-between" }}><T v="h3">{dest?.name ?? "Choose…"}</T><Icon name="chevron" color={b.muted} /></Row></Pressable>
+        <Pressable onPress={() => setPicking(true)}><Row style={{ justifyContent: "space-between" }}><T v="h3">{dest?.name ?? "Choose…"}</T><Icon name="chevronRight" color={b.muted} /></Row></Pressable>
         <Row gap={6}><Icon name="pin" size={16} color={b.muted} /><T v="mono" muted style={{ flex: 1 }}>{gpsMsg}</T></Row>
       </Card>
 
