@@ -1,34 +1,58 @@
 # trekne.in
 
-Marketing and discovery website for **Trekne — Know Before You Go**: Ranger-verified, AI-powered travel intelligence for Northeast India.
+**Trekne — Know Before You Go.** Sustainable tourism, eco-risk and cultural heritage intelligence for Northeast India.
 
-Built with Next.js (App Router) + TypeScript, ready to deploy on Vercel. Frontend only for now — no database connection.
+| App | Path | What |
+| --- | --- | --- |
+| Website + CRM | `apps/web` | Next.js 16. trekne.in, and the staff CRM at **/super** |
+| Mobile | `apps/mobile` | Expo SDK 57. Tourist and Ranger modes, 360 capture |
+| Brand | `packages/brand` | Colours, fonts, icons shared by web and app |
+| DB | `packages/db` | Generated Supabase types, panorama maths |
+| Viewer | `packages/viewer` | three.js 360 viewer (CRM, site and app) |
+| Database | `supabase/` | Migrations for the `trekne.in` Supabase project |
 
-## Run locally
+See [docs/PLAN.md](docs/PLAN.md) for how this maps to the problem statement, roles and next steps.
+
+## Setup
 
 ```bash
-npm install
-npm run dev        # http://localhost:3000
-npm run build      # production build
+npm install                # once, at the repo root (npm workspaces)
 ```
 
-## Deploy
+Create the env files (both are git-ignored). Use the **anon / publishable** key from Supabase → Project Settings → API:
 
-Push to GitHub and import the repo in Vercel (framework preset: Next.js). No environment variables are required yet.
+```bash
+# apps/web/.env.local
+NEXT_PUBLIC_SUPABASE_URL=https://yhrloltsznexpxuwyjhr.supabase.co
+NEXT_PUBLIC_SUPABASE_ANON_KEY=...
 
-## Structure
-
+# apps/mobile/.env.local
+EXPO_PUBLIC_SUPABASE_URL=https://yhrloltsznexpxuwyjhr.supabase.co
+EXPO_PUBLIC_SUPABASE_ANON_KEY=...
 ```
-app/
-  layout.tsx         fonts (Bricolage Grotesque, Figtree, JetBrains Mono), metadata, icon sprite
-  page.tsx           composes the landing page sections
-  globals.css        brand tokens (light + dark) and all section styles
-  icon.svg           favicon (mascot)
-components/          one file per section + shared bits (Icon, Eyes, SiteState)
-lib/
-  destinations.ts    SIMULATED pilot data for Nongriat, Nohkalikai, Dawki
-  shapes.ts          sunburst + decorative QR generators
+
+## Run
+
+```bash
+npm run web      # http://localhost:3000, CRM at http://localhost:3000/super
+npm run mobile   # Expo dev server; scan the QR code with Expo Go
 ```
+
+The 360 capture needs a real phone (camera + gyroscope). Simulators can't run it.
+
+## Database
+
+```bash
+supabase link --project-ref yhrloltsznexpxuwyjhr
+supabase migration new <name>      # write SQL in supabase/migrations/
+supabase db push                   # apply to the project
+npm run db:types                   # regenerate packages/db/src/database.types.ts
+```
+
+## Deploy (Vercel)
+
+The site now lives in `apps/web`. In the Vercel project set **Root Directory = `apps/web`** and add the two
+`NEXT_PUBLIC_SUPABASE_*` variables before this branch is merged to `main`.
 
 ## Brand
 
@@ -40,10 +64,4 @@ lib/
 | Green  | `#2DC56E` | CTA, verified status                 |
 | Ink    | `#10131F` | Text, deep sections                  |
 
-The mascot's eyes (`components/Eyes.tsx`) follow the cursor — "know before you go".
-
-## Connecting Supabase later
-
-- Replace the body of `getDestinations()` in `lib/destinations.ts` with a Supabase query; the components consume the same `Destination` type.
-- The waitlist form in `components/JoinCta.tsx` has a `TODO` where an insert into a `waitlist` table goes. It currently validates input and tells the visitor nothing was saved.
-- `.env.example` lists the variables you'll need.
+Defined once in `packages/brand/src/tokens.ts`; `apps/web/app/globals.css` mirrors it as CSS variables.
