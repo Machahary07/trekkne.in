@@ -1,21 +1,10 @@
 {
-  "name": "trekne-web",
-  "version": "0.1.0",
+  "name": "trekne",
   "private": true,
+  "workspaces": ["apps/*", "packages/*"],
   "scripts": {
-    "dev": "next dev",
-    "build": "next build",
-    "start": "next start"
-  },
-  "dependencies": {
-    "next": "^16.4.0",
-    "react": "^19.3.0",
-    "react-dom": "^19.3.0"
-  },
-  "devDependencies": {
-    "@types/node": "^26.6.5",
-    "@types/react": "^19.3.0",
-    "@types/react-dom": "^19.3.0",
-    "typescript": "^7.0.2"
+    "web": "npm run dev -w @trekne/web",
+    "mobile": "npm run start -w @trekne/mobile",
+    "db:types": "supabase gen types typescript --linked --schema public > packages/db/src/database.types.ts"
   }
 }
