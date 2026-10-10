@@ -6,15 +6,17 @@ import { usePathname } from "next/navigation";
 import { Logo } from "./Eyes";
 import { JoinLink } from "./SiteState";
 import { MobileMenu } from "./MobileMenu";
+import { AccountMenu } from "./AccountMenu";
+import { RANGER_SIGNUP } from "@/lib/landing";
 
+// Kept short on purpose: Rangers, Authorities, Roadmap and "List your business" live in the footer.
+// The third flag marks features that follow the planner and show a "Soon" tag.
 const LINKS = [
-  ["/destinations", "Destinations"],
   ["/planner", "Plan a trip"],
-  ["/how-it-works", "How it works"],
-  ["/rangers", "Rangers"],
-  ["/business", "For business"],
-  ["/authorities", "Authorities"],
-  ["/roadmap", "Roadmap"],
+  ["/destinations", "Destinations"],
+  ["/homestays", "Homestays", true],
+  ["/shop", "Shop", true],
+  ["/about", "About Trekne"],
 ] as const;
 
 /** Distance (px) the page must move in one direction before the header reacts. */
@@ -50,16 +52,19 @@ export function Header() {
       <nav className="nav wrap" aria-label="Main">
         <Logo />
         <ul className="nav-links">
-          {LINKS.map(([href, label]) => (
+          {LINKS.map(([href, label, soon]) => (
             <li key={href}>
-              <Link href={href} aria-current={pathname === href ? "page" : undefined}>{label}</Link>
+              <Link href={href} aria-current={pathname === href ? "page" : undefined}>
+                {label}{soon && <small className="soon-tag">Soon</small>}
+              </Link>
             </li>
           ))}
         </ul>
         <div className="nav-cta">
-          <Link className="btn btn-ghost" href="/rangers">Become a Ranger</Link>
+          <Link className="btn btn-ghost" href={RANGER_SIGNUP}>Become a Ranger</Link>
           <JoinLink role="traveller" className="btn btn-ink">Get the app</JoinLink>
           <MobileMenu links={LINKS} />
+          <AccountMenu />
         </div>
       </nav>
     </header>

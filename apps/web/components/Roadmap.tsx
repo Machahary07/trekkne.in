@@ -7,7 +7,9 @@ const PHASES = [
   { title: "Bookings & business", text: "Guide bookings, business profiles, payments and Ranger incentives." },
 ];
 
-const STATES = ["Meghalaya", "Assam", "Arunachal", "Nagaland", "Mizoram", "Manipur", "Tripura", "Sikkim"];
+const STATES = ["Assam", "Meghalaya", "Arunachal", "Nagaland", "Mizoram", "Manipur", "Tripura", "Sikkim"];
+/** The pilot starts in these two; the rest follow. */
+const PILOT = new Set(["Assam", "Meghalaya"]);
 
 export function Roadmap() {
   return (
@@ -15,7 +17,7 @@ export function Roadmap() {
       <div className="wrap">
         <div className="sec-head">
           <span className="eyebrow">Roadmap</span>
-          <h2 id="road-h">Starting small in Meghalaya, then all eight states.</h2>
+          <h2 id="road-h">Starting in Assam and Meghalaya, then all eight states.</h2>
         </div>
         <ol className="road">
           {PHASES.map((p, i) => (
@@ -30,13 +32,13 @@ export function Roadmap() {
             <span className="ph">PHASE 5</span>
             <div className="bar"><i /></div>
             <h3>Across the Northeast</h3>
-            <div className="states">{STATES.map((s) => <span key={s}>{s}</span>)}</div>
+            <div className="states">{STATES.map((s) => <span key={s} data-pilot={PILOT.has(s) || undefined}>{s}{PILOT.has(s) && " · pilot"}</span>)}</div>
             <p>States, ecosystems and cultural rules are data, so each new state is set up in the CRM, not rebuilt in code. <a href="/destinations#all-places">All 8 are already modelled →</a></p>
           </li>
         </ol>
         <div className="pilot">
           <b>The pilot</b>
-          <span><Icon name="pin" />3 destinations in Meghalaya</span>
+          <span><Icon name="pin" />Assam &amp; Meghalaya first</span>
           <span><Icon name="users" />5–10 founding Rangers</span>
           <span><Icon name="shield" />Every report moderated</span>
         </div>

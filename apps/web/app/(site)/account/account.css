@@ -1,0 +1,90 @@
+/* ---------- /account ---------- */
+.acct .sec-head { margin-bottom: clamp(24px, 3vw, 36px) }
+.acct .sec-head h1 { font-size: clamp(42px, 6vw, 80px); font-weight: 800; letter-spacing: -.045em }
+.acct-grid { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); gap: 16px; align-items: start }
+.acct-card { background: var(--surface); border-radius: var(--r-lg); padding: clamp(22px, 3vw, 36px); display: grid; gap: 16px; justify-items: start }
+.acct-card h2 { font-size: clamp(26px, 2.6vw, 32px); font-weight: 800; letter-spacing: -.02em; display: flex; flex-wrap: wrap; align-items: center; gap: 10px 12px }
+.acct-card p { color: var(--muted); font-size: 15.5px; line-height: 1.5; max-width: 52ch }
+.acct-ic { width: 52px; height: 52px; border-radius: 16px; display: grid; place-items: center; background: var(--yellow); color: var(--ink) }
+.acct-card.is-ranger .acct-ic { background: var(--green) }
+.acct-facts { display: grid; width: 100%; margin: 0 }
+.acct-facts div { display: grid; grid-template-columns: 140px minmax(0, 1fr); gap: 12px; padding-block: 14px; border-top: 1.5px solid var(--line) }
+.acct-facts div:first-child { border-top: 0; padding-top: 0 }
+.acct-facts dt { font: 600 12.5px/1.6 var(--body); letter-spacing: .08em; text-transform: uppercase; color: var(--muted) }
+.acct-facts dd { margin: 0; font-weight: 600; overflow-wrap: anywhere }
+.acct-row { display: flex; flex-wrap: wrap; gap: 10px }
+.acct-err { display: flex; gap: 10px; align-items: flex-start; padding: 12px 14px; border-radius: 14px; font-size: 14.5px; color: var(--text); background: color-mix(in srgb, var(--orange) 18%, var(--surface)) }
+.acct-err .ico { flex: none; width: 19px; height: 19px; margin-top: 1px }
+@media (max-width: 980px) { .acct-grid { grid-template-columns: 1fr } }
+@media (max-width: 480px) { .acct-facts div { grid-template-columns: 1fr; gap: 2px } .acct-row .btn { flex: 1 1 100% } }
+
+/* Header with tabs */
+.acct-top { display: flex; align-items: flex-end; justify-content: space-between; gap: 16px 24px; flex-wrap: wrap; margin-bottom: clamp(20px, 3vw, 28px) }
+.acct-top .sec-head { margin-bottom: 0 }
+.acct-tabs { display: inline-flex; gap: 4px; padding: 4px; border-radius: 999px; background: var(--chip) }
+.acct-tabs a { display: inline-flex; align-items: center; gap: 8px; padding: 10px 16px; border-radius: 999px; text-decoration: none; font-weight: 700; font-size: 15px; color: var(--text) }
+.acct-tabs a .ico { width: 17px; height: 17px }
+.acct-tabs a[aria-current="page"] { background: var(--text); color: var(--bg) }
+.acct-count { min-width: 22px; padding: 2px 7px; border-radius: 999px; font: 700 12px/1.4 var(--body); text-align: center; background: color-mix(in srgb, currentColor 16%, transparent) }
+
+.acct-stack { display: grid; gap: 14px; align-content: start; min-width: 0 }
+.acct-bar { display: flex; align-items: center; justify-content: space-between; gap: 14px 24px; flex-wrap: wrap; padding: 16px 20px; border-radius: var(--r-lg); background: var(--surface) }
+.acct-bar p { color: var(--muted); font-size: 15px; line-height: 1.5; max-width: 72ch }
+.acct-bar b { color: var(--text) }
+.acct-empty { display: grid; justify-items: center; text-align: center; gap: 8px; padding: 40px 20px; border-radius: var(--r-lg); background: var(--surface); color: var(--muted) }
+.acct-empty .ico { width: 34px; height: 34px; color: var(--orange) }
+.acct-empty b { color: var(--text); font: 800 24px/1.1 var(--display) }
+.acct-muted { color: var(--muted); font-size: 14.5px }
+
+/* Trip cards */
+.trip { display: grid; gap: 16px; padding: clamp(18px, 2.4vw, 26px); border-radius: var(--r-lg); background: var(--surface) }
+.trip-head { display: flex; justify-content: space-between; align-items: flex-start; gap: 12px 20px; flex-wrap: wrap }
+.trip-head h2 { font-size: clamp(22px, 2.2vw, 28px); font-weight: 800 }
+.trip-meta { display: flex; flex-wrap: wrap; gap: 6px 16px; margin-top: 6px; color: var(--muted); font-size: 14.5px }
+.trip-meta span { display: inline-flex; align-items: center; gap: 6px }
+.trip-meta .ico { width: 16px; height: 16px }
+.trip-status { display: flex; flex-wrap: wrap; gap: 8px; align-items: center }
+.trip-days { list-style: none; margin: 0; padding: 0; display: grid; grid-template-columns: repeat(auto-fill, minmax(220px, 1fr)); gap: 10px }
+.trip-days > li { display: grid; gap: 8px; align-content: start; padding: 14px; border-radius: var(--r-md); background: var(--surface-2) }
+.trip-day { display: flex; justify-content: space-between; gap: 8px; font-size: 13px; color: var(--muted) }
+.trip-day b { color: var(--text); font: 800 15px/1.2 var(--display) }
+.trip-days ul { list-style: none; margin: 0; padding: 0; display: grid; gap: 8px }
+.trip-days ul li { display: grid; gap: 3px }
+.trip-days ul a { font-weight: 700; color: var(--text); text-decoration: none }
+.trip-days ul a:hover { text-decoration: underline; text-underline-offset: 3px }
+.trip-free { color: var(--muted); font-size: 14px; font-style: italic }
+.trip-check { display: inline-flex; align-items: center; gap: 6px; font-size: 13px; font-weight: 600; color: var(--muted) }
+.trip-check i { width: 8px; height: 8px; border-radius: 50%; flex: none; background: var(--muted) }
+.trip-check.l-good i { background: var(--green) } .trip-check.l-warn i { background: var(--yellow) } .trip-check.l-high i { background: var(--orange) }
+.trip-check.l-high { color: var(--text) }
+.trip-check.l-none i { background: transparent; box-shadow: inset 0 0 0 2px var(--muted) }
+.trip-actions { display: flex; flex-wrap: wrap; gap: 8px; align-items: center }
+.trip-ask { display: inline-flex; align-items: center; gap: 8px; font-size: 14px; font-weight: 600 }
+.trip-del { background: var(--orange); color: var(--ink) }
+.trip-err { display: inline-flex; align-items: center; gap: 6px; font-size: 13.5px; color: var(--orange) }
+.trip-err .ico { width: 16px; height: 16px }
+.acct-past { padding: 14px 18px; border-radius: var(--r-lg); background: var(--surface) }
+.acct-past summary { cursor: pointer; font-weight: 700 }
+.acct-past ul { list-style: none; margin: 12px 0 0; padding: 0; display: grid; gap: 10px }
+.acct-past li { display: grid; gap: 6px; padding-top: 10px; border-top: 1.5px solid var(--line) }
+.acct-past li > span { color: var(--muted); font-size: 14px }
+
+/* Field work */
+.acct-kpis { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 12px }
+.acct-kpi { display: grid; gap: 4px; padding: 18px; border-radius: var(--r-lg); background: var(--surface) }
+.acct-kpi b { font: 800 40px/1 var(--display); letter-spacing: -.03em }
+.acct-kpi b.l-good { color: var(--green) } .acct-kpi b.l-warn { color: var(--yellow) } .acct-kpi b.l-high { color: var(--orange) }
+.acct-kpi span { color: var(--muted); font-size: 14px; font-weight: 600 }
+.acct-cols { display: grid; grid-template-columns: minmax(0, 1.2fr) minmax(0, 1fr); gap: 14px; align-items: start }
+.work-list { list-style: none; margin: 0; padding: 0; display: grid; gap: 12px; width: 100% }
+.work-list li { display: grid; gap: 4px; padding-top: 12px; border-top: 1.5px solid var(--line) }
+.work-list li:first-child { padding-top: 0; border-top: 0 }
+.work-list p { font-size: 15px; line-height: 1.45 }
+.work-meta { color: var(--muted); font-size: 13px }
+.work-table { width: 100%; border-collapse: collapse; font-size: 14.5px }
+.work-table th { text-align: left; font: 700 11.5px/1 var(--body); letter-spacing: .08em; text-transform: uppercase; color: var(--muted); padding: 0 8px 10px 0 }
+.work-table td { padding: 10px 8px 10px 0; border-top: 1.5px solid var(--line) }
+.acct-card > h2 { font-size: 22px; font-weight: 800 }
+
+@media (max-width: 980px) { .acct-cols { grid-template-columns: 1fr } .acct-kpis { grid-template-columns: repeat(2, minmax(0, 1fr)) } }
+@media (max-width: 560px) { .acct-tabs { width: 100%; overflow-x: auto } .acct-tabs a { padding: 9px 12px; font-size: 14px } }

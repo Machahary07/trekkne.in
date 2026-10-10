@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import { Business } from "@/components/Business";
+import { BusinessWaitlist } from "@/components/BusinessWaitlist";
 import { JoinCta } from "@/components/JoinCta";
 
 export const metadata: Metadata = {
@@ -11,6 +12,10 @@ export default function BusinessPage() {
   return (
     <>
       <Business />
+      <BusinessWaitlist
+        title="List your business."
+        text="Homestays, shops, guides and operators: leave your details and we’ll reach out before listings open in your area."
+      />
       <JoinCta />
     </>
   );

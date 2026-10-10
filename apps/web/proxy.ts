@@ -1,10 +1,11 @@
 import { createServerClient } from "@supabase/ssr";
 import { NextResponse, type NextRequest } from "next/server";
 
-/** Refreshes the Supabase session for CRM routes and sends signed-out visitors to the /super login. */
+/** Refreshes the Supabase session for CRM and account routes, and sends signed-out visitors to the right login. */
 export async function proxy(request: NextRequest) {
   // Supabase falls back to the Site URL (/) for email links when the redirect isn't allow-listed.
-  if (!request.nextUrl.pathname.startsWith("/super")) {
+  const path = request.nextUrl.pathname;
+  if (path === "/") {
     const url = request.nextUrl.clone();
     url.pathname = "/auth/callback";
     return NextResponse.redirect(url);
@@ -24,11 +25,12 @@ export async function proxy(request: NextRequest) {
   });
 
   const { data } = await supabase.auth.getClaims();
-  const inside = request.nextUrl.pathname !== "/super";
-  if (!data?.claims && inside) {
+  // /super and /login are the sign-in pages themselves; everything else here needs a session.
+  const login = path.startsWith("/super") ? "/super" : "/login";
+  if (!data?.claims && path !== "/super" && path !== "/login") {
     const url = request.nextUrl.clone();
-    url.pathname = "/super";
-    url.searchParams.set("next", request.nextUrl.pathname);
+    url.pathname = login;
+    url.searchParams.set("next", path);
     return NextResponse.redirect(url);
   }
   return response;
@@ -38,6 +40,8 @@ export const config = {
   matcher: [
     "/super",
     "/super/:path*",
+    "/login",
+    "/account",
     // Only the homepage when it carries an auth code or token hash.
     { source: "/", has: [{ type: "query", key: "code" }] },
     { source: "/", has: [{ type: "query", key: "token_hash" }] },

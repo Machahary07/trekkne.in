@@ -114,7 +114,10 @@
 .pln-alts { display: grid; gap: 6px; padding: 12px; border-radius: 14px; background: color-mix(in srgb, var(--green) 14%, var(--surface)) }
 .pln-alt { display: flex; justify-content: space-between; align-items: center; gap: 10px; flex-wrap: wrap; font-size: 14px }
 .pln-add { border: 2px dashed var(--line); border-radius: var(--r-md); padding: 12px; display: flex; gap: 8px; flex-wrap: wrap; align-items: center; background: transparent }
-.pln-add select { flex: 1; min-width: 200px }
+/* The add-a-place grid menu stretches across this dashed box. */
+.pln-add { position: relative }
+.pln-add .dd { position: static; flex: 1; min-width: 200px }
+.pln-add .dd-trigger[aria-expanded="true"] { box-shadow: inset 0 0 0 2px var(--orange) }
 .btn-sm { padding: 9px 14px; font-size: 14px }
 .btn-sm .ico { width: 16px; height: 16px }
 .pln-summary { display: flex; gap: 8px; flex-wrap: wrap }
