@@ -1,5 +1,7 @@
 import { createClient } from "@supabase/supabase-js";
 import type { Database } from "@trekne/db";
+import type { ExploreEvent, ExploreNotice, ExplorePlace, ExploreReport } from "./explore";
+import { photoCredit, placePhoto, photoThumb } from "./photos";
 
 /**
  * Read-only queries for the public site. Everything here is public under RLS
@@ -18,9 +20,7 @@ export const addDays = (iso: string, n: number) => new Date(Date.parse(iso + "T0
 export const fmtDay = (iso: string, opts: Intl.DateTimeFormatOptions = { day: "numeric", month: "short" }) =>
   new Date(iso + "T00:00:00").toLocaleDateString("en-IN", opts);
 
-export const STATE_NAMES: Record<string, string> = {
-  AS: "Assam", AR: "Arunachal Pradesh", ML: "Meghalaya", NL: "Nagaland", MN: "Manipur", MZ: "Mizoram", TR: "Tripura", SK: "Sikkim",
-};
+export { STATE_NAMES } from "./states";
 
 export async function getOverview(day = todayIST()) {
   const sb = publicClient();
@@ -45,7 +45,7 @@ export async function getCalendar() {
     sb.from("events").select("id,name,community,state_code,destination_id,starts_on,ends_on,visitor_impact,open_to_visitors,etiquette,description")
       .eq("is_published", true).gte("ends_on", today).lte("starts_on", addDays(today, 365)).order("starts_on"),
     sb.from("seasonal_conditions").select("destination_id,month,suitability"),
-    sb.from("destinations").select("id,slug,name,state_code,kind,ecosystem,is_lesser_known").eq("is_published", true).order("state_code").order("name"),
+    sb.from("destinations").select("id,slug,name,state_code,kind,ecosystem,is_lesser_known,cover_url").eq("is_published", true).order("state_code").order("name"),
   ]);
   return { events: events.data ?? [], seasons: seasons.data ?? [], places: places.data ?? [] };
 }
@@ -68,3 +68,48 @@ export async function getRecurringIssues(windowDays = 30) {
 }
 
 export const NOTICE_LABEL = { closure: "Closure", sacred_day: "Sacred day", restriction: "Restriction", advisory: "Community advice" } as const;
+
+/** Everything the destinations explorer needs, for every published place in every state, in one round of queries. */
+export async function getExplore() {
+  const sb = publicClient();
+  if (!sb) return { places: [] as ExplorePlace[], events: [] as ExploreEvent[], notices: [] as ExploreNotice[], reports: [] as ExploreReport[] };
+  const today = todayIST();
+  const [dest, overview, seasons, events, notices, reports] = await Promise.all([
+    sb.from("destinations").select("id,slug,name,place,summary,state_code,district,kind,ecosystem,is_lesser_known,lat,lng,cover_url").eq("is_published", true),
+    sb.rpc("destination_overview", { on_day: today }),
+    sb.from("seasonal_conditions").select("destination_id,month,suitability"),
+    sb.from("events").select("id,name,community,state_code,destination_id,starts_on,ends_on,visitor_impact")
+      .eq("is_published", true).gte("ends_on", today).lte("starts_on", addDays(today, 365)).order("starts_on"),
+    sb.from("community_notices").select("id,destination_id,kind,title,starts_on,ends_on,community").eq("is_active", true).gte("ends_on", today).order("starts_on"),
+    sb.from("reports").select("id,destination_id,body,status,source_label,created_at").in("status", ["verified", "official"])
+      .not("destination_id", "is", null).order("created_at", { ascending: false }).limit(200),
+  ]);
+  const ov = new Map((overview.data ?? []).map((o) => [o.id, o]));
+  const places: ExplorePlace[] = (dest.data ?? []).map(({ cover_url, ...d }) => {
+    const o = ov.get(d.id);
+    const months: ExplorePlace["months"] = Array(12).fill(null);
+    (seasons.data ?? []).filter((s) => s.destination_id === d.id).forEach((s) => (months[s.month - 1] = s.suitability));
+    return {
+      ...d,
+      capacity: o?.capacity ?? null,
+      expected: o?.expected ?? null,
+      load_ratio: o?.load_ratio == null ? null : Number(o.load_ratio),
+      today: o?.suitability ?? null,
+      community_closed: o?.community_closed ?? false,
+      notice: o?.notice ?? null,
+      open_issues: o?.open_issues ?? 0,
+      risk_score: o?.risk_score ?? 0,
+      risk_level: o?.risk_level ?? "none",
+      risk: { sensitivity: o?.risk_sensitivity ?? 0, pressure: o?.risk_pressure ?? 0, season: o?.risk_season ?? 0, issues: o?.risk_issues ?? 0 },
+      months,
+      photo: (() => { const src = placePhoto(d.slug, cover_url); return src && photoThumb(src); })(),
+      credit: photoCredit(d.slug, cover_url),
+    };
+  });
+  return {
+    places,
+    events: (events.data ?? []) as ExploreEvent[],
+    notices: (notices.data ?? []) as ExploreNotice[],
+    reports: (reports.data ?? []) as ExploreReport[],
+  };
+}

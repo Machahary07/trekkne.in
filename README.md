@@ -11,7 +11,26 @@
 | Viewer | `packages/viewer` | three.js 360 viewer (CRM, site and app) |
 | Database | `supabase/` | Migrations for the `trekne.in` Supabase project |
 
-See [docs/PLAN.md](docs/PLAN.md) for how this maps to the problem statement, roles and next steps.
+See [docs/PLAN.md](docs/PLAN.md) for how this maps to the problem statement, roles and next steps, and
+[DESIGN.md](DESIGN.md) for the design system (tokens, components, patterns).
+
+## Website
+
+Planning-first: the trip planner and destination guide come first; Homestays and Shop are coming-soon pages
+that collect a business waitlist.
+
+| Route | What |
+| --- | --- |
+| `/` | Hero with planning search (place, start date, days, travellers), live bento, Destination Intelligence |
+| `/planner` | Trip planner (`?add=<slug>&start=&days=&party=`) |
+| `/destinations` | Explorer: filters, card grid and MapLibre map sharing one selection (`?place=slug`) |
+| `/places/[slug]` | Place page: photo mosaic + viewer, notices, at-a-glance tiles, "Plan your visit" |
+| `/about` | About Trekne (`/how-it-works` redirects here) |
+| `/homestays`, `/shop` | Coming soon, with business waitlist |
+| `/business` | "List your business" waitlist (name, business, email/phone, kind) |
+| `/login`, `/account` | Public sign-in (Traveller / Ranger) and account page |
+| `/rangers`, `/authorities`, `/roadmap` | Linked from the footer |
+| `/super` | Staff CRM (waitlist, map, places) |
 
 ## Setup
 
@@ -55,8 +74,8 @@ pnpm db:types                      # regenerate packages/db/src/database.types.t
 
 Vercel detects pnpm from `pnpm-lock.yaml`.
 
-The site now lives in `apps/web`. In the Vercel project set **Root Directory = `apps/web`** and add the two
-`NEXT_PUBLIC_SUPABASE_*` variables before this branch is merged to `main`.
+In the Vercel project set **Root Directory = `apps/web`** and add the two `NEXT_PUBLIC_SUPABASE_*` variables.
+Run `supabase db push` before deploying when new migrations land (e.g. `20261011150000_business_waitlist.sql`).
 
 ## Brand
 

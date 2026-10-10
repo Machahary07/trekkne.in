@@ -1,11 +1,13 @@
 import { Icon } from "./Icon";
 import { burstPath } from "@/lib/shapes";
+import { InViewFlag } from "./InViewFlag";
 
 export function OurPromise() {
   return (
     <section aria-labelledby="promise-h">
       <div className="wrap">
         <div className="promise">
+          <InViewFlag />
           <svg className="sun" viewBox="0 0 120 120" aria-hidden="true"><path d={burstPath(60, 50, 26)} fill="#FFC21A" /></svg>
           <span className="eyebrow">Our promise</span>
           <h2 id="promise-h">More tourism is not the goal. <em>Better tourism</em> is.</h2>

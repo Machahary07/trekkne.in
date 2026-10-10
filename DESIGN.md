@@ -150,12 +150,43 @@ Hairlines are `1.5px solid var(--line)`.
 
 ### Header / nav
 - Sticky, translucent (`color-mix(--bg 82%)` + `blur(14px)`), **hides on scroll down, shows on scroll up** (`.site-head[data-hidden]`).
+- Links: Plan a trip · Destinations · Homestays · Shop · About Trekne (`/about`; `/how-it-works` redirects there). Homestays and Shop carry a yellow `.soon-tag` ("Soon") until they launch. Rangers, Authorities, Roadmap and "List your business" live in the footer.
 - Links are pills; current page = `--chip` background (`aria-current="page"`).
 - ≤1180px: round `.menu-btn` opens a `.sheet` (big display-font links, portalled to body).
+- Rightmost: round `.acct-btn` (`components/AccountMenu.tsx`) opens a `.dd-menu` anchored to its right edge: Sign in / Create account when signed out, Your account / Sign out when signed in (button turns orange).
+- Public login is `/login` (Traveller / Ranger tabs, `?mode=up`, `?as=ranger`); it reuses the `/super` `.auth` split layout. Staff still sign in at `/super`.
+
+### Native controls
+- No native `<select>` or date inputs on the site: use `Dropdown` and `DatePicker`.
+- Scrollbars are thin and orange everywhere (`scrollbar-color` plus WebKit thumbs in `globals.css`).
 
 ### Dropdown, `components/Dropdown.tsx`
 - Not portalled. Menu is `position: absolute; top: calc(100% + 10px)`, always **below** its trigger and attached to it.
 - Options have coloured 38px icon tiles (yellow / green / blue), title + small muted description, green check when selected.
+- `className="dd-pill"`: theme-coloured pill trigger for normal surfaces. `placeholder` + empty value makes a picker ("+ Add a place…").
+- Options can carry a `dot` (level colour), and type-ahead jumps by first letters.
+- `layout="grid"` (planner): the menu stretches across the nearest positioned box with an orange frame, options become cards
+  (up to four per row) filled with the place photo (`lib/photos.ts`) or a flat brand colour by kind, with `meta` chips.
+
+### Destinations explorer, `components/explore/`
+- Every published place, from the database. Filters (search, state, month, sort, good-season, lesser-known), a card grid,
+  a MapLibre map and a detail panel share one selection: hover a card to lift its pin, click a pin to select its card.
+- `?place=slug` selects a place. On phones the map is behind a List/Map toggle and details open as a bottom sheet.
+- Load MapLibre via `lib/maplibre.ts` (sets the worker URL; without it no tiles render). Don't give markers a `position`.
+
+### Place page, `app/(site)/places/[slug]` + `components/place/`
+- Photo mosaic (one large, four small, "View all N photos") opening a full-screen viewer (arrows, swipe, Esc, thumbnails).
+  Phones get a swipeable strip.
+- Then: title + "Add to a trip" / "See on the map", community notices, four "at a glance" tiles (eco-risk, crowding,
+  this month's season, access), main content beside a sticky "Plan your visit" column.
+- Photos come from `lib/photos.ts` (`placeGallery`): the bundled main photo plus Wikimedia Commons extras. Every photo
+  shows its credit and licence in the viewer and in "Photo credits" at the bottom. Keep that when adding photos.
+
+### Date picker, `components/DatePicker.tsx`
+- Pill trigger (`.trip-pill.trip-date`) showing "Sun, 18 Oct"; opens a `.cal` month grid (Monday first, past days struck through, today ringed).
+- The trip's days are tinted orange, with the start day solid orange; a footer reads "3-day trip: 18 Oct – 20 Oct".
+- The one exception to "not portalled": the hero clips its overflow, so `.cal` is portalled to `<body>` and placed below the pill, or above it when there isn't room, in page coordinates.
+- Keyboard: arrows move by day/week, PageUp/PageDown by month, Enter picks, Escape closes.
 
 ### Inputs
 - Pill (`999px`), `--surface-2` fill, `inset 0 0 0 1.5px var(--line)` ring, focus = `2px var(--blue)` ring. No outlines.
@@ -169,11 +200,16 @@ Hairlines are `1.5px solid var(--line)`.
 ### Mascot
 - Two big white eyes with ink pupils that follow the pointer and blink. Lives on orange/yellow blobs (hero art, bento dome, CTA, auth page, footer wordmark where eyes are orange).
 - Use it as the brand's face in empty states and big moments, not as decoration everywhere.
+- On the sign-in pages (`/login`, `/super`) `PasswordField` sets `data-eyes` on `.auth`: `closed` while typing a password squeezes both eyes into an ink line; `peek` (password shown) keeps one eye shut and opens the other.
 
 ### Signature blocks
-- **Hero:** orange sky gradient card, `--r-xl`, fills the viewport minus header and one gutter. Giant 2-colour headline (ink + white), hills art at the bottom, floating white "live" chips.
-- **Bento:** mixed-size tiles, some solid brand colour (orange, blue), some white.
+- **Hero:** orange sky gradient card, `--r-xl`, fills the viewport minus header and one gutter. Everything centred: giant 2-colour headline (ink + white), planning-first search ("Plan a trip" → `/planner?add=<slug>&start=&days=&party=`), a row of white trip pills under it (start date, days and travellers steppers; on phones the date takes a full row and the steppers show icons), then a "check today's conditions" link, hills art at the bottom, a centred row of floating white advisory chips: a warning (orange), a caution (yellow) and a clear, good-to-visit forecast (green).
+- **Bento:** mixed-size tiles, some solid brand colour (orange, blue), some white. Alive by design (`components/bento/`): tiles rise in staggered as they enter view; the trio chats in speech bubbles on a loop (tap a character to make it jump and speak); the calendar app icon rings and drops a push-style trip alert per tap, counting its badge down; orbit icons circle, the dome rises on hover; the scene drifts; the Ranger blinks; the search pill types place names; Field notes rotates local tips (tap for the next). Auto-advancing bits run only while on screen, hold for 8 s after a tap, and never auto-advance under reduced motion.
 - **Pillars:** 4 solid colour cards (orange, green, yellow, blue) with white circular icon badge.
+- **How it works trail** (`HowItWorks.tsx`, `.trail`): one report's journey as a winding ink road with marching yellow dashes and five numbered colour stops, cards alternating above and below the road (subgrid). Each column draws its own road slice so they join at the column edges. ≤980px it becomes a vertical road with cards on the right. The last stop (the live advisory) pings green. Scroll lights it: `TrailScroll` sets `--p` (0→1); an orange copy of the road is revealed left to right and each stop/card lights up as the fill reaches it. On desktops ≥981×760 the stage is sticky inside a 260svh wrapper, so the section holds until the road is lit edge to edge; elsewhere it fills as the trail passes 80% of the viewport. Without JS `--p` is 1 (fully drawn).
+- **About ecosystem** (`AboutHero.tsx`, `.eco`): square `--deep` panel, orange mascot core, four linked role nodes (Rangers, Travellers, Authorities, Businesses) joined by flowing dashed spokes. Beside it a big headline and a row of stat tiles with brand-colour dots. (`.orbit` is taken by the bento tile.)
+- **Coming soon** (`ComingSoon.tsx`, `.soon`): for features that follow the planner (`/homestays`, `/shop`). Flat brand-colour block with a "Coming soon" ink badge, big ink headline, morphing blob with eyes and two floating `.live-chip`s; three planned-feature cards tagged `.st.unverified` "Planned"; a mini road (live planner → Homestays → Shop). No sample listings: these are previews, not fake data.
+- **Business waitlist** (`BusinessWaitlist.tsx`, `.lw`): surface card with name, business name, a "what you'd list" `Dropdown` and email + phone (either or both). Writes to `waitlist` with `role = 'business'`. Used on `/homestays`, `/shop` and `/business`.
 - **Promise:** `--deep` block, yellow `<em>` highlight, 3 columns split by translucent top rules.
 - **CTA:** orange block, huge headline, white join row, yellow morphing blob with eyes.
 - **Footer:** giant `trekne` wordmark with orange eyes, uppercase muted column headings.
@@ -211,7 +247,8 @@ surfaces; everything else sits on the page, separated by hairlines.
 
 - Personality comes from a springy overshoot curve: `cubic-bezier(.3, 1.6, .5, 1)` (mobile: `spring` in tokens.ts).
 - Entrances: `cubic-bezier(.2, .9, .25, 1.15)` rise (hero words staggered by .07s), `drop` for menus, `di-in` fade-up for swaps.
-- Ambient: chips bob (6s), eyes blink (7s), CTA blob morphs (12s).
+- Ambient: chips bob (6s), eyes blink (7s), CTA blob morphs (12s), promise sun spins (48s).
+- In-view entrances: drop `<InViewFlag />` inside a block; it sets `data-armed` / `data-in` on the parent for CSS (e.g. the promise sun pops in with a bounce). Animate with individual `rotate` / `scale` properties so ambient and entrance animations don't fight over `transform`.
 - Scroll reveals use CSS scroll-driven animations inside `@supports (animation-timeline: view())`, so content is always visible without them.
 - Always respect `prefers-reduced-motion` (global kill switch at the end of `globals.css`).
 - **No hover effects on buttons.** Prefer click/focus states over hover for anything interactive (touch first).

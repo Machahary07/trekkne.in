@@ -10,7 +10,7 @@ export function AuthHashRedirect() {
   useEffect(() => {
     const h = window.location.hash;
     if (/[#&]type=(signup|magiclink|invite|recovery)/.test(h) || /[#&]error_code=/.test(h)) {
-      window.location.replace(/error_code=/.test(h) ? "/super?error=link" : "/welcome");
+      window.location.replace(/error_code=/.test(h) ? "/login?error=link" : "/welcome");
     }
   }, []);
   return null;

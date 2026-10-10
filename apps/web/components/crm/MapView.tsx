@@ -3,6 +3,7 @@
 import { useEffect, useRef } from "react";
 import type { Map as MlMap, Marker } from "maplibre-gl";
 import "maplibre-gl/dist/maplibre-gl.css";
+import { loadMapLibre } from "@/lib/maplibre";
 
 export interface MapPoint {
   id: string;
@@ -74,7 +75,7 @@ export function MapView({ points, height = 420, onPick, focus }: {
   useEffect(() => {
     let cancelled = false;
     (async () => {
-      const ml = await import("maplibre-gl");
+      const ml = await loadMapLibre();
       if (cancelled || !el.current) return;
       lib.current = ml;
       const m = new ml.Map({

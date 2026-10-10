@@ -2,6 +2,7 @@ import type { EmailOtpType } from "@supabase/supabase-js";
 import { NextResponse, type NextRequest } from "next/server";
 import { roleHas } from "@trekne/db";
 import { supabaseServer } from "@/lib/supabase/server";
+import { safeNext } from "@/lib/landing";
 
 /**
  * Landing point for Supabase email links (sign-up confirmation, magic links, invites).
@@ -10,7 +11,7 @@ import { supabaseServer } from "@/lib/supabase/server";
 export async function GET(request: NextRequest) {
   const url = request.nextUrl;
   const next = url.searchParams.get("next");
-  const explicit = next?.startsWith("/") && !next.startsWith("//") ? next : null;
+  const explicit = safeNext(next);
   const supabase = await supabaseServer();
 
   const code = url.searchParams.get("code");
@@ -26,7 +27,8 @@ export async function GET(request: NextRequest) {
   const dest = url.clone();
   dest.search = "";
   if (error) {
-    dest.pathname = "/super";
+    // Staff links came from /super; everyone else signs in on the public login page.
+    dest.pathname = explicit?.startsWith("/super") ? "/super" : "/login";
     dest.searchParams.set("error", "link");
   } else {
     // Staff go to the CRM; travellers, Rangers and stewards (app users) see the welcome page.

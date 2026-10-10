@@ -1,10 +1,11 @@
 import Link from "next/link";
 import { Eyes, Logo } from "./Eyes";
+import { RANGER_SIGNUP } from "@/lib/landing";
 
 const COLUMNS = [
-  { title: "Explore", links: [["/destinations", "Destinations"], ["/how-it-works", "How it works"], ["/planner", "Plan a trip"], ["/destinations#seasons", "Seasons & festivals"]] },
-  { title: "Join", links: [["/rangers", "Become a Ranger"], ["/business", "List your business"], ["/authorities", "Authorities & councils"], ["#join", "Get the app"]] },
-  { title: "Trust", links: [["/how-it-works#promise-h", "Our promise"], ["/roadmap", "Roadmap"], ["/how-it-works", "How we verify"]] },
+  { title: "Explore", links: [["/destinations", "Destinations"], ["/about", "About Trekne"], ["/planner", "Plan a trip"], ["/homestays", "Homestays (soon)"], ["/shop", "Shop local (soon)"], ["/destinations#seasons", "Seasons & festivals"], ["/rangers", "What Rangers do"]] },
+  { title: "Join", links: [[RANGER_SIGNUP, "Become a Ranger"], ["/business", "List your business"], ["/authorities", "Authorities & councils"], ["#join", "Get the app"]] },
+  { title: "Trust", links: [["/about#promise-h", "Our promise"], ["/roadmap", "Roadmap"], ["/about#how", "How we verify"]] },
 ] as const;
 
 export function Footer() {

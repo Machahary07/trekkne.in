@@ -938,21 +938,36 @@ export type Database = {
       }
       waitlist: {
         Row: {
+          business: string | null
           contact: string
           created_at: string
+          email: string | null
           id: string
+          kind: string | null
+          name: string | null
+          phone: string | null
           role: string
         }
         Insert: {
+          business?: string | null
           contact: string
           created_at?: string
+          email?: string | null
           id?: string
+          kind?: string | null
+          name?: string | null
+          phone?: string | null
           role?: string
         }
         Update: {
+          business?: string | null
           contact?: string
           created_at?: string
+          email?: string | null
           id?: string
+          kind?: string | null
+          name?: string | null
+          phone?: string | null
           role?: string
         }
         Relationships: []

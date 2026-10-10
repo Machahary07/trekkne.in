@@ -4,7 +4,7 @@ import { useRouter } from "next/navigation";
 import { supabaseBrowser } from "@/lib/supabase/client";
 import { Icon } from "../Icon";
 
-export function SignOutButton({ className = "btn btn-ghost btn-sm" }: { className?: string }) {
+export function SignOutButton({ className = "btn btn-ghost btn-sm", to = "/super" }: { className?: string; to?: string }) {
   const router = useRouter();
   return (
     <button
@@ -12,7 +12,7 @@ export function SignOutButton({ className = "btn btn-ghost btn-sm" }: { classNam
       className={className}
       onClick={async () => {
         await supabaseBrowser().auth.signOut();
-        router.replace("/super");
+        router.replace(to);
         router.refresh();
       }}
     >

@@ -1,5 +1,6 @@
 import { Icon, type IconName } from "./Icon";
-import { JoinLink } from "./SiteState";
+import Link from "next/link";
+import { RANGER_SIGNUP } from "@/lib/landing";
 import { PhoneModes } from "./PhoneModes";
 import { qrModules } from "@/lib/shapes";
 
@@ -30,7 +31,7 @@ export function Rangers() {
             ))}
           </ul>
           <div className="ranger-ctas">
-            <JoinLink role="ranger" className="btn btn-ink">Apply to be a Ranger <Icon name="arrow" /></JoinLink>
+            <Link className="btn btn-ink" href={RANGER_SIGNUP}>Apply to be a Ranger <Icon name="arrow" /></Link>
           </div>
           <p className="fineprint">
             Incentive figures are proposed pilot rates, not guaranteed earnings. Ranger uniforms do not imply government

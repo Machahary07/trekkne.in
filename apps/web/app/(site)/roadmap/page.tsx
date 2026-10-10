@@ -4,7 +4,7 @@ import { JoinCta } from "@/components/JoinCta";
 
 export const metadata: Metadata = {
   title: "Roadmap",
-  description: "Trekne's roadmap: a Meghalaya pilot first, then all eight states of Northeast India.",
+  description: "Trekne's roadmap: an Assam and Meghalaya pilot first, then all eight states of Northeast India.",
 };
 
 export default function RoadmapPage() {

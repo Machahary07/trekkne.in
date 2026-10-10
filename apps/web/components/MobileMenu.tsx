@@ -6,9 +6,10 @@ import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { Icon } from "./Icon";
 import { useSiteState } from "./SiteState";
+import { RANGER_SIGNUP } from "@/lib/landing";
 
 /** Hamburger + slide-down sheet for tablet and phone widths (hidden on desktop via CSS). */
-export function MobileMenu({ links }: { links: ReadonlyArray<readonly [href: string, label: string]> }) {
+export function MobileMenu({ links }: { links: ReadonlyArray<readonly [href: string, label: string, soon?: boolean]> }) {
   const [open, setOpen] = useState(false);
   const [top, setTop] = useState(72);
   const button = useRef<HTMLButtonElement>(null);
@@ -68,24 +69,24 @@ export function MobileMenu({ links }: { links: ReadonlyArray<readonly [href: str
             <div className="sheet-backdrop" onClick={close} aria-hidden="true" />
             <nav ref={sheet} id="mobile-menu" className="sheet" aria-label="Menu">
               <ul className="sheet-links">
-                {links.map(([href, label]) => (
+                {links.map(([href, label, soon]) => (
                   <li key={href}>
                     <Link href={href} aria-current={pathname === href ? "page" : undefined} onClick={close}>
-                      {label}
+                      <span>{label}{soon && <small className="soon-tag">Soon</small>}</span>
                       <Icon name="arrow" />
                     </Link>
                   </li>
                 ))}
               </ul>
               <div className="sheet-ctas">
-                <Link className="btn btn-ghost" href="/rangers" onClick={close}>
+                <Link className="btn btn-ghost" href={RANGER_SIGNUP} onClick={close}>
                   Become a Ranger
                 </Link>
                 <a className="btn btn-ink" href="#join" onClick={() => { setJoinRole("traveller"); close(); }}>
                   Get the app
                 </a>
               </div>
-              <p className="sheet-note"><Icon name="pin" />Pilot starting in Meghalaya</p>
+              <p className="sheet-note"><Icon name="pin" />Pilot starting in Assam & Meghalaya</p>
             </nav>
           </div>,
           document.body,

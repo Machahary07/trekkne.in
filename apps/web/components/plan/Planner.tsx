@@ -6,18 +6,22 @@ import { SUITABILITY_LABEL, pressureLevel, type Level } from "@trekne/brand";
 import type { Alternative, DestinationOverview } from "@trekne/db";
 import { supabaseBrowser } from "@/lib/supabase/client";
 import { Icon } from "../Icon";
+import { Dropdown } from "../Dropdown";
+import { DatePicker } from "../DatePicker";
+import { MAX_DAYS, MAX_PARTY, addDays, todayIST, type TripBasics } from "@/lib/trip";
 import "./plan.css";
+import { STATE_NAMES } from "@/lib/states";
+import { placePhoto, photoThumb } from "@/lib/photos";
+import { kindOf } from "@/lib/explore";
 
-interface Place { id: string; slug: string; name: string; state_code: string; is_lesser_known: boolean }
+interface Place { id: string; slug: string; name: string; state_code: string; kind: string; is_lesser_known: boolean; cover_url: string | null }
 interface Ev { name: string; state_code: string; destination_id: string | null; starts_on: string; ends_on: string; visitor_impact: string; open_to_visitors: boolean }
 interface Notice { destination_id: string; kind: string; title: string; starts_on: string; ends_on: string; community: string }
 interface Plan { start: string; days: number; party: number; stops: { day: number; id: string }[] }
 interface Flag { level: Level; text: string }
 
 const KEY = "trekne.planner.v1";
-const addDays = (iso: string, n: number) => new Date(Date.parse(iso + "T00:00:00Z") + n * 864e5).toISOString().slice(0, 10);
 const fmt = (iso: string) => new Date(iso + "T00:00:00").toLocaleDateString("en-IN", { weekday: "short", day: "numeric", month: "short" });
-const todayIST = () => new Date(Date.now() + 5.5 * 3600e3).toISOString().slice(0, 10);
 
 function load(fallbackStart: string): Plan {
   try {
@@ -31,28 +35,99 @@ function load(fallbackStart: string): Plan {
 }
 
 /** Public trip planner: every stop is checked against capacity, season, festivals, community notices and eco-risk. */
-export function Planner({ places, events, notices, initialAdd }: { places: Place[]; events: Ev[]; notices: Notice[]; initialAdd?: string }) {
+export function Planner({ places, events, notices, initialAdd, initialTrip = {}, tripId }: {
+  places: Place[];
+  events: Ev[];
+  notices: Notice[];
+  initialAdd?: string;
+  initialTrip?: TripBasics;
+  /** A saved trip to open for editing (?trip=id); saving then updates it. */
+  tripId?: string;
+}) {
   const supabase = supabaseBrowser();
   const defaultStart = addDays(todayIST(), 7);
   const [plan, setPlan] = useState<Plan>({ start: defaultStart, days: 3, party: 2, stops: [] });
   const [ready, setReady] = useState(false);
   const [byDay, setByDay] = useState<Record<string, Map<string, DestinationOverview>>>({});
   const [alts, setAlts] = useState<Record<string, Alternative[] | "loading">>({});
+  const [signedIn, setSignedIn] = useState<boolean | null>(null);
+  const [savedId, setSavedId] = useState<string | null>(tripId ?? null);
+  const [save, setSave] = useState<{ busy?: boolean; ok?: boolean; err?: string }>({});
 
-  // Restore the saved plan (and add ?add=slug from a place page) once on mount.
+  // Restore the saved plan once on mount, then apply ?start/days/party and ?add=slug (from the homepage or a place page).
   useEffect(() => {
     const p = load(defaultStart);
+    if (initialTrip.start) p.start = initialTrip.start;
+    if (initialTrip.party) p.party = initialTrip.party;
+    if (initialTrip.days) {
+      p.days = initialTrip.days;
+      p.stops = p.stops.filter((s) => s.day < p.days);
+    }
     const add = places.find((x) => x.slug === initialAdd);
     if (add && !p.stops.some((s) => s.id === add.id)) p.stops = [...p.stops, { day: 0, id: add.id }];
     setPlan(p);
     setReady(true);
+    supabase.auth.getSession().then(({ data }) => setSignedIn(!!data.session));
+    if (tripId) openSaved(tripId);
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
+
+  /** Load a saved trip from the account into the planner. */
+  async function openSaved(id: string) {
+    const { data: t } = await supabase.from("trips").select("id,start_date,end_date,party_size,trip_stops(destination_id,day,position)").eq("id", id).maybeSingle();
+    if (!t) return setSavedId(null);
+    const days = Math.round((Date.parse(t.end_date) - Date.parse(t.start_date)) / 864e5) + 1;
+    const stops = [...t.trip_stops]
+      .sort((a, b) => a.day.localeCompare(b.day) || a.position - b.position)
+      .map((s) => ({ day: Math.round((Date.parse(s.day) - Date.parse(t.start_date)) / 864e5), id: s.destination_id }));
+    setPlan({ start: t.start_date, days: Math.min(MAX_DAYS, days), party: t.party_size, stops: stops.filter((s) => s.day < MAX_DAYS) });
+  }
+
+  /** Save to the signed-in account: a new trip, or an update of the one being edited. Saved trips start as drafts. */
+  async function saveTrip() {
+    setSave({ busy: true });
+    const first = places.find((x) => x.id === plan.stops[0]?.id);
+    const title = first ? `Trip to ${first.name}${plan.stops.length > 1 ? ` + ${plan.stops.length - 1} more` : ""}` : "My trip";
+    const fields = { title, start_date: plan.start, end_date: addDays(plan.start, plan.days - 1), party_size: plan.party };
+    let id = savedId;
+    if (id) {
+      const { error } = await supabase.from("trips").update(fields).eq("id", id);
+      if (error) return setSave({ err: error.message });
+      await supabase.from("trip_stops").delete().eq("trip_id", id);
+    } else {
+      const { data, error } = await supabase.from("trips").insert(fields).select("id").single();
+      if (error || !data) return setSave({ err: error?.message ?? "Couldn't save" });
+      id = data.id;
+      setSavedId(id);
+      const url = new URL(location.href);
+      url.searchParams.set("trip", id);
+      history.replaceState(history.state, "", url);
+    }
+    const rows = plan.stops.map((s, position) => ({ trip_id: id!, destination_id: s.id, day: addDays(plan.start, s.day), position }));
+    if (rows.length) {
+      const { error } = await supabase.from("trip_stops").insert(rows);
+      if (error) return setSave({ err: error.message });
+    }
+    setSave({ ok: true });
+  }
+
+  function newTrip() {
+    setSavedId(null);
+    setSave({});
+    set({ stops: [] });
+    setAlts({});
+    const url = new URL(location.href);
+    url.searchParams.delete("trip");
+    history.replaceState(history.state, "", url);
+  }
 
   useEffect(() => {
     if (!ready) return;
     try { localStorage.setItem(KEY, JSON.stringify(plan)); } catch {}
   }, [plan, ready]);
+
+  // Any edit after saving means there are unsaved changes again.
+  useEffect(() => setSave((s) => (s.ok ? {} : s)), [plan]);
 
   const dates = useMemo(() => Array.from({ length: plan.days }, (_, i) => addDays(plan.start, i)), [plan.start, plan.days]);
 
@@ -110,23 +185,23 @@ export function Planner({ places, events, notices, initialAdd }: { places: Place
     <div className="pln">
       <aside className="pl-card pln-form" aria-label="Trip details">
         <h3>Your trip</h3>
-        <label className="pln-field">
+        <div className="pln-field">
           <span>Start date</span>
-          <input className="pln-input" type="date" min={todayIST()} value={plan.start} onChange={(e) => e.target.value && set({ start: e.target.value })} />
-        </label>
+          <DatePicker variant="field" label="Start date" value={plan.start} min={todayIST()} span={plan.days} onChange={(start) => set({ start })} />
+        </div>
         <div className="pl-between">
           <div className="pln-field"><span>Days</span>
             <div className="pln-step">
               <button type="button" aria-label="Fewer days" onClick={() => set({ days: Math.max(1, plan.days - 1), stops: plan.stops.filter((s) => s.day < plan.days - 1) })}>−</button>
               <output>{plan.days}</output>
-              <button type="button" aria-label="More days" onClick={() => set({ days: Math.min(10, plan.days + 1) })}>+</button>
+              <button type="button" aria-label="More days" onClick={() => set({ days: Math.min(MAX_DAYS, plan.days + 1) })}>+</button>
             </div>
           </div>
           <div className="pln-field"><span>Travellers</span>
             <div className="pln-step">
               <button type="button" aria-label="Fewer travellers" onClick={() => set({ party: Math.max(1, plan.party - 1) })}>−</button>
               <output>{plan.party}</output>
-              <button type="button" aria-label="More travellers" onClick={() => set({ party: Math.min(60, plan.party + 1) })}>+</button>
+              <button type="button" aria-label="More travellers" onClick={() => set({ party: Math.min(MAX_PARTY, plan.party + 1) })}>+</button>
             </div>
           </div>
         </div>
@@ -140,9 +215,21 @@ export function Planner({ places, events, notices, initialAdd }: { places: Place
         </div>
         <p className="pl-note"><Icon name="info" />Your group is added to each place&rsquo;s expected visitors. Visitor counts in this preview are simulated.</p>
         <div className="pl-row">
-          <Link className="btn btn-ink btn-sm" href="/#join"><Icon name="phone" />Save it in the app</Link>
-          {plan.stops.length > 0 && <button type="button" className="btn btn-ghost btn-sm" onClick={() => { set({ stops: [] }); setAlts({}); }}>Clear</button>}
+          {signedIn ? (
+            <button type="button" className="btn btn-green btn-sm" disabled={save.busy || !plan.stops.length} onClick={saveTrip}>
+              <Icon name="check" />{save.busy ? "Saving…" : savedId ? "Save changes" : "Save trip"}
+            </button>
+          ) : (
+            <Link className="btn btn-green btn-sm" href="/login?next=/planner"><Icon name="user" />Sign in to save</Link>
+          )}
+          {savedId ? (
+            <button type="button" className="btn btn-ghost btn-sm" onClick={newTrip}>New trip</button>
+          ) : plan.stops.length > 0 && (
+            <button type="button" className="btn btn-ghost btn-sm" onClick={() => { set({ stops: [] }); setAlts({}); }}>Clear</button>
+          )}
         </div>
+        {save.ok && <p className="pl-note" role="status"><Icon name="check" />Saved. <Link href="/account">See it in My trips</Link> and confirm it there when you&rsquo;re sure.</p>}
+        {save.err && <p className="pl-note" role="status" style={{ color: "var(--orange)" }}><Icon name="alert" />{save.err}</p>}
       </aside>
 
       <div className="pl-grid">
@@ -193,14 +280,32 @@ export function Planner({ places, events, notices, initialAdd }: { places: Place
                 );
               })}
               <div className="pln-add">
-                <select className="pln-input" aria-label={`Add a place to day ${di + 1}`} value=""
-                  onChange={(e) => e.target.value && set({ stops: [...plan.stops, { day: di, id: e.target.value }] })}>
-                  <option value="">+ Add a place to {fmt(day)}</option>
-                  {[...places].sort((x, y) => x.name.localeCompare(y.name)).map((p) => {
+                <Dropdown
+                  id={`add-${di}`}
+                  className="dd-pill"
+                  label={`Add a place to day ${di + 1}`}
+                  placeholder={`+ Add a place to ${fmt(day)}`}
+                  value=""
+                  layout="grid"
+                  options={[...places].sort((x, y) => x.name.localeCompare(y.name)).map((p) => {
                     const o = byDay[day]?.get(p.id);
-                    return <option key={p.id} value={p.id}>{p.name} · {p.state_code}{o ? ` · risk ${o.risk_score}` : ""}{o?.community_closed ? " · closed" : ""}</option>;
+                    return {
+                      value: p.id,
+                      label: p.name,
+                      hint: STATE_NAMES[p.state_code] ?? p.state_code,
+                      image: (() => { const src = placePhoto(p.slug, p.cover_url); return src && photoThumb(src); })(),
+                      tone: kindOf(p.kind).tone,
+                      dot: o ? (o.community_closed ? "high" : o.risk_level) : "none",
+                      meta: [
+                        o ? `Eco-risk ${o.risk_score}` : "Checking…",
+                        o?.suitability ? SUITABILITY_LABEL[o.suitability] : null,
+                        o?.community_closed ? "Closed this day" : null,
+                        p.is_lesser_known ? "Lesser-known" : null,
+                      ].filter((m): m is string => !!m),
+                    };
                   })}
-                </select>
+                  onChange={(id) => set({ stops: [...plan.stops, { day: di, id }] })}
+                />
               </div>
             </section>
           );

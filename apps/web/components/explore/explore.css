@@ -1,0 +1,244 @@
+/* ---------- /destinations explorer ---------- */
+.xp .sec-head { margin-bottom: clamp(20px, 3vw, 32px) }
+.xp .sec-head h1 { font-size: clamp(40px, 5.6vw, 76px); font-weight: 800; letter-spacing: -.045em }
+
+/* Filter bar */
+.xp-main { display: grid; align-content: start; min-width: 0 }
+/* Filters sit above the cards in the left column: search on its own row, then the dropdowns, then the toggles. */
+.xp-bar { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 10px; align-items: center }
+.xp-bar .xp-search { grid-column: 1 / -1 }
+.xp-bar .xp-toggles { grid-column: 1 / -1 }
+.xp-search {
+  display: flex; align-items: center; gap: 10px; padding: 0 16px; border-radius: 999px; background: var(--surface-2);
+  box-shadow: inset 0 0 0 1.5px var(--line); min-width: 0
+}
+.xp-search:focus-within { box-shadow: inset 0 0 0 2px var(--blue) }
+.xp-search .ico { width: 19px; height: 19px; color: var(--muted) }
+.xp-search input { flex: 1; min-width: 0; border: 0; background: transparent; outline: none; padding: 12px 0; font-size: 15px }
+.xp-search input::placeholder { color: var(--muted) }
+.xp-toggles { display: flex; gap: 8px }
+.xp-chip {
+  display: inline-flex; align-items: center; gap: 7px; border: 0; cursor: pointer; white-space: nowrap; border-radius: 999px;
+  padding: 11px 15px; font: 700 14px/1 var(--body); background: var(--chip); color: var(--text)
+}
+.xp-chip .ico { width: 16px; height: 16px }
+.xp-chip[aria-pressed="true"] { background: var(--text); color: var(--bg) }
+.xp-meta { display: flex; align-items: center; justify-content: space-between; gap: 12px; margin: 18px 0 14px; color: var(--muted); font-size: 14.5px }
+.xp-meta b { color: var(--text) }
+.xp-link { border: 0; background: none; padding: 0; cursor: pointer; font: inherit; font-weight: 700; color: var(--text); text-decoration: underline; text-underline-offset: 3px }
+.xp-view { display: none; background: var(--chip); border-radius: 999px; padding: 3px; gap: 2px }
+.xp-view button {
+  display: inline-flex; align-items: center; gap: 6px; border: 0; cursor: pointer; border-radius: 999px; padding: 7px 13px;
+  background: transparent; color: var(--text); font: 700 13.5px/1 var(--body)
+}
+.xp-view button[aria-pressed="true"] { background: var(--text); color: var(--bg) }
+.xp-view .ico { width: 16px; height: 16px }
+.xp-scrim { display: none }
+
+/* List + sticky side (map and details) */
+/* Cards are always two columns. Selecting a place slides the list narrower (~2/5) so the map and details widen. */
+.xp-body {
+  display: grid; grid-template-columns: minmax(0, 1.2fr) minmax(0, 1fr); gap: 16px; align-items: start;
+  transition: grid-template-columns .45s cubic-bezier(.2, .9, .3, 1)
+}
+.xp-body[data-selected] { grid-template-columns: minmax(0, 1fr) minmax(0, 1.5fr) }
+.xp-list { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 12px; align-content: start }
+.xp-side {
+  --side-top: calc(var(--head-h) + 8px);
+  position: sticky; top: var(--side-top); display: grid; gap: 10px; max-height: calc(100dvh - var(--side-top) - 16px);
+  grid-template-rows: auto auto minmax(0, 1fr); transition: top .4s cubic-bezier(.3, .7, .2, 1), max-height .4s cubic-bezier(.3, .7, .2, 1)
+}
+/* The header slides away while scrolling down: let the map and details use that space too. */
+body:has(.site-head[data-hidden]) .xp-side { --side-top: 16px }
+
+/* Cards */
+.xp-card {
+  display: grid; gap: 10px; align-content: start; text-align: left; border: 0; cursor: pointer; font: inherit; color: var(--text);
+  background: var(--surface); border-radius: var(--r-lg); padding: 18px; box-shadow: inset 0 0 0 2px transparent;
+  transition: box-shadow .2s, transform .25s cubic-bezier(.3, 1.6, .5, 1)
+}
+.xp-card[data-hovered] { box-shadow: inset 0 0 0 2px var(--line) }
+.xp-card[aria-pressed="true"] { box-shadow: inset 0 0 0 2px var(--orange) }
+.xp-card:active { transform: scale(.985) }
+/* Like the planner's place menu: a photo fills the card (darkened for legible text), or a flat brand colour by kind. */
+.xp-card[data-img] {
+  color: #fff;
+  background: linear-gradient(180deg, rgba(16, 19, 31, .25) 0%, rgba(16, 19, 31, .55) 38%, rgba(16, 19, 31, .92) 100%), var(--img) center / cover no-repeat;
+}
+.xp-card[data-tone] { color: var(--ink) }
+.xp-card[data-tone="green"] { background: var(--green) } .xp-card[data-tone="yellow"] { background: var(--yellow) }
+.xp-card[data-tone="blue"] { background: var(--blue) } .xp-card[data-tone="orange"] { background: var(--orange) }
+.xp-card[data-img] .xp-state, .xp-card[data-img] .xp-sub, .xp-card[data-img] .xp-stats small, .xp-card[data-img] .xp-m small { color: rgba(255, 255, 255, .78) }
+.xp-card[data-tone] .xp-state, .xp-card[data-tone] .xp-sub, .xp-card[data-tone] .xp-stats small, .xp-card[data-tone] .xp-m small { color: rgba(16, 19, 31, .7) }
+.xp-card[data-img] .xp-stats { border-top-color: rgba(255, 255, 255, .22) }
+.xp-card[data-tone] .xp-stats { border-top-color: rgba(16, 19, 31, .16) }
+.xp-card[data-tone] .xp-kind { background: rgba(16, 19, 31, .14) }
+.xp-card[data-img] .xp-kind { box-shadow: 0 0 0 2px rgba(255, 255, 255, .5) }
+/* Status dots and the month strip keep their colours on any background: a ring on dots, a dark track behind the strip. */
+.xp-card[data-img] .xp-lv, .xp-card[data-tone] .xp-lv { justify-self: start; max-width: 100%; padding: 4px 9px 4px 7px; border-radius: 999px }
+.xp-card[data-img] .xp-lv { background: rgba(255, 255, 255, .16); backdrop-filter: blur(6px) }
+.xp-card[data-tone] .xp-lv { background: rgba(255, 255, 255, .62) }
+.xp-card[data-tone] .xp-lv.l-none { color: rgba(16, 19, 31, .7) }
+.xp-card[data-img] .xp-months, .xp-card[data-tone] .xp-months { background: rgba(16, 19, 31, .55); padding: 3px; border-radius: 6px; height: auto }
+.xp-card[data-img] .xp-m[data-s="none"], .xp-card[data-tone] .xp-m[data-s="none"] { background: rgba(255, 255, 255, .25) }
+.xp-card[data-img] .xp-months-l, .xp-card[data-tone] .xp-months-l { margin-bottom: 17px }
+.xp-card[data-img] .xp-m[data-now], .xp-card[data-tone] .xp-m[data-now] { box-shadow: 0 0 0 1.5px #fff }
+.xp-card[data-img] .pl-pill { background: rgba(255, 255, 255, .18); color: #fff; backdrop-filter: blur(6px) }
+.xp-card[data-tone] .pl-pill { background: rgba(16, 19, 31, .14); color: var(--ink) }
+.xp-card[data-img][aria-pressed="true"], .xp-card[data-tone][aria-pressed="true"] { box-shadow: none; outline: 3px solid var(--orange); outline-offset: 3px }
+.xp-card[data-img][data-hovered], .xp-card[data-tone][data-hovered] { box-shadow: none; outline: 2px solid var(--line); outline-offset: 3px }
+.xp-card[data-img][aria-pressed="true"][data-hovered], .xp-card[data-tone][aria-pressed="true"][data-hovered] { outline: 3px solid var(--orange) }
+.xp-card-top { display: flex; align-items: center; justify-content: space-between; gap: 8px }
+.xp-kind { width: 40px; height: 40px; border-radius: 13px; display: grid; place-items: center; flex: none; color: var(--ink) }
+.xp-kind .ico { width: 20px; height: 20px }
+.xp-kind[data-tone="green"] { background: var(--green) } .xp-kind[data-tone="yellow"] { background: var(--yellow) }
+.xp-kind[data-tone="blue"] { background: var(--blue) } .xp-kind[data-tone="orange"] { background: var(--orange) }
+.xp-state { font: 700 11.5px/1 var(--body); letter-spacing: .08em; text-transform: uppercase; color: var(--muted) }
+.xp-name { font: 800 22px/1.05 var(--display); letter-spacing: -.025em }
+.xp-sub { color: var(--muted); font-size: 13.5px; line-height: 1.35; overflow: hidden; text-overflow: ellipsis; white-space: nowrap }
+.xp-stats { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 6px; padding-top: 10px; border-top: 1.5px solid var(--line) }
+.xp-stats > span { display: grid; gap: 4px; min-width: 0 }
+.xp-stats small { font: 600 11px/1 var(--body); letter-spacing: .06em; text-transform: uppercase; color: var(--muted) }
+.xp-lv { display: inline-flex; align-items: center; gap: 6px; font-weight: 700; font-size: 14px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis }
+.xp-lv i { width: 9px; height: 9px; border-radius: 50%; flex: none; background: var(--muted) }
+.xp-lv.l-good i { background: var(--green) } .xp-lv.l-warn i { background: var(--yellow) } .xp-lv.l-high i { background: var(--orange) }
+.xp-lv.l-none { color: var(--muted) } .xp-lv.l-none i { background: transparent; box-shadow: inset 0 0 0 2px var(--muted) }
+.xp-badges { display: flex; flex-wrap: wrap; gap: 6px }
+.xp-badges .pl-pill .ico { width: 13px; height: 13px }
+
+/* 12-month season strip */
+.xp-months { display: grid; grid-template-columns: repeat(12, 1fr); gap: 3px; align-items: end; height: 14px }
+.xp-m { height: 8px; border-radius: 3px; background: var(--chip); display: grid; place-items: end center }
+.xp-m[data-s="good"] { background: var(--green) } .xp-m[data-s="fair"] { background: var(--yellow) }
+.xp-m[data-s="poor"] { background: var(--orange) } .xp-m[data-s="closed"] { background: var(--text) }
+.xp-m[data-now] { height: 14px; box-shadow: inset 0 0 0 1.5px color-mix(in srgb, var(--text) 55%, transparent) }
+/* Month letters under each bar. */
+.xp-months-l { margin-bottom: 15px }
+.xp-months-l .xp-m { position: relative }
+.xp-m small { position: absolute; top: calc(100% + 4px); font: 600 10px/1 var(--mono); color: var(--muted) }
+.xp-m[data-now] small { color: var(--text); font-weight: 800 }
+.xp-detail .xp-months { margin-top: 4px; height: 18px }
+.xp-detail .xp-m { height: 12px }
+.xp-detail .xp-m[data-now] { height: 18px }
+
+.xp-empty { grid-column: 1 / -1; display: grid; gap: 6px; padding: 28px; border-radius: var(--r-lg); background: var(--surface); color: var(--muted) }
+.xp-empty b { color: var(--text); font: 800 22px/1.1 var(--display) }
+
+/* Map */
+.xp-map { height: clamp(240px, 34vh, 380px); transition: height .45s cubic-bezier(.2, .9, .3, 1); border-radius: var(--r-lg); overflow: hidden; background: var(--surface-2) }
+.xp-map .maplibregl-ctrl-group { border-radius: 14px; overflow: hidden }
+/* No `position` here: MapLibre positions markers absolutely, and the tag anchors to that. */
+.xm {
+  width: 16px; height: 16px; border-radius: 50%; border: 2.5px solid #fff; padding: 0; cursor: pointer;
+  background: #A3ABBD; box-shadow: 0 4px 10px -2px rgba(16, 19, 31, .5); transition: transform .2s cubic-bezier(.3, 1.6, .5, 1), opacity .2s
+}
+.xm[data-level="good"] { background: #2DC56E } .xm[data-level="warn"] { background: #FFC21A } .xm[data-level="high"] { background: #FF6A2B }
+.xm[data-dim] { opacity: .28 }
+.xm[data-hovered], .xm[data-selected] { transform: scale(1.5) }
+.xm[data-selected] { border-color: #10131F }
+.xm-tag {
+  position: absolute; left: 50%; bottom: calc(100% + 6px); translate: -50% 0; scale: .67; transform-origin: bottom center;
+  white-space: nowrap; pointer-events: none; opacity: 0; transition: opacity .15s;
+  background: #fff; color: #10131F; font: 700 14px/1 var(--body); padding: 6px 10px; border-radius: 999px; box-shadow: 0 8px 18px -8px rgba(0, 0, 0, .5)
+}
+.xm[data-hovered] .xm-tag, .xm[data-selected] .xm-tag, .xm:focus-visible .xm-tag { opacity: 1 }
+.xp-legend { display: flex; flex-wrap: wrap; gap: 6px 14px; font-size: 12.5px; color: var(--muted); font-weight: 600; padding-inline: 4px }
+.xp-legend span { display: inline-flex; align-items: center; gap: 6px }
+.xp-legend i { width: 9px; height: 9px; border-radius: 50% }
+.xp-legend i[data-l="good"] { background: var(--green) } .xp-legend i[data-l="warn"] { background: var(--yellow) } .xp-legend i[data-l="high"] { background: var(--orange) }
+
+/* Detail panel */
+.xp-hint { display: flex; gap: 12px; align-items: flex-start; padding: 18px; border-radius: var(--r-lg); background: var(--surface); color: var(--muted); font-size: 14.5px; line-height: 1.5 }
+.xp-hint b { color: var(--text) }
+.xp-hint .ico { color: var(--orange); margin-top: 2px }
+.xp-detail {
+  min-height: 0; overflow-y: auto; overscroll-behavior: contain; display: grid; align-content: start;
+  padding: 18px; gap: 12px; border-radius: var(--r-lg); background: var(--surface); animation: xp-in .3s ease-out
+}
+.xp-detail { container-type: inline-size }
+.xp-d-cols { display: grid; gap: 12px }
+.xp-d-col { display: grid; gap: 12px; align-content: start; min-width: 0 }
+@container (min-width: 600px) {
+  .xp-d-cols { grid-template-columns: 1fr 1fr; gap: 24px }
+  .xp-d-col > .xp-block:first-child { border-top: 0; padding-top: 0 }
+}
+.xp-body[data-selected] .xp-map { height: clamp(170px, 24vh, 260px) }
+.xp-body[data-selected] .xp-legend { display: none }
+.xp-detail-head { display: grid; grid-template-columns: auto minmax(0, 1fr) auto; gap: 12px; align-items: center }
+.xp-detail-head h2 { font-size: clamp(22px, 2vw, 28px); font-weight: 800 }
+.xp-close { width: 38px; height: 38px; border: 0; border-radius: 50%; display: grid; place-items: center; cursor: pointer; background: var(--chip); color: var(--text) }
+.xp-close .ico { width: 18px; height: 18px }
+.xp-summary { color: var(--muted); font-size: 15px; line-height: 1.55 }
+.xp-credit { margin-top: -6px; font-size: 12px; color: var(--muted) }
+.xp-credit a { color: inherit; text-underline-offset: 2px }
+.xp-notice { display: flex; gap: 10px; align-items: flex-start; padding: 11px 13px; border-radius: 14px; font-size: 14px; background: color-mix(in srgb, var(--orange) 18%, var(--surface)) }
+.xp-notice .ico { width: 18px; height: 18px; flex: none; margin-top: 1px }
+.xp-block { display: grid; gap: 8px; padding-top: 12px; border-top: 1.5px solid var(--line) }
+.xp-k { font: 600 11.5px/1 var(--body); letter-spacing: .08em; text-transform: uppercase; color: var(--muted) }
+.xp-muted { color: var(--muted); font-size: 13px; line-height: 1.45 }
+.xp-score { display: flex; align-items: center; gap: 14px }
+.xp-score > b { font: 800 44px/.9 var(--display); letter-spacing: -.04em }
+.xp-score > b small { font-size: 18px; color: var(--muted); letter-spacing: 0 }
+.xp-score > b.l-good { color: var(--green) } .xp-score > b.l-warn { color: var(--yellow) } .xp-score > b.l-high { color: var(--orange) }
+.xp-score span { display: grid; gap: 3px; font-size: 15px }
+.xp-score span small { color: var(--muted); font-size: 13px; line-height: 1.4 }
+.xp-parts { list-style: none; margin: 0; padding: 0; display: grid; gap: 5px }
+.xp-parts li { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1.1fr) 44px; gap: 10px; align-items: center; font-size: 13.5px }
+.xp-parts .mono { text-align: right; color: var(--muted) }
+.xp-bar-track { height: 8px; border-radius: 999px; background: var(--chip); overflow: hidden; display: block }
+.xp-bar-fill { display: block; height: 100%; border-radius: inherit; background: var(--orange); transition: width .5s cubic-bezier(.2, .9, .3, 1) }
+.xp-bar-fill.l-good { background: var(--green) } .xp-bar-fill.l-warn { background: var(--yellow) } .xp-bar-fill.l-high { background: var(--orange) }
+.xp-mini { list-style: none; margin: 0; padding: 0; display: grid; gap: 10px }
+.xp-mini li { display: flex; gap: 10px; align-items: flex-start; font-size: 14px; line-height: 1.45 }
+.xp-mini li > .ico { width: 17px; height: 17px; flex: none; margin-top: 2px; color: var(--muted) }
+.xp-mini .st { flex: none }
+.xp-report { display: grid; gap: 2px; min-width: 0 }
+.xp-clamp { display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden }
+.xp-actions { display: flex; flex-wrap: wrap; gap: 10px; padding-top: 4px }
+.xp-actions .btn { flex: 1 1 auto }
+
+/* Festivals ahead: equal cards, four per row */
+.xp-fests-grid { list-style: none; margin: 0; padding: 0; display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 12px }
+@media (max-width: 1080px) { .xp-fests-grid { grid-template-columns: repeat(2, minmax(0, 1fr)) } }
+@media (max-width: 560px) { .xp-fests-grid { grid-template-columns: 1fr } }
+.xp-fest { display: grid; gap: 12px; align-content: start; grid-template-rows: auto auto 1fr auto; padding: 18px; border-radius: var(--r-lg); background: var(--surface) }
+.xp-fest-top { display: flex; align-items: center; justify-content: space-between; gap: 10px }
+.xp-fest-date {
+  display: grid; place-items: center; align-content: center; width: 54px; height: 58px; flex: none; border-radius: 16px;
+  background: var(--orange); color: var(--ink); font: 700 11px/1 var(--body); text-transform: uppercase; letter-spacing: .08em; gap: 3px
+}
+.xp-fest-date b { font: 800 25px/1 var(--display); letter-spacing: -.03em }
+.xp-fest-name { font: 800 21px/1.1 var(--display); letter-spacing: -.025em }
+.xp-fest-meta { display: grid; gap: 6px; align-content: start; color: var(--muted); font-size: 13.5px }
+.xp-fest-meta span { display: flex; align-items: center; gap: 8px; min-width: 0 }
+.xp-fest-meta .ico { width: 15px; height: 15px; flex: none }
+.xp-fest-go {
+  justify-self: start; align-self: end; display: inline-flex; align-items: center; gap: 6px; margin-top: 2px; border: 0; cursor: pointer; border-radius: 999px;
+  padding: 9px 14px; background: var(--chip); color: var(--text); font: 700 13.5px/1 var(--body)
+}
+.xp-fest-go .ico { width: 15px; height: 15px }
+.xp-fest-go:active { transform: scale(.97) }
+
+@media (max-width: 980px) {
+  .xp-view { display: inline-flex }
+  .xp-body, .xp-body[data-selected] { grid-template-columns: 1fr }
+  .xp-side { position: static; max-height: none; grid-template-rows: none }
+  .xp-body[data-view="list"] .xp-map, .xp-body[data-view="list"] .xp-legend, .xp-body[data-view="list"] .xp-hint { display: none }
+  .xp-body[data-view="map"] .xp-list { display: none }
+  .xp-body[data-view="map"] .xp-map { height: 60vh }
+  /* Details become a bottom sheet over the list or map. */
+  .xp-scrim { display: block; position: fixed; inset: 0; z-index: 44; background: rgba(16, 19, 31, .45); animation: xp-fade .25s ease-out }
+  .xp-detail {
+    position: fixed; z-index: 45; left: 8px; right: 8px; bottom: 8px; max-height: 82dvh;
+    box-shadow: 0 -20px 60px -20px rgba(16, 19, 31, .6), 0 0 0 1px var(--line); animation: sheet-up .32s cubic-bezier(.2, .9, .3, 1)
+  }
+}
+@keyframes xp-in { from { opacity: 0; transform: translateY(8px) } }
+@keyframes xp-fade { from { opacity: 0 } }
+@keyframes sheet-up { from { transform: translateY(40px); opacity: 0 } }
+@media (max-width: 560px) {
+  .xp-list { grid-template-columns: 1fr }
+  .xp-bar { grid-template-columns: 1fr 1fr }
+  .xp-bar > .dd:last-of-type { grid-column: 1 / -1 }
+  .xp-toggles { overflow-x: auto }
+}

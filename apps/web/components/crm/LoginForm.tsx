@@ -4,6 +4,7 @@ import { useState } from "react";
 import { useRouter } from "next/navigation";
 import { supabaseBrowser } from "@/lib/supabase/client";
 import { Icon } from "../Icon";
+import { PasswordField } from "../PasswordField";
 
 export function LoginForm({ next, linkError }: { next: string; linkError?: boolean }) {
   const router = useRouter();
@@ -56,10 +57,7 @@ export function LoginForm({ next, linkError }: { next: string; linkError?: boole
         <label className="field"><span>Full name</span><input className="input" name="name" required autoComplete="name" /></label>
       )}
       <label className="field"><span>Email</span><input className="input" name="email" type="email" required autoComplete="email" /></label>
-      <label className="field">
-        <span>Password</span>
-        <input className="input" name="password" type="password" required minLength={8} autoComplete={mode === "in" ? "current-password" : "new-password"} />
-      </label>
+      <PasswordField key={mode} autoComplete={mode === "in" ? "current-password" : "new-password"} />
       {msg && (
         <p className={`notice${msg.err ? " err" : ""}`} role="status"><Icon name={msg.err ? "alert" : "check"} />{msg.text}</p>
       )}
