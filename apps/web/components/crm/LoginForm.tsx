@@ -5,11 +5,13 @@ import { useRouter } from "next/navigation";
 import { supabaseBrowser } from "@/lib/supabase/client";
 import { Icon } from "../Icon";
 
-export function LoginForm({ next }: { next: string }) {
+export function LoginForm({ next, linkError }: { next: string; linkError?: boolean }) {
   const router = useRouter();
   const [mode, setMode] = useState<"in" | "up">("in");
   const [busy, setBusy] = useState(false);
-  const [msg, setMsg] = useState<{ err?: boolean; text: string } | null>(null);
+  const [msg, setMsg] = useState<{ err?: boolean; text: string } | null>(
+    linkError ? { err: true, text: "That email link has expired or was already used. Sign in with your password instead." } : null,
+  );
 
   async function onSubmit(e: React.FormEvent<HTMLFormElement>) {
     e.preventDefault();
@@ -29,7 +31,7 @@ export function LoginForm({ next }: { next: string }) {
       const { data, error } = await supabase.auth.signUp({
         email,
         password,
-        options: { data: { full_name: String(f.get("name")).trim() }, emailRedirectTo: `${location.origin}/super` },
+        options: { data: { full_name: String(f.get("name")).trim() }, emailRedirectTo: `${location.origin}/auth/callback?next=${encodeURIComponent(next)}` },
       });
       setBusy(false);
       if (error) return setMsg({ err: true, text: error.message });

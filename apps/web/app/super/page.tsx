@@ -4,8 +4,8 @@ import { LoginForm } from "@/components/crm/LoginForm";
 import { SignOutButton } from "@/components/crm/SignOutButton";
 import { getStaff } from "@/lib/auth";
 
-export default async function SuperLogin({ searchParams }: { searchParams: Promise<{ next?: string }> }) {
-  const { next } = await searchParams;
+export default async function SuperLogin({ searchParams }: { searchParams: Promise<{ next?: string; error?: string }> }) {
+  const { next, error } = await searchParams;
   const staff = await getStaff();
   const target = next?.startsWith("/super/") ? next : "/super/dashboard";
   if (staff?.can("crm.access")) redirect(target);
@@ -33,7 +33,7 @@ export default async function SuperLogin({ searchParams }: { searchParams: Promi
             <SignOutButton className="btn btn-ink" />
           </div>
         ) : (
-          <LoginForm next={target} />
+          <LoginForm next={target} linkError={error === "link"} />
         )}
       </div>
     </div>
