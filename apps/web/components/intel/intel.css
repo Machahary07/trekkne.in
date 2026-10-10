@@ -16,7 +16,6 @@
   border: 0; background: transparent; cursor: pointer; padding: 11px 18px; border-radius: 999px; white-space: nowrap;
   font-weight: 700; font-size: 15px; color: var(--muted); transition: background .25s, color .25s;
 }
-.di-tab:hover { color: var(--text) }
 .di-tab[aria-selected="true"] { background: var(--text); color: var(--bg) }
 @media (max-width: 980px) { .di-bar { align-items: flex-start } }
 .tab-short { display: none }
@@ -148,7 +147,6 @@
 }
 .rt-pin::after { content: ""; position: absolute; z-index: -1; left: 50%; bottom: -7px; width: 12px; height: 12px; background: inherit; border-radius: 2px; transform: translateX(-50%) rotate(45deg) }
 .rt-pin .ico { width: 18px; height: 18px }
-.rt-pin:hover { scale: 1.08 }
 .rt-pin[aria-pressed="true"] { scale: 1.16; box-shadow: 0 0 0 3px var(--surface), 0 0 0 6px var(--text), 0 10px 20px -8px rgba(16, 19, 31, .6) }
 .rt-pin.s-verified { background: var(--green) }
 .rt-pin.s-official { background: var(--blue) }
@@ -297,7 +295,7 @@
   width: 100%; display: grid; grid-template-columns: minmax(0, 1fr) auto; gap: 6px 10px; text-align: left; cursor: pointer;
   border: 0; background: transparent; padding: 6px 12px 12px; border-radius: 14px; transition: background .2s;
 }
-.tl-head:hover, [data-open] .tl-head { background: var(--surface) }
+[data-open] .tl-head { background: var(--surface) }
 .tl-meta { display: flex; gap: 10px; align-items: center; flex-wrap: wrap }
 .tl-meta .mono { color: var(--muted) }
 .tl-text { grid-column: 1; font-size: 15px; line-height: 1.45 }

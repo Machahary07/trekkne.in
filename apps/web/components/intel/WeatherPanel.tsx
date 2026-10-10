@@ -69,7 +69,6 @@ export function WeatherPanel({ weather }: { weather: Weather }) {
                   aria-pressed={i === sel}
                   aria-label={`${hr.time}:00, ${hr.label}, ${hr.temp} degrees, ${hr.rain}% chance of rain`}
                   onClick={() => setSel(i)}
-                  onPointerEnter={(e) => e.pointerType === "mouse" && setSel(i)}
                   onFocus={() => setSel(i)}
                   style={{ "--i": i } as React.CSSProperties}
                 >

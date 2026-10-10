@@ -70,7 +70,6 @@ main > section:first-child { padding-top: var(--gutter) }
   font: 700 16px/1 var(--body); padding: 15px 22px; border-radius: 999px;
   transition: transform .2s cubic-bezier(.3, 1.6, .5, 1), background .2s;
 }
-.btn:hover { transform: translateY(-2px) }
 .btn:active { transform: translateY(0) scale(.98) }
 .btn-ink { background: var(--text); color: var(--bg) }
 .btn-green { background: var(--green); color: var(--ink) }
@@ -89,14 +88,13 @@ main > section:first-child { padding-top: var(--gutter) }
 .logo-mark { width: 40px; height: 30px; flex: none }
 .nav-links { display: flex; gap: 4px; list-style: none; margin: 0; padding: 0 }
 .nav-links a { text-decoration: none; font-weight: 600; font-size: 15.5px; padding: 10px 14px; border-radius: 999px; transition: background .2s }
-.nav-links a:hover, .nav-links a[aria-current="page"] { background: var(--chip) }
+.nav-links a[aria-current="page"] { background: var(--chip) }
 .nav-cta { display: flex; gap: 10px; align-items: center }
 .nav-cta .btn { padding: 12px 18px; font-size: 15px; white-space: nowrap }
 .menu-btn {
   display: none; width: 46px; height: 46px; border: 0; border-radius: 50%; cursor: pointer; flex: none;
   place-items: center; background: var(--chip); color: var(--text); transition: background .2s, transform .2s;
 }
-.menu-btn:hover { background: color-mix(in srgb, var(--chip) 70%, var(--text) 12%) }
 .menu-btn[aria-expanded="true"] { background: var(--text); color: var(--bg) }
 @media (max-width: 1180px) { .nav-links { display: none } .menu-btn { display: grid } }
 @media (max-width: 640px) { .nav-cta .btn-ghost { display: none } }
@@ -121,8 +119,7 @@ main > section:first-child { padding-top: var(--gutter) }
   border-radius: var(--r-md); text-decoration: none; font: 800 clamp(24px, 4vw, 32px)/1.1 var(--display); letter-spacing: -.035em;
 }
 .sheet-links a .ico { width: 22px; height: 22px; color: var(--muted); transition: transform .2s, color .2s }
-.sheet-links a:hover, .sheet-links a:focus-visible, .sheet-links a[aria-current="page"] { background: var(--chip) }
-.sheet-links a:hover .ico { transform: translateX(4px); color: var(--orange) }
+.sheet-links a:focus-visible, .sheet-links a[aria-current="page"] { background: var(--chip) }
 .sheet-links li + li { border-top: 1.5px solid var(--line) }
 .sheet-ctas { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; padding: 12px 4px 4px }
 .sheet-note { display: flex; gap: 8px; align-items: center; justify-content: center; color: var(--muted); font-size: 13.5px; font-weight: 600; padding: 12px 4px 6px }
