@@ -11,9 +11,9 @@
     "next": "^16.4.0",
     "react": "19.2.3",
     "react-dom": "19.2.3",
-    "@trekne/brand": "*",
-    "@trekne/db": "*",
-    "@trekne/viewer": "*",
+    "@trekne/brand": "workspace:*",
+    "@trekne/db": "workspace:*",
+    "@trekne/viewer": "workspace:*",
     "@supabase/supabase-js": "^2.117.3",
     "@supabase/ssr": "^0.12.7",
     "maplibre-gl": "^6.13.0"

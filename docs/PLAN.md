@@ -83,5 +83,5 @@ Next:
 ## Rules for working together
 
 - Schema changes only through `supabase/migrations/` in a PR, reviewed by the other person, then `supabase db push`.
-- Run `npm run db:types` after every migration and commit the regenerated types.
+- Run `pnpm db:types` after every migration and commit the regenerated types.
 - Only the anon key goes in clients. The service-role key never goes in the app, the site bundle or git.

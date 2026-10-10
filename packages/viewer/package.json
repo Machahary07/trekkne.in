@@ -6,7 +6,7 @@
   "types": "src/index.ts",
   "sideEffects": false,
   "dependencies": {
-    "@trekne/db": "*",
+    "@trekne/db": "workspace:*",
     "three": "^0.186.1"
   },
   "devDependencies": {
