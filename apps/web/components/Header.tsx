@@ -4,10 +4,9 @@ import { useEffect, useState } from "react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { Logo } from "./Eyes";
-import { JoinLink } from "./SiteState";
 import { MobileMenu } from "./MobileMenu";
 import { AccountMenu } from "./AccountMenu";
-import { RANGER_SIGNUP } from "@/lib/landing";
+import { APP_APK, RANGER_SIGNUP } from "@/lib/landing";
 
 // Kept short on purpose: Rangers, Authorities, Roadmap and "List your business" live in the footer.
 // The third flag marks features that follow the planner and show a "Soon" tag.
@@ -62,7 +61,7 @@ export function Header() {
         </ul>
         <div className="nav-cta">
           <Link className="btn btn-ghost" href={RANGER_SIGNUP}>Become a Ranger</Link>
-          <JoinLink role="traveller" className="btn btn-ink">Get the app</JoinLink>
+          <a className="btn btn-ink" href={APP_APK}>Get the app</a>
           <MobileMenu links={LINKS} />
           <AccountMenu />
         </div>

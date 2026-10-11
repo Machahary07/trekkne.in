@@ -3,6 +3,8 @@ import { roleHas } from "@trekne/db";
 /** Create-account links, one per tab. Every "Become a Ranger" / "Apply to be a Ranger" button uses RANGER_SIGNUP. */
 export const TRAVELLER_SIGNUP = "/login?mode=up&as=traveller";
 export const RANGER_SIGNUP = "/login?mode=up&as=ranger";
+/** The Android app build (Expo EAS). Every "Get the app" button points here until the store listings go live. */
+export const APP_APK = "https://expo.dev/artifacts/eas/Z6SRyOhrXRHo0I7Q03uRTw8czjE7p-PMjTOKGz_oFf8.apk";
 
 /** A same-site path to continue to after sign-in, or null for anything else (absolute, `//host` or `/\host` URLs). */
 export const safeNext = (next: string | null | undefined) => (next && /^\/(?![/\\])/.test(next) ? next : null);
