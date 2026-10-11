@@ -193,3 +193,6 @@ dialog.modal::backdrop { background: rgba(16, 19, 31, .55); backdrop-filter: blu
 /* Taglines under the sign-in title: centred, always two lines tall so switching tabs doesn't shift the form. */
 .auth-tag { margin-top: -6px; font-size: 15.5px; line-height: 1.5; text-align: center; text-wrap: balance; min-height: 3em }
 @media (max-width: 820px) { .auth { grid-template-columns: 1fr } .auth-art { min-height: 260px } }
+
+/* "Preview as role" picker (super admins) sits at the foot of the scrolling sidebar, so its menu opens upward */
+.side .me .dd-menu { top: auto; bottom: calc(100% + 10px); width: 100%; max-height: 62vh; overflow-y: auto; transform-origin: bottom left }

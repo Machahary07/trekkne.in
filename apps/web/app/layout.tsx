@@ -2,6 +2,7 @@ import type { Metadata, Viewport } from "next";
 import { Bricolage_Grotesque, Figtree, JetBrains_Mono } from "next/font/google";
 import { IconSprite } from "@/components/Icon";
 import { EyeTracker } from "@/components/EyeTracker";
+import { PreviewBar } from "@/components/PreviewAs";
 import "./globals.css";
 
 const display = Bricolage_Grotesque({
@@ -47,6 +48,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
       <body>
         <IconSprite />
         {children}
+        <PreviewBar />
         <EyeTracker />
       </body>
     </html>

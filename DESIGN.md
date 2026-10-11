@@ -271,6 +271,10 @@ Same tokens, fonts and shapes as the site, just denser.
 - `.card` (radius `--r-md`, padding 20), `.kpi` tiles with 36px display numbers.
 - Tables: uppercase muted headers, `1.5px --line` row rules, mono for numbers.
 - Pill inputs/selects, `.seg` segmented control, `.toast` pill at the bottom.
+- **Preview as role** (super admins only, `components/PreviewAs.tsx`): a `Dropdown` above Sign out in the sidebar. It's the one
+  dropdown that opens **upward** (it sits at the foot of the scrolling sidebar). While previewing, an ink `.preview-bar` pill
+  ("Previewing as Ranger · Stop preview") floats at the bottom of every page, site and CRM. The preview only narrows permissions
+  in the UI (`lib/auth.ts`); the database still runs as the real user. The app has the same switch on Profile.
 
 ---
 

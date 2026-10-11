@@ -11,10 +11,14 @@ export default async function CrmLayout({ children }: { children: React.ReactNod
   const supabase = await supabaseServer();
   const count = async (q: PromiseLike<{ count: number | null }>) => (await q).count ?? 0;
 
-  const [pendingReports, pendingScenes, requests] = await Promise.all([
+  const [pendingReports, pendingScenes, requests, previewRoles] = await Promise.all([
     staff.can("reports.moderate") ? count(supabase.from("reports").select("id", { count: "exact", head: true }).eq("status", "pending")) : 0,
     staff.can("reports.moderate") ? count(supabase.from("panoramas").select("id", { count: "exact", head: true }).eq("status", "pending")) : 0,
     staff.can("users.manage") ? count(supabase.from("profiles").select("id", { count: "exact", head: true }).not("requested_role", "is", null)) : 0,
+    // Super admins (also while previewing) can switch which role they see the CRM as.
+    staff.role.key === "super_admin" || staff.previewFrom?.key === "super_admin"
+      ? supabase.from("roles").select("key, name, rank").lt("rank", 100).order("rank", { ascending: false }).then((r) => r.data ?? [])
+      : null,
   ]);
 
   const all: (NavItem & { perm?: string })[] = [
@@ -35,7 +39,9 @@ export default async function CrmLayout({ children }: { children: React.ReactNod
   const nav = all.filter((n) => !n.perm || staff.can(n.perm)).map(({ perm: _perm, ...n }) => n);
 
   return (
-    <Shell nav={nav} me={{ name: staff.profile.full_name || staff.profile.email || "Staff", email: staff.profile.email ?? "", role: staff.role.name, color: staff.role.color }}>
+    <Shell nav={nav} me={{ name: staff.profile.full_name || staff.profile.email || "Staff", email: staff.profile.email ?? "", role: staff.role.name, color: staff.role.color }}
+      preview={previewRoles ? { roles: previewRoles, current: staff.previewFrom ? staff.role.key : null } : undefined}
+    >
       <LiveRefresh tables={CRM_TABLES} />
       {children}
     </Shell>
