@@ -3,6 +3,9 @@ import { Alert, Pressable, TextInput, View } from "react-native";
 import { DestinationPicker, type Picked } from "@/components/destination-picker";
 import { Icon } from "@/components/icon";
 import { Button, Card, Empty, Eyebrow, Pill, Row, Screen, T } from "@/components/ui";
+import { LevelCard, StatTile } from "@/components/kit";
+import { useProgress } from "@/lib/progress";
+import { router } from "expo-router";
 import { useAuth } from "@/lib/auth";
 import { addDays, fmtDay, must, todayIST, useLoad } from "@/lib/data";
 import { supabase } from "@/lib/supabase";
@@ -20,6 +23,7 @@ type Kind = (typeof KINDS)[number]["key"];
 export default function Community() {
   const b = useBrand();
   const { profile } = useAuth();
+  const { progress } = useProgress();
   const today = todayIST();
   const [picking, setPicking] = useState<"notice" | "festival" | null>(null);
   const [place, setPlace] = useState<Picked | null>(null);
@@ -39,7 +43,7 @@ export default function Community() {
       must(supabase.from("events").select("id,name,starts_on,is_published").eq("created_by", profile!.id).order("starts_on")),
     ]);
     return { notices, heritage, proposals };
-  });
+  }, [], ["community_notices", "heritage_sites", "events"]);
 
   const input = { backgroundColor: b.surface2, borderRadius: radius.sm, padding: 13, fontFamily: F.body, fontSize: 16, color: b.text };
 
@@ -86,7 +90,13 @@ export default function Community() {
   return (
     <Screen>
       <T v="h1">Community</T>
-      <T muted>You decide when visitors come and how your heritage is shown. Notices go live straight away.</T>
+      <LevelCard progress={progress} compact onPress={() => router.push("/profile")} />
+      <Row gap={8} style={{ alignItems: "stretch" }}>
+        <StatTile icon="flag" value={(data?.notices ?? []).filter((n) => n.is_active && n.ends_on >= today).length} label="Live notices" tone="orange" />
+        <StatTile icon="temple" value={(data?.heritage ?? []).filter((h) => h.community_endorsed_at).length} label="Approved" tone="green" />
+        <StatTile icon="calendar" value={(data?.proposals ?? []).length} label="Festivals" tone="yellow" />
+      </Row>
+      <T muted>You decide when visitors come and how your heritage is shown. Notices go live straight away (+40 points).</T>
 
       <Card style={{ gap: 12 }}>
         <T v="h2">Declare a notice</T>

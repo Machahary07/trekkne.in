@@ -53,7 +53,7 @@ export default function SignIn() {
   return (
     <View style={{ flex: 1, backgroundColor: b.orange }}>
       <SafeAreaView edges={["top"]} style={{ paddingHorizontal: 20, paddingTop: 8, gap: 18 }}>
-        <Row gap={8}><LogoMark width={34} /><T v="h2" color={b.ink}>trekne</T></Row>
+        <Row gap={8}><LogoMark width={34} dome={b.ink} /><T v="h2" color={b.ink}>trekne</T></Row>
         <T v="hero" color={b.ink} style={{ marginTop: 6 }}>Know before{"\n"}<T v="hero" color={b.white}>you go.</T></T>
         <View style={{ alignSelf: "flex-end", marginRight: 4 }}><Eyes size={72} mode={eyeMode} look={eyeLook} /></View>
       </SafeAreaView>

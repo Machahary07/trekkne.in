@@ -138,6 +138,20 @@ export function Planner({ places, events, notices, initialAdd, initialTrip = {},
       .then((rows) => setByDay((cur) => ({ ...cur, ...Object.fromEntries(rows) })));
   }, [dates, byDay, supabase]);
 
+  // Live: when counts, trips, closures or reports change, drop the cached days so they refetch.
+  useEffect(() => {
+    let timer: ReturnType<typeof setTimeout> | undefined;
+    let ch = supabase.channel("planner-live");
+    for (const table of ["visitor_counts", "community_notices", "reports", "seasonal_conditions", "destinations"]) {
+      ch = ch.on("postgres_changes", { event: "*", schema: "public", table }, () => {
+        clearTimeout(timer);
+        timer = setTimeout(() => setByDay({}), 700);
+      });
+    }
+    ch.subscribe();
+    return () => { clearTimeout(timer); supabase.removeChannel(ch); };
+  }, [supabase]);
+
   const placeById = useMemo(() => new Map(places.map((p) => [p.id, p])), [places]);
 
   function flags(o: DestinationOverview | undefined, day: string, place: Place): Flag[] {

@@ -10,7 +10,8 @@ import { placeGallery, photoThumb } from "@/lib/photos";
 import "@/components/plan/plan.css";
 import "@/components/place/place.css";
 
-export const revalidate = 300;
+// Always fresh: LiveRefresh re-renders this page when its data changes.
+export const dynamic = "force-dynamic";
 
 const SIGNAL = { none: "No mobile signal", "2g": "Patchy 2G", "4g": "4G" } as const;
 const PHOTO = { allowed: "Photos allowed", ask: "Ask before photos", forbidden: "No photography" } as const;
@@ -44,8 +45,8 @@ async function loadPlace(slug: string) {
 export async function generateMetadata({ params }: { params: Promise<{ slug: string }> }): Promise<Metadata> {
   const data = await loadPlace((await params).slug);
   if (!data) return { title: "Place not found" };
-  const cover = placeGallery(data.d.slug)[0];
-  return { title: data.d.name, description: data.d.summary, openGraph: cover ? { images: [{ url: cover.src, alt: cover.alt }] } : undefined };
+  // The share image comes from ./opengraph-image.tsx: this photo plus today's crowd, season and eco-risk.
+  return { title: data.d.name, description: data.d.summary, openGraph: { title: `${data.d.name} · Trekne`, description: data.d.summary } };
 }
 
 export default async function PlacePage({ params }: { params: Promise<{ slug: string }> }) {

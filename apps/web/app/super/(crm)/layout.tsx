@@ -1,4 +1,8 @@
 import { Shell, type NavItem } from "@/components/crm/Shell";
+import { LiveRefresh } from "@/components/LiveRefresh";
+
+// Everything staff manage. Each CRM page re-renders when any of these change.
+const CRM_TABLES = ["destinations", "seasonal_conditions", "indicators", "recommendations", "visitor_counts", "heritage_sites", "events", "trips", "trip_stops", "profiles", "roles", "staff_invites", "waitlist", "audit_log", "reports", "panoramas", "community_notices"];
 import { requirePerm } from "@/lib/auth";
 import { supabaseServer } from "@/lib/supabase/server";
 
@@ -32,6 +36,7 @@ export default async function CrmLayout({ children }: { children: React.ReactNod
 
   return (
     <Shell nav={nav} me={{ name: staff.profile.full_name || staff.profile.email || "Staff", email: staff.profile.email ?? "", role: staff.role.name, color: staff.role.color }}>
+      <LiveRefresh tables={CRM_TABLES} />
       {children}
     </Shell>
   );
