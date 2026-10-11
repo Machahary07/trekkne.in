@@ -3,33 +3,48 @@ import { useMemo, useState } from "react";
 import { Pressable, ScrollView, TextInput, View } from "react-native";
 import MapView, { Marker } from "react-native-maps";
 import { SafeAreaView } from "react-native-safe-area-context";
-import { LEVEL_COLOR, SUITABILITY_LABEL, SUITABILITY_LEVEL, brand, pressureLevel } from "@trekne/brand";
+import { LEVEL_COLOR, brand, pressureLevel, type IconName } from "@trekne/brand";
+import { PlaceCard } from "@/components/kit";
 import { Icon } from "@/components/icon";
-import { Dot, Loading, Pill, RiskPill, Row, T } from "@/components/ui";
-import { addDays, fmtDay, must, todayIST, useLoad } from "@/lib/data";
+import { Dot, Loading, Row, T } from "@/components/ui";
+import { addDays, must, todayIST, useLoad } from "@/lib/data";
+import { verdict } from "@/lib/glance";
 import { supabase } from "@/lib/supabase";
 import { F, radius, useBrand } from "@/lib/theme";
 
-const STATES = ["All", "ML", "AS", "AR", "NL", "MN", "MZ", "TR", "SK"];
+const STATES = [["All", "All"], ["ML", "Meghalaya"], ["AS", "Assam"], ["AR", "Arunachal"], ["NL", "Nagaland"], ["MN", "Manipur"], ["MZ", "Mizoram"], ["TR", "Tripura"], ["SK", "Sikkim"]] as const;
+const FILTERS: { key: string; label: string; icon: IconName }[] = [
+  { key: "go", label: "Good to go", icon: "check" },
+  { key: "quiet", label: "Quiet", icon: "users" },
+  { key: "season", label: "In season", icon: "sun" },
+  { key: "gem", label: "Gems", icon: "leaf" },
+];
 
 export default function Explore() {
   const b = useBrand();
   const [view, setView] = useState<"list" | "map">("list");
   const [state, setState] = useState("All");
+  const [filters, setFilters] = useState<string[]>([]);
   const [q, setQ] = useState("");
   const [offset, setOffset] = useState(0);
   const day = addDays(todayIST(), offset);
-  const { data, loading } = useLoad(() => must(supabase.rpc("destination_overview", { on_day: day })), [day]);
+  const { data, loading } = useLoad(() => must(supabase.rpc("destination_overview", { on_day: day })), [day],
+    ["visitor_counts", "community_notices", "trip_stops", "trips", "reports", "destinations", "seasonal_conditions"]);
 
   const list = useMemo(() => {
     const s = q.trim().toLowerCase();
     return (data ?? [])
       .filter((d) => state === "All" || d.state_code === state)
       .filter((d) => !s || `${d.name} ${d.district} ${d.ecosystem} ${d.kind}`.toLowerCase().includes(s))
+      .filter((d) => !filters.includes("go") || verdict(d).level === "good")
+      .filter((d) => !filters.includes("quiet") || pressureLevel(d.load_ratio == null ? null : Number(d.load_ratio)) === "good")
+      .filter((d) => !filters.includes("season") || d.suitability === "good")
+      .filter((d) => !filters.includes("gem") || d.is_lesser_known)
       .sort((a, c) => a.risk_score - c.risk_score);
-  }, [data, state, q]);
+  }, [data, state, q, filters]);
 
-  const chip = (active: boolean) => ({ paddingVertical: 8, paddingHorizontal: 13, borderRadius: radius.pill, backgroundColor: active ? b.text : b.chip });
+  const chip = (active: boolean, tone = b.text) => ({ flexDirection: "row" as const, alignItems: "center" as const, gap: 6, paddingVertical: 8, paddingHorizontal: 13, borderRadius: radius.pill, backgroundColor: active ? tone : b.surface });
+  const dayLabel = (n: number) => (n === 0 ? "Today" : n === 1 ? "Tomorrow" : new Date(addDays(todayIST(), n) + "T00:00:00").toLocaleDateString("en-IN", { weekday: "short", day: "numeric" }));
 
   return (
     <SafeAreaView edges={["top"]} style={{ flex: 1, backgroundColor: b.bg }}>
@@ -38,66 +53,72 @@ export default function Explore() {
           <T v="h1">Explore</T>
           <Row gap={4} style={{ backgroundColor: b.chip, borderRadius: radius.pill, padding: 3 }}>
             {(["list", "map"] as const).map((v) => (
-              <Pressable key={v} onPress={() => setView(v)} style={{ paddingVertical: 7, paddingHorizontal: 14, borderRadius: radius.pill, backgroundColor: view === v ? b.text : "transparent" }}>
+              <Pressable key={v} onPress={() => setView(v)} accessibilityRole="button" accessibilityState={{ selected: view === v }}
+                style={{ flexDirection: "row", alignItems: "center", gap: 6, paddingVertical: 7, paddingHorizontal: 12, borderRadius: radius.pill, backgroundColor: view === v ? b.text : "transparent" }}>
+                <Icon name={v === "list" ? "menu" : "map"} size={16} color={view === v ? b.bg : b.text} />
                 <T v="small" color={view === v ? b.bg : b.text} style={{ fontFamily: F.bold, textTransform: "capitalize" }}>{v}</T>
               </Pressable>
             ))}
           </Row>
         </Row>
-        <Row style={{ backgroundColor: b.surface, borderRadius: radius.pill, paddingHorizontal: 16, borderWidth: 1.5, borderColor: b.line }}>
+        <Row style={{ backgroundColor: b.surface, borderRadius: radius.pill, paddingHorizontal: 16 }}>
           <Icon name="search" size={19} color={b.muted} />
           <TextInput value={q} onChangeText={setQ} placeholder="Root bridge, wetland, monastery…" placeholderTextColor={b.muted}
             style={{ flex: 1, paddingVertical: 12, fontFamily: F.body, fontSize: 16, color: b.text }} />
         </Row>
+        {/* when */}
         <ScrollView horizontal showsHorizontalScrollIndicator={false} contentContainerStyle={{ gap: 6 }}>
-          {STATES.map((s) => (
-            <Pressable key={s} onPress={() => setState(s)} style={chip(state === s)}>
-              <T v="small" color={state === s ? b.bg : b.text} style={{ fontFamily: F.bold }}>{s}</T>
+          {Array.from({ length: 8 }, (_, n) => (
+            <Pressable key={n} onPress={() => setOffset(n)} style={chip(offset === n, b.orange)}>
+              <Icon name="calendar" size={15} color={offset === n ? b.ink : b.muted} />
+              <T v="small" color={offset === n ? b.ink : b.text} style={{ fontFamily: F.bold }}>{dayLabel(n)}</T>
             </Pressable>
           ))}
         </ScrollView>
-        <Row style={{ justifyContent: "space-between" }}>
-          <T v="small" muted>Conditions for <T v="small" style={{ fontFamily: F.bold }}>{offset === 0 ? "today" : fmtDay(day)}</T></T>
-          <Row gap={6}>
-            <Pressable onPress={() => setOffset(Math.max(0, offset - 1))} style={chip(false)}><T v="small">‹</T></Pressable>
-            <Pressable onPress={() => setOffset(offset + 1)} style={chip(false)}><T v="small">›</T></Pressable>
-          </Row>
-        </Row>
+        {/* what */}
+        <ScrollView horizontal showsHorizontalScrollIndicator={false} contentContainerStyle={{ gap: 6 }}>
+          {FILTERS.map((f) => {
+            const on = filters.includes(f.key);
+            return (
+              <Pressable key={f.key} onPress={() => setFilters(on ? filters.filter((x) => x !== f.key) : [...filters, f.key])} style={chip(on, b.green)}
+                accessibilityRole="button" accessibilityState={{ selected: on }}>
+                <Icon name={f.icon} size={15} color={on ? b.ink : b.muted} />
+                <T v="small" color={on ? b.ink : b.text} style={{ fontFamily: F.bold }}>{f.label}</T>
+              </Pressable>
+            );
+          })}
+          {STATES.map(([code, name]) => (
+            <Pressable key={code} onPress={() => setState(code)} style={chip(state === code)}>
+              <T v="small" color={state === code ? b.bg : b.text} style={{ fontFamily: F.bold }}>{name}</T>
+            </Pressable>
+          ))}
+        </ScrollView>
       </View>
 
       {loading && !data ? <Loading /> : view === "map" ? (
         <MapView style={{ flex: 1 }} initialRegion={{ latitude: 25.9, longitude: 92.9, latitudeDelta: 7.5, longitudeDelta: 7.5 }}>
           {list.map((d) => (
-            <Marker key={d.id} coordinate={{ latitude: d.lat, longitude: d.lng }} title={d.name}
-              description={`Eco-risk ${d.risk_score} · ${d.load_ratio != null ? Math.round(d.load_ratio * 100) + "% of capacity" : "no count"}`}
-              pinColor={LEVEL_COLOR[d.risk_level] ?? brand.blue}
-              onCalloutPress={() => router.push(`/destination/${d.slug}`)} />
+            <Marker key={d.id} coordinate={{ latitude: d.lat, longitude: d.lng }} title={d.name} description={verdict(d).title}
+              pinColor={LEVEL_COLOR[verdict(d).level] ?? brand.blue} onCalloutPress={() => router.push(`/destination/${d.slug}`)} />
           ))}
         </MapView>
       ) : (
-        <ScrollView contentContainerStyle={{ padding: 16, paddingTop: 4, gap: 10, paddingBottom: 120 }}>
-          {list.map((d) => (
-            <Pressable key={d.id} onPress={() => router.push(`/destination/${d.slug}`)}
-              style={{ backgroundColor: b.surface, borderRadius: radius.md, padding: 16, gap: 10 }}>
-              <Row style={{ justifyContent: "space-between", alignItems: "flex-start" }}>
-                <View style={{ flex: 1 }}>
-                  <T v="h3">{d.name}</T>
-                  <T v="small" muted>{d.district} · {d.state_code} · {d.ecosystem}</T>
-                </View>
-                <RiskPill level={d.risk_level} score={d.risk_score} />
-              </Row>
-              <Row gap={6} style={{ flexWrap: "wrap" }}>
-                {d.suitability && <Pill level={SUITABILITY_LEVEL[d.suitability]} label={SUITABILITY_LABEL[d.suitability]} />}
-                <Pill level={pressureLevel(d.load_ratio)} label={d.load_ratio != null ? `${Math.round(d.load_ratio * 100)}% busy` : "Pressure unknown"} />
-                {d.is_lesser_known && <Pill label="Lesser-known" color={b.green} />}
-              </Row>
-            </Pressable>
-          ))}
-          {!list.length && <T muted style={{ textAlign: "center", padding: 30 }}>Nothing matches.</T>}
-          <Row style={{ justifyContent: "center", gap: 14, paddingTop: 6 }}>
-            <Row gap={6}><Dot level="good" size={9} /><T v="small" muted>Low risk</T></Row>
-            <Row gap={6}><Dot level="warn" size={9} /><T v="small" muted>Moderate</T></Row>
-            <Row gap={6}><Dot level="high" size={9} /><T v="small" muted>High</T></Row>
+        <ScrollView contentContainerStyle={{ padding: 16, paddingTop: 4, gap: 12, paddingBottom: 120 }}>
+          <T v="small" muted>{list.length} place{list.length === 1 ? "" : "s"} · {dayLabel(offset).toLowerCase()} · calmest first</T>
+          {list.map((d) => {
+            const v = verdict(d);
+            return (
+              <PlaceCard key={d.id} slug={d.slug} name={d.name} sub={`${d.district} · ${d.state_code}${d.is_lesser_known ? " · gem" : ""}`} overview={d}
+                height={200} onPress={() => router.push(`/destination/${d.slug}`)}
+                badge={{ label: v.title, tone: v.level === "good" ? "green" : v.level === "warn" ? "yellow" : "orange", icon: v.level === "good" ? "check" : "alert" }} />
+            );
+          })}
+          {!list.length && <T muted style={{ textAlign: "center", padding: 30 }}>Nothing matches. Try removing a filter.</T>}
+          <Row style={{ justifyContent: "center", gap: 14, paddingTop: 6, flexWrap: "wrap" }}>
+            <Row gap={6}><Dot level="good" size={9} /><T v="small" muted>Fine</T></Row>
+            <Row gap={6}><Dot level="warn" size={9} /><T v="small" muted>Watch</T></Row>
+            <Row gap={6}><Dot level="high" size={9} /><T v="small" muted>Problem</T></Row>
+            <Row gap={6}><Dot level="none" size={9} /><T v="small" muted>Not verified</T></Row>
           </Row>
         </ScrollView>
       )}

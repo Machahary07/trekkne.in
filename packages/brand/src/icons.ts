@@ -44,6 +44,7 @@ export const icons = {
   home: [p("M4 11 12 4l8 7v9h-5v-6H9v6H4z")],
   user: [c(12, 8, 4), p("M4 21c.8-4.2 4-7 8-7s7.2 2.8 8 7")],
   plus: [p("M12 5v14M5 12h14")],
+  minus: [p("M5 12h14")],
   close: [p("M6 6l12 12M18 6 6 18")],
   logout: [p("M15 4h3a2 2 0 0 1 2 2v12a2 2 0 0 1-2 2h-3M10 16l-4-4 4-4M6 12h10")],
   alert: [p("M12 4 2.5 20h19z"), p("M12 10v4M12 17h.01")],
@@ -60,6 +61,10 @@ export const icons = {
   boat: [p("M3 15h18l-3 5H6z"), p("M12 4v11M12 5l6 8h-6")],
   car: [p("M5 16V11l2-5h10l2 5v5z"), p("M5 11h14M5 16v2M19 16v2"), c(8, 13.5, 0.6), c(16, 13.5, 0.6)],
   trash: [p("M4 7h16M9 7V4h6v3M6 7l1 13h10l1-13")],
+  trophy: [p("M8 4h8v5a4 4 0 0 1-8 0z"), p("M8 6H5a3 3 0 0 0 3 4M16 6h3a3 3 0 0 1-3 4M12 13v4M8 21h8M9 17h6")],
+  star: [p("m12 3.5 2.6 5.3 5.8.8-4.2 4.1 1 5.8-5.2-2.7-5.2 2.7 1-5.8-4.2-4.1 5.8-.8z")],
+  compass: [c(12, 12, 9), p("m15.5 8.5-2 5-5 2 2-5z")],
+  mountain: [p("M3 20 9.5 8l3.5 6 2-3 6 9z"), p("m8 11 1.5 1.5L11 11")],
 } as const satisfies Record<string, readonly IconShape[]>;
 
 export type IconName = keyof typeof icons;

@@ -6,7 +6,8 @@ import { supabase } from "@/lib/supabase";
 import { must, todayIST, useLoad } from "@/lib/data";
 import { F, radius, useBrand } from "@/lib/theme";
 import { Icon } from "./icon";
-import { Button, Dot, Row, T } from "./ui";
+import { Button, Row, T } from "./ui";
+import { PlaceThumb, SignalRow } from "./kit";
 
 export interface Picked { id: string; name: string; lat: number; lng: number }
 
@@ -42,12 +43,11 @@ export function DestinationPicker({ visible, day = todayIST(), onClose, onPick, 
           renderItem={({ item: d }) => (
             <Pressable onPress={() => { onPick({ id: d.id, name: d.name, lat: d.lat, lng: d.lng, overview: d }); onClose(); }}
               style={{ backgroundColor: b.surface, borderRadius: radius.sm, padding: 14, flexDirection: "row", alignItems: "center", gap: 12 }}>
-              <Dot level={d.risk_level} />
-              <View style={{ flex: 1 }}>
-                <T v="h3">{d.name}</T>
-                <T v="small" muted>{d.district} · {d.state_code}{d.is_lesser_known ? " · lesser-known" : ""}</T>
+              <PlaceThumb slug={d.slug} size={56} />
+              <View style={{ flex: 1, gap: 6 }}>
+                <T v="h3" numberOfLines={1}>{d.name}</T>
+                <SignalRow o={d} size="sm" />
               </View>
-              <T v="mono" muted>{d.risk_score}</T>
             </Pressable>
           )}
         />

@@ -100,13 +100,22 @@ export function Dot({ level, size = 12 }: { level: Level; size?: number }) {
   return <View style={{ width: size, height: size, borderRadius: size / 2, backgroundColor: c ?? "transparent", borderWidth: c ? 0 : 2.5, borderColor: b.muted }} />;
 }
 
+/** Ink on light backgrounds, white on dark ones, so a pill is readable whatever colour it sits on. */
+export function onColor(bg: string, ink = "#10131F") {
+  const h = bg.replace("#", "");
+  if (h.length !== 6) return ink;
+  const [r, g, bl] = [0, 2, 4].map((i) => parseInt(h.slice(i, i + 2), 16) / 255).map((c) => (c <= 0.03928 ? c / 12.92 : ((c + 0.055) / 1.055) ** 2.4));
+  return 0.2126 * r + 0.7152 * g + 0.0722 * bl > 0.4 ? ink : "#FFFFFF";
+}
+
 export function Pill({ label, level, color, bg }: { label: string; level?: Level; color?: string; bg?: string }) {
   const b = useBrand();
   const tint = level === "good" ? b.tint.verified : level === "warn" ? b.tint.pending : level === "high" ? b.tint.high : b.chip;
+  const fill = bg ?? tint;
   return (
-    <View style={{ flexDirection: "row", alignItems: "center", gap: 6, paddingVertical: 5, paddingHorizontal: 10, borderRadius: radius.pill, backgroundColor: bg ?? tint, alignSelf: "flex-start" }}>
+    <View style={{ flexDirection: "row", alignItems: "center", gap: 6, paddingVertical: 5, paddingHorizontal: 10, borderRadius: radius.pill, backgroundColor: fill, alignSelf: "flex-start" }}>
       {level ? <Dot level={level} size={8} /> : color ? <View style={{ width: 8, height: 8, borderRadius: 4, backgroundColor: color }} /> : null}
-      <Text style={{ fontFamily: F.bold, fontSize: 12, color: b.text, textTransform: "capitalize" }}>{label}</Text>
+      <Text style={{ fontFamily: F.bold, fontSize: 12, color: onColor(fill, b.ink), textTransform: "capitalize" }}>{label}</Text>
     </View>
   );
 }

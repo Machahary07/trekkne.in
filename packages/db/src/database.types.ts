@@ -1027,6 +1027,7 @@ export type Database = {
         Args: { p_action: string; p_detail?: Json; p_target: string }
         Returns: undefined
       }
+      my_progress: { Args: never; Returns: Json }
       my_rank: { Args: never; Returns: number }
       recurring_issues: {
         Args: { window_days?: number }
