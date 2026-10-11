@@ -1,10 +1,10 @@
 import { router } from "expo-router";
 import { useMemo, useState } from "react";
 import { Pressable, ScrollView, TextInput, View } from "react-native";
-import MapView, { Marker } from "react-native-maps";
 import { SafeAreaView } from "react-native-safe-area-context";
-import { LEVEL_COLOR, brand, pressureLevel, type IconName } from "@trekne/brand";
+import { pressureLevel, type IconName } from "@trekne/brand";
 import { PlaceCard } from "@/components/kit";
+import { PlacesMap } from "@/components/places-map";
 import { Icon } from "@/components/icon";
 import { Dot, Loading, Row, T } from "@/components/ui";
 import { addDays, must, todayIST, useLoad } from "@/lib/data";
@@ -96,12 +96,7 @@ export default function Explore() {
       </View>
 
       {loading && !data ? <Loading /> : view === "map" ? (
-        <MapView style={{ flex: 1 }} initialRegion={{ latitude: 25.9, longitude: 92.9, latitudeDelta: 7.5, longitudeDelta: 7.5 }}>
-          {list.map((d) => (
-            <Marker key={d.id} coordinate={{ latitude: d.lat, longitude: d.lng }} title={d.name} description={verdict(d).title}
-              pinColor={LEVEL_COLOR[verdict(d).level] ?? brand.blue} onCalloutPress={() => router.push(`/destination/${d.slug}`)} />
-          ))}
-        </MapView>
+        <PlacesMap places={list} onOpen={(slug) => router.push(`/destination/${slug}`)} />
       ) : (
         <ScrollView contentContainerStyle={{ padding: 16, paddingTop: 4, gap: 12, paddingBottom: 120 }}>
           <T v="small" muted>{list.length} place{list.length === 1 ? "" : "s"} · {dayLabel(offset).toLowerCase()} · calmest first</T>
