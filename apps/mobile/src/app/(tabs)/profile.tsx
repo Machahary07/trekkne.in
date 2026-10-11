@@ -1,5 +1,7 @@
+import { useEffect, useState } from "react";
 import { Alert, Linking, View } from "react-native";
 import { BADGES, POINT_RULES, pointsFor } from "@trekne/brand";
+import type { Role } from "@trekne/db";
 import { Icon } from "@/components/icon";
 import { BadgeTile, IconTile, LevelCard, Press, SectionTitle } from "@/components/kit";
 import { Eyes } from "@/components/mascot";
@@ -17,8 +19,14 @@ const REQUESTS = [
 
 export default function Profile() {
   const b = useBrand();
-  const { profile, role, refresh } = useAuth();
+  const { profile, role, previewFrom, previewAs, refresh } = useAuth();
   const { progress } = useProgress();
+  const superAdmin = role?.key === "super_admin" || previewFrom?.key === "super_admin";
+  const [roles, setRoles] = useState<Pick<Role, "key" | "name" | "color">[]>([]);
+  useEffect(() => {
+    if (!superAdmin) return;
+    supabase.from("roles").select("key, name, color").lt("rank", 100).order("rank", { ascending: false }).then(({ data }) => setRoles(data ?? []));
+  }, [superAdmin]);
   if (!profile) return null;
   const earned = BADGES.filter((x) => x.value(progress) >= x.goal).length;
 
@@ -79,6 +87,29 @@ export default function Profile() {
           ))}
         </>
       ) : null}
+
+      {superAdmin && (
+        <>
+          <SectionTitle title="Preview as role" />
+          <View style={{ backgroundColor: b.surface, borderRadius: radius.lg, padding: 14, gap: 12 }}>
+            <T v="small" muted>
+              {previewFrom ? `You're seeing the app as a ${role?.name}. Your data access stays the same.` : "See the app's tabs and tools as another role would."}
+            </T>
+            <View style={{ flexDirection: "row", flexWrap: "wrap", gap: 8 }}>
+              {roles.map((r) => {
+                const on = role?.key === r.key;
+                return (
+                  <Press key={r.key} onPress={() => previewAs(on ? null : r.key)} style={{ flexDirection: "row", alignItems: "center", gap: 6, paddingVertical: 8, paddingHorizontal: 12, borderRadius: radius.pill, backgroundColor: on ? b.text : b.chip }}>
+                    <View style={{ width: 8, height: 8, borderRadius: 4, backgroundColor: r.color }} />
+                    <T style={{ fontFamily: F.bold, fontSize: 13 }} color={on ? b.bg : b.text}>{r.name}</T>
+                  </Press>
+                );
+              })}
+            </View>
+            {previewFrom && <Button title="Stop preview" small icon="close" variant="ghost" onPress={() => previewAs(null)} />}
+          </View>
+        </>
+      )}
 
       <Row>
         <Button title="trekne.in" variant="ghost" icon="globe" onPress={() => Linking.openURL("https://trekne.in")} style={{ flex: 1 }} />

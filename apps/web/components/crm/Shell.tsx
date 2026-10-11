@@ -6,6 +6,7 @@ import { useEffect, useState } from "react";
 import type { IconName } from "@trekne/brand";
 import { LogoMark } from "../Eyes";
 import { Icon } from "../Icon";
+import { PreviewAsPicker } from "../PreviewAs";
 import { SignOutButton } from "./SignOutButton";
 
 export interface NavItem {
@@ -16,9 +17,11 @@ export interface NavItem {
   count?: number;
 }
 
-export function Shell({ nav, me, children }: {
+export function Shell({ nav, me, preview, children }: {
   nav: NavItem[];
   me: { name: string; email: string; role: string; color: string };
+  /** Super admins only: roles they can preview the CRM as. */
+  preview?: { roles: { key: string; name: string; rank: number }[]; current: string | null };
   children: React.ReactNode;
 }) {
   const path = usePathname();
@@ -48,6 +51,7 @@ export function Shell({ nav, me, children }: {
               <i className="role-dot" style={{ background: me.color }} />{me.role}
             </span>
           </div>
+          {preview && <PreviewAsPicker roles={preview.roles} current={preview.current} />}
           <SignOutButton />
         </div>
       </aside>

@@ -1130,6 +1130,16 @@ main > section:first-child { padding-top: var(--gutter) }
 @keyframes sk-flags { 0%, 100% { rotate: -1.2deg } 50% { rotate: 1.2deg } }
 @media (max-width: 720px) { .hero-branch { width: 240px; right: -50px; top: -10px } }
 
+/* "Previewing as" bar (components/PreviewAs.tsx): super admins seeing a lower role */
+.preview-bar {
+  position: fixed; left: 50%; bottom: 16px; translate: -50% 0; z-index: 90; display: flex; align-items: center; gap: 10px;
+  padding: 6px 6px 6px 16px; border-radius: 999px; background: var(--ink); color: var(--white); font-size: 14.5px;
+  box-shadow: 0 10px 30px rgba(16, 19, 31, .28); max-width: calc(100vw - 32px); white-space: nowrap;
+}
+.preview-bar .ico { width: 18px; height: 18px; color: var(--yellow) }
+.preview-bar span { overflow: hidden; text-overflow: ellipsis }
+.preview-bar .btn { padding: 9px 14px; font-size: 14px }
+
 @media (prefers-reduced-motion: reduce) {
   *, *::before, *::after { animation: none !important; transition: none !important; scroll-behavior: auto !important }
   .sakura { top: var(--y) }
