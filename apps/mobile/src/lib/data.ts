@@ -1,16 +1,17 @@
 import { useFocusEffect } from "expo-router";
 import { useCallback, useRef, useState } from "react";
+import { useLive, type LiveTable } from "./live";
 
-/** Tiny fetch-on-focus hook: reloads whenever the screen regains focus. */
-export function useLoad<T>(fn: () => Promise<T>, deps: unknown[] = []) {
+/** Fetch-on-focus hook: reloads when the screen regains focus and, with `live`, whenever those tables change. */
+export function useLoad<T>(fn: () => Promise<T>, deps: unknown[] = [], live: LiveTable[] = []) {
   const [data, setData] = useState<T | null>(null);
   const [error, setError] = useState<string | null>(null);
   const [loading, setLoading] = useState(true);
   const fnRef = useRef(fn);
   fnRef.current = fn;
 
-  const reload = useCallback(async () => {
-    setLoading(true);
+  const reload = useCallback(async (quiet = false) => {
+    if (!quiet) setLoading(true);
     try {
       setData(await fnRef.current());
       setError(null);
@@ -27,6 +28,7 @@ export function useLoad<T>(fn: () => Promise<T>, deps: unknown[] = []) {
       // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [reload, ...deps]),
   );
+  useLive(live, () => reload(true));
   return { data, error, loading, reload };
 }
 

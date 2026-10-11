@@ -1,119 +1,134 @@
 import { router } from "expo-router";
 import { useState } from "react";
-import { Alert, Pressable, TextInput, View } from "react-native";
+import { Alert, TextInput, View } from "react-native";
 import { DestinationPicker, type Picked } from "@/components/destination-picker";
 import { Icon } from "@/components/icon";
-import { Button, Card, Empty, Eyebrow, Pill, Row, Screen, StatusPill, T } from "@/components/ui";
+import { ActionTile, IconTile, LevelCard, PlaceThumb, PointsHint, Press, SectionTitle, StatTile } from "@/components/kit";
+import { Button, Pill, Row, Screen, StatusPill, T } from "@/components/ui";
 import { useAuth } from "@/lib/auth";
 import { ago, must, todayIST, useLoad } from "@/lib/data";
 import { discard, flush, useOutbox } from "@/lib/outbox";
+import { useProgress } from "@/lib/progress";
 import { supabase } from "@/lib/supabase";
 import { F, radius, useBrand } from "@/lib/theme";
+
+const CAT_ICON = { road: "car", trail: "backpack", weather: "rain", waste: "trash", crowd: "users", closure: "alert", wildlife: "eye", heritage: "temple" } as const;
 
 export default function Ranger() {
   const b = useBrand();
   const { can, profile } = useAuth();
+  const { progress } = useProgress();
   const outbox = useOutbox();
   const [picker, setPicker] = useState<"scene" | "count" | null>(null);
   const [countFor, setCountFor] = useState<Picked | null>(null);
   const [count, setCount] = useState("");
 
-  const { data, reload } = useLoad(async () => {
+  // Live: a moderator verifying your report flips its status here instantly.
+  const { data } = useLoad(async () => {
     const [reports, scenes] = await Promise.all([
-      must(supabase.from("reports").select("id,body,status,category,moderation_note,created_at,destinations(name)").eq("author_id", profile!.id).order("created_at", { ascending: false }).limit(20)),
-      must(supabase.from("panoramas").select("id,title,status,frame_count,captured_at,destinations(name)").eq("author_id", profile!.id).order("captured_at", { ascending: false }).limit(10)),
+      must(supabase.from("reports").select("id,body,status,category,moderation_note,created_at,destinations(name,slug)").eq("author_id", profile!.id).order("created_at", { ascending: false }).limit(20)),
+      must(supabase.from("panoramas").select("id,title,status,frame_count,captured_at,destinations(name,slug)").eq("author_id", profile!.id).order("captured_at", { ascending: false }).limit(10)),
     ]);
     return { reports, scenes };
-  }, [outbox.length]);
+  }, [outbox.length], ["reports", "panoramas"]);
 
   async function saveCount() {
     if (!countFor) return;
     const { error } = await supabase.from("visitor_counts").insert({ destination_id: countFor.id, day: todayIST(), visitors: Number(count), source: "ranger_estimate", recorded_by: profile!.id });
     if (error) return Alert.alert("Couldn't save", /duplicate/.test(error.message) ? "Today's count for this place is already logged." : error.message);
-    Alert.alert("Saved", `${count} visitors at ${countFor.name} today.`);
+    Alert.alert("Saved · +15 points", `${count} visitors at ${countFor.name} today.`);
     setCountFor(null);
     setCount("");
   }
 
+  const pending = (data?.reports ?? []).filter((r) => r.status === "pending").length;
+
   return (
     <Screen>
       <T v="h1">Ranger</T>
-      <T muted>Your reports go to moderators before travellers see them. No signal? Everything saves on the phone and uploads later.</T>
+      <LevelCard progress={progress} compact onPress={() => router.push("/profile")} />
 
-      <Row gap={10}>
-        {can("reports.field") && (
-          <Pressable onPress={() => router.push("/report")} style={{ flex: 1, backgroundColor: b.orange, borderRadius: radius.lg, padding: 18, gap: 18, minHeight: 140, justifyContent: "space-between" }}>
-            <Icon name="camera" size={30} color={b.white} />
-            <T v="h3" color={b.white}>New field report</T>
-          </Pressable>
-        )}
-        {can("panoramas.create") && (
-          <Pressable onPress={() => setPicker("scene")} style={{ flex: 1, backgroundColor: b.blue, borderRadius: radius.lg, padding: 18, gap: 18, minHeight: 140, justifyContent: "space-between" }}>
-            <Icon name="sphere" size={30} color={b.ink} />
-            <T v="h3" color={b.ink}>Capture 360 view</T>
-          </Pressable>
-        )}
+      <Row gap={8} style={{ alignItems: "stretch" }}>
+        <StatTile icon="shield" value={progress.reports_verified} label="Verified" tone="green" />
+        <StatTile icon="clock" value={pending} label="Review" tone="yellow" />
+        <StatTile icon="sphere" value={progress.scenes_published} label="360 live" tone="blue" />
+        <StatTile icon="users" value={progress.counts_logged} label="Counts" tone="orange" />
+      </Row>
+
+      <Row gap={10} style={{ alignItems: "stretch" }}>
+        {can("reports.field") && <ActionTile icon="camera" title="Report" sub="+50 when verified" tone="orange" onPress={() => router.push("/report")} />}
+        {can("panoramas.create") && <ActionTile icon="sphere" title="360 view" sub="+80 when live" tone="blue" onPress={() => setPicker("scene")} />}
       </Row>
 
       {can("visitors.log") && (
-        <Card>
-          <Row style={{ justifyContent: "space-between" }}><T v="h3">Log today&rsquo;s visitors</T><Icon name="users" color={b.muted} /></Row>
+        <View style={{ backgroundColor: b.surface, borderRadius: radius.lg, padding: 14, gap: 10 }}>
+          <Row><IconTile icon="users" tone="orange" size={40} round /><View style={{ flex: 1 }}><T v="h3">Count today's visitors</T><T v="small" muted>Feeds the crowd signal everyone sees</T></View></Row>
           {countFor ? (
             <Row>
-              <TextInput value={count} onChangeText={setCount} keyboardType="number-pad" placeholder={`Visitors at ${countFor.name}`} placeholderTextColor={b.muted}
-                style={{ flex: 1, backgroundColor: b.surface2, borderRadius: radius.sm, padding: 12, fontFamily: F.body, fontSize: 16, color: b.text }} />
-              <Button title="Save" small onPress={saveCount} disabled={!count} />
+              <TextInput value={count} onChangeText={setCount} keyboardType="number-pad" placeholder={`How many at ${countFor.name}?`} placeholderTextColor={b.muted}
+                style={{ flex: 1, backgroundColor: b.surface2, borderRadius: radius.pill, paddingHorizontal: 16, paddingVertical: 12, fontFamily: F.body, fontSize: 16, color: b.text }} />
+              <Button title="Save" small variant="green" onPress={saveCount} disabled={!count} />
             </Row>
           ) : <Button title="Choose place" small variant="chip" icon="pin" onPress={() => setPicker("count")} />}
-          <T v="small" muted>Counts drive the pressure and eco-risk planners see in the CRM.</T>
-        </Card>
+          <PointsHint points={15} label="per count" />
+        </View>
       )}
 
       {outbox.length > 0 && (
         <>
-          <Eyebrow>Waiting to upload</Eyebrow>
+          <SectionTitle title="Waiting for signal" />
           {outbox.map((o) => (
-            <Card key={o.client_id} style={{ gap: 6 }}>
-              <Row style={{ justifyContent: "space-between" }}>
-                <Row gap={8}><Icon name={o.kind === "scene" ? "sphere" : "shield"} size={19} color={b.text} /><T v="h3">{o.destination_name}</T></Row>
-                <Pill level={o.error ? "high" : "warn"} label={o.error ? "Failed" : o.progress ?? "Queued"} />
+            <View key={o.client_id} style={{ backgroundColor: b.surface, borderRadius: radius.lg, padding: 12, gap: 8 }}>
+              <Row gap={10}>
+                <IconTile icon={o.kind === "scene" ? "sphere" : "camera"} tone={o.error ? "orange" : "yellow"} size={42} />
+                <View style={{ flex: 1 }}>
+                  <T style={{ fontFamily: F.bold }} numberOfLines={1}>{o.destination_name}</T>
+                  <T v="small" muted numberOfLines={1}>{o.kind === "scene" ? `360 view · ${o.frames.length} photos` : o.body}</T>
+                </View>
+                <Pill level={o.error ? "high" : "warn"} label={o.error ? "Failed" : o.progress ?? "Saved on phone"} />
               </Row>
-              <T v="small" muted numberOfLines={2}>{o.kind === "scene" ? `360 scene · ${o.frames.length} photos` : o.body}</T>
               {o.error && <T v="small" color={b.orangeDeep}>{o.error}</T>}
               <Row>
-                <Button title="Retry" small variant="chip" onPress={() => flush()} />
+                <Button title="Retry" small variant="chip" icon="arrow" onPress={() => flush()} />
                 <Button title="Discard" small variant="ghost" onPress={() => Alert.alert("Discard?", "This can't be undone.", [{ text: "Keep" }, { text: "Discard", style: "destructive", onPress: () => discard(o.client_id) }])} />
               </Row>
-            </Card>
+            </View>
           ))}
         </>
       )}
 
-      <Eyebrow>My reports</Eyebrow>
+      <SectionTitle title="My reports" />
       {data?.reports.length ? data.reports.map((r) => (
-        <Card key={r.id} style={{ gap: 6 }}>
-          <Row style={{ justifyContent: "space-between" }}><StatusPill status={r.status} /><T v="mono" muted>{ago(r.created_at)}</T></Row>
-          <T v="h3">{r.destinations?.name}</T>
-          <T>{r.body}</T>
-          {r.moderation_note && <T v="small" muted>Moderator: {r.moderation_note}</T>}
-        </Card>
-      )) : <Empty icon="shield" title="No reports yet" body="File your first report from the trail." />}
+        <View key={r.id} style={{ backgroundColor: b.surface, borderRadius: radius.md, padding: 12, flexDirection: "row", gap: 12, alignItems: "center" }}>
+          <IconTile icon={CAT_ICON[r.category]} tone={r.status === "verified" || r.status === "official" ? "green" : r.status === "rejected" ? "ink" : "yellow"} size={42} />
+          <View style={{ flex: 1, gap: 2 }}>
+            <Row gap={6}><T style={{ fontFamily: F.bold, flexShrink: 1 }} numberOfLines={1}>{r.destinations?.name}</T><T v="mono" muted>{ago(r.created_at)}</T></Row>
+            <T v="small" numberOfLines={2}>{r.body}</T>
+            {r.moderation_note ? <T v="small" muted numberOfLines={2}>Moderator: {r.moderation_note}</T> : null}
+          </View>
+          <StatusPill status={r.status} />
+        </View>
+      )) : (
+        <View style={{ backgroundColor: b.surface, borderRadius: radius.lg, padding: 20, alignItems: "center", gap: 8 }}>
+          <IconTile icon="camera" tone="orange" size={52} round />
+          <T v="h3">Your first report</T>
+          <T v="small" muted style={{ textAlign: "center" }}>Spot a landslide, litter or a crowd? Report it. It works offline too.</T>
+        </View>
+      )}
 
       {!!data?.scenes.length && (
         <>
-          <Eyebrow>My 360 scenes</Eyebrow>
+          <SectionTitle title="My 360 views" />
           {data.scenes.map((s) => (
-            <Pressable key={s.id} onPress={() => router.push(`/scene/${s.id}`)}>
-              <Card style={{ flexDirection: "row", alignItems: "center", gap: 12 }}>
-                <Icon name="sphere" color={b.orange} />
-                <View style={{ flex: 1 }}><T v="h3">{s.title || s.destinations?.name}</T><T v="small" muted>{s.frame_count} photos · {ago(s.captured_at)}</T></View>
-                <Pill label={s.status} level={s.status === "published" ? "good" : s.status === "rejected" ? "high" : "warn"} />
-              </Card>
-            </Pressable>
+            <Press key={s.id} onPress={() => router.push(`/scene/${s.id}`)} style={{ backgroundColor: b.surface, borderRadius: radius.md, padding: 12, flexDirection: "row", gap: 12, alignItems: "center" }}>
+              <PlaceThumb slug={s.destinations?.slug} size={46} />
+              <View style={{ flex: 1 }}><T style={{ fontFamily: F.bold }} numberOfLines={1}>{s.title || s.destinations?.name}</T><T v="small" muted>{s.frame_count} photos · {ago(s.captured_at)}</T></View>
+              <Pill label={s.status} level={s.status === "published" ? "good" : s.status === "rejected" ? "high" : "warn"} />
+              <Icon name="chevronRight" size={18} color={b.muted} />
+            </Press>
           ))}
         </>
       )}
-      <Button title="Refresh" variant="ghost" small onPress={reload} />
 
       <DestinationPicker visible={!!picker} title={picker === "scene" ? "Where are you capturing?" : "Where are you counting?"}
         onClose={() => setPicker(null)}

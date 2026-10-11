@@ -65,7 +65,7 @@ function Navigator({ fontsReady }: { fontsReady: boolean }) {
       >
         <Stack.Protected guard={!!session}>
           <Stack.Screen name="(tabs)" />
-          <Stack.Screen name="destination/[slug]" options={{ headerShown: true, headerTransparent: true, title: "" }} />
+          <Stack.Screen name="destination/[slug]" options={{ headerShown: true, headerTransparent: true, title: "", headerTintColor: "#fff" }} />
           <Stack.Screen name="trip/[id]" options={{ headerShown: true, title: "Trip" }} />
           <Stack.Screen name="report" options={{ presentation: "modal", headerShown: true, title: "Field report" }} />
           <Stack.Screen name="capture" options={{ presentation: "fullScreenModal", gestureEnabled: false }} />

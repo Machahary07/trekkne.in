@@ -13,7 +13,8 @@ import { PlaceStrip } from "@/components/PlaceStrip";
 import { getDestinations } from "@/lib/destinations";
 import { getExplore } from "@/lib/public-data";
 
-export const revalidate = 300;
+// Always fresh: LiveRefresh re-renders this page when its data changes.
+export const dynamic = "force-dynamic";
 
 export default async function Home() {
   const [destinations, { places, events }] = await Promise.all([getDestinations(), getExplore()]);

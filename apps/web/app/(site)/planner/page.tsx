@@ -3,7 +3,8 @@ import { Planner } from "@/components/plan/Planner";
 import { getCalendar, getNotices } from "@/lib/public-data";
 import { parseTrip } from "@/lib/trip";
 
-export const revalidate = 300;
+// Always fresh: LiveRefresh re-renders this page when its data changes.
+export const dynamic = "force-dynamic";
 
 export const metadata: Metadata = {
   title: "Plan a trip",

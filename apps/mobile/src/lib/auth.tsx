@@ -1,6 +1,7 @@
 import type { Session } from "@supabase/supabase-js";
 import { createContext, useCallback, useContext, useEffect, useMemo, useState } from "react";
 import { roleHas, type Profile, type Role } from "@trekne/db";
+import { useLive } from "./live";
 import { supabase } from "./supabase";
 
 interface Auth {
@@ -47,6 +48,10 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     });
     return () => data.subscription.unsubscribe();
   }, [load]);
+
+  // Role approvals and edits apply instantly: new tabs appear without signing out.
+  useLive(["profiles"], () => load(session), { filter: session ? `id=eq.${session.user.id}` : undefined, enabled: !!session, delay: 200 });
+  useLive(["roles"], () => load(session), { enabled: !!session });
 
   const value = useMemo<Auth>(
     () => ({

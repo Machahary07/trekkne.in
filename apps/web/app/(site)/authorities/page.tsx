@@ -6,7 +6,8 @@ import { PressureHeatmap } from "@/components/plan/PressureHeatmap";
 import { NOTICE_LABEL, addDays, fmtDay, getCalendar, getNotices, getPressureGrid, getRecurringIssues, todayIST } from "@/lib/public-data";
 import "@/components/plan/plan.css";
 
-export const revalidate = 300;
+// Always fresh: LiveRefresh re-renders this page when its data changes.
+export const dynamic = "force-dynamic";
 
 export const metadata: Metadata = {
   title: "For authorities & communities",

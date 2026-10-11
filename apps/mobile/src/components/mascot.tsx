@@ -5,10 +5,10 @@ import Svg, { Circle, Path } from "react-native-svg";
 import { brand } from "@trekne/brand";
 
 /** Logo mark: orange dome with two eyes (same paths as the site). */
-export function LogoMark({ width = 40 }: { width?: number }) {
+export function LogoMark({ width = 40, dome = brand.orange }: { width?: number; dome?: string }) {
   return (
     <Svg width={width} height={(width * 30) / 40} viewBox="0 0 40 30">
-      <Path d="M2 30a18 18 0 0 1 36 0z" fill={brand.orange} />
+      <Path d="M2 30a18 18 0 0 1 36 0z" fill={dome} />
       <Circle cx={13.5} cy={20} r={5.5} fill="#fff" />
       <Circle cx={26.5} cy={20} r={5.5} fill="#fff" />
       <Circle cx={14.5} cy={20.5} r={2.8} fill={brand.ink} />
