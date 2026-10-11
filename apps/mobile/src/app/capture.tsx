@@ -3,10 +3,11 @@ import * as Haptics from "expo-haptics";
 import { ImageManipulator, SaveFormat } from "expo-image-manipulator";
 import { router, useLocalSearchParams } from "expo-router";
 import { DeviceMotion, Gyroscope } from "expo-sensors";
+import { Image } from "expo-image";
 import { useEffect, useMemo, useRef, useState } from "react";
-import { Alert, Pressable, useWindowDimensions, View } from "react-native";
+import { Alert, Platform, Pressable, useWindowDimensions, View } from "react-native";
 import Svg, { Circle } from "react-native-svg";
-import { SafeAreaView } from "react-native-safe-area-context";
+import { SafeAreaView, useSafeAreaInsets } from "react-native-safe-area-context";
 import {
   DEFAULT_FOV, angleTo, cameraPose, captureTargets, fuse, orientationFromUp, projectTarget,
   type CaptureTarget, type Quat, type Vec3,
@@ -24,20 +25,23 @@ const HOLD_MS = 280;       // must stay aligned + still this long
 
 export default function Capture() {
   const b = useBrand();
-  const params = useLocalSearchParams<{ id: string; name: string; lat?: string; lng?: string }>();
+  const params = useLocalSearchParams<{ id: string; name: string; lat?: string; lng?: string; preview?: string }>();
   const { width } = useWindowDimensions();
-  const boxW = width;
-  const boxH = (width * 4) / 3; // 3:4 portrait preview = the photo's full field of view
+  const insets = useSafeAreaInsets();
+  const isSamplePreview = Platform.OS === "web" && params.preview === "mountains";
+  const topInset = insets.top || (Platform.OS === "ios" ? 44 : 24);
 
   const [perm, requestPerm] = useCameraPermissions();
-  const [phase, setPhase] = useState<Phase>("intro");
+  const [phase, setPhase] = useState<Phase>(isSamplePreview ? "capturing" : "intro");
   const [mode, setMode] = useState<"quick" | "full">("quick");
   const targets = useMemo(() => captureTargets(mode), [mode]);
   const [done, setDone] = useState<Record<string, boolean>>({});
   const [, setTick] = useState(0);
+  const [previewSize, setPreviewSize] = useState({ width: 0, height: 0 });
 
   const cam = useRef<CameraView>(null);
   const q = useRef<Quat | null>(null);
+  if (isSamplePreview && !q.current) q.current = orientationFromUp([0, 9.8, 0]);
   const gravity = useRef<Vec3>([0, 9.8, 0]);
   const sign = useRef<1 | -1>(1);
   const gyroRate = useRef(0);
@@ -49,6 +53,7 @@ export default function Capture() {
 
   // ---------- sensors ----------
   useEffect(() => {
+    if (isSamplePreview) return;
     Gyroscope.setUpdateInterval(16);
     DeviceMotion.setUpdateInterval(16);
     const dm = DeviceMotion.addListener((m) => {
@@ -68,7 +73,7 @@ export default function Capture() {
     });
     const ui = setInterval(() => setTick((t) => t + 1), 50);
     return () => { dm.remove(); gy.remove(); clearInterval(ui); };
-  }, []);
+  }, [isSamplePreview]);
 
   function start() {
     const g = gravity.current;
@@ -82,6 +87,8 @@ export default function Capture() {
 
   // ---------- auto capture ----------
   const pose = q.current ? cameraPose(q.current) : null;
+  const boxW = previewSize.width || width;
+  const boxH = previewSize.height;
   const remaining = targets.filter((t) => !done[t.id]);
   let nearest: { t: CaptureTarget; deg: number } | null = null;
   if (q.current) for (const t of remaining) {
@@ -93,7 +100,7 @@ export default function Capture() {
   const aligned = phase === "capturing" && !!nearest && nearest.deg < LOCK_DEG && level && still;
 
   useEffect(() => {
-    if (!aligned) { alignedSince.current = 0; return; }
+    if (isSamplePreview || !aligned) { alignedSince.current = 0; return; }
     if (!alignedSince.current) alignedSince.current = Date.now();
     if (Date.now() - alignedSince.current < HOLD_MS || shooting.current || !nearest || !q.current) return;
     const target = nearest.t;
@@ -142,8 +149,8 @@ export default function Capture() {
   }
 
   // ---------- UI ----------
-  if (!perm) return <View style={{ flex: 1, backgroundColor: b.ink }} />;
-  if (!perm.granted) {
+  if (!isSamplePreview && !perm) return <View style={{ flex: 1, backgroundColor: b.ink }} />;
+  if (!isSamplePreview && !perm?.granted) {
     return (
       <SafeAreaView style={{ flex: 1, backgroundColor: b.ink, padding: 24, justifyContent: "center", gap: 16 }}>
         <T v="h1" color={b.white}>Camera access</T>
@@ -160,8 +167,8 @@ export default function Capture() {
   const C = 2 * Math.PI * R;
 
   return (
-    <View style={{ flex: 1, backgroundColor: b.ink }}>
-      <SafeAreaView edges={["top"]} style={{ paddingHorizontal: 16, paddingBottom: 10 }}>
+    <View style={{ flex: 1, backgroundColor: b.ink, paddingTop: topInset }}>
+      <View style={{ paddingHorizontal: 16, paddingBottom: 10 }}>
         <Row style={{ justifyContent: "space-between" }}>
           <Pressable onPress={() => router.back()} accessibilityLabel="Close" style={{ width: 40, height: 40, borderRadius: 20, backgroundColor: "rgba(255,255,255,.14)", alignItems: "center", justifyContent: "center" }}>
             <Icon name="close" color={b.white} size={20} />
@@ -169,10 +176,27 @@ export default function Capture() {
           <T v="h3" color={b.white} numberOfLines={1} style={{ flex: 1, textAlign: "center" }}>{params.name}</T>
           <View style={{ width: 40 }} />
         </Row>
-      </SafeAreaView>
+      </View>
 
-      <View style={{ width: boxW, height: boxH, overflow: "hidden" }}>
-        <CameraView ref={cam} style={{ flex: 1 }} facing="back" ratio="4:3" animateShutter={false} />
+      <View
+        style={{ flex: 1, width: "100%", overflow: "hidden" }}
+        onLayout={({ nativeEvent }) => {
+          const { width: previewWidth, height: previewHeight } = nativeEvent.layout;
+          setPreviewSize((current) =>
+            current.width === previewWidth && current.height === previewHeight
+              ? current
+              : { width: previewWidth, height: previewHeight },
+          );
+        }}
+      >
+        {isSamplePreview
+          ? <Image source={require("../../assets/places/dzukou.jpg")} contentFit="cover" style={{ flex: 1 }} accessibilityLabel="Sample mountain panorama" />
+          : <CameraView ref={cam} style={{ flex: 1 }} facing="back" ratio="4:3" animateShutter={false} />}
+        {isSamplePreview && (
+          <View style={{ position: "absolute", top: 12, left: 12, paddingHorizontal: 12, paddingVertical: 7, borderRadius: 99, backgroundColor: "rgba(16,19,31,.68)" }}>
+            <T v="small" color={b.white}>Sample mountain view</T>
+          </View>
+        )}
         {phase === "capturing" && q.current && (
           <View style={{ position: "absolute", inset: 0 }} pointerEvents="none">
             {targets.map((t) => {
@@ -205,7 +229,7 @@ export default function Capture() {
         )}
       </View>
 
-      <SafeAreaView edges={["bottom"]} style={{ flex: 1, padding: 16, gap: 12, justifyContent: "flex-end" }}>
+      <View style={{ paddingHorizontal: 16, paddingTop: 14, paddingBottom: Math.max(insets.bottom, 12), gap: 12 }}>
         {phase === "intro" ? (
           <>
             <T color={b.white} style={{ textAlign: "center" }}>Stand in one spot. Hold the phone upright at chest height and turn on the spot, not around it.</T>
@@ -232,7 +256,7 @@ export default function Capture() {
         ) : (
           <T v="h3" color={b.white} style={{ textAlign: "center" }}>Saving scene…</T>
         )}
-      </SafeAreaView>
+      </View>
     </View>
   );
 }
