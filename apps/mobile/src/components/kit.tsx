@@ -22,11 +22,11 @@ const toneFg = (b: Brand, t: Tone) => (t === "ink" ? b.bg : b.ink);
 const levelBg = (b: Brand, l: Level) => LEVEL_COLOR[l] ?? b.chip;
 
 // ---------- press feedback (scale on press-in, DESIGN.md: no hover, active scale only) ----------
-export function Press({ children, style, onPress, ...rest }: PressableProps & { style?: StyleProp<ViewStyle>; children: React.ReactNode }) {
+export function Press({ children, style, outerStyle, onPress, ...rest }: PressableProps & { style?: StyleProp<ViewStyle>; outerStyle?: StyleProp<ViewStyle>; children: React.ReactNode }) {
   const scale = useSharedValue(1);
   const anim = useAnimatedStyle(() => ({ transform: [{ scale: scale.get() }] }));
   return (
-    <Pressable {...rest} onPress={onPress}
+    <Pressable {...rest} onPress={onPress} style={outerStyle}
       onPressIn={() => scale.set(withTiming(0.97, { duration: 110, easing: Easing.bezier(0.23, 1, 0.32, 1) }))}
       onPressOut={() => scale.set(withSpring(1, { duration: 300, dampingRatio: 0.8 }))}>
       <Animated.View style={[anim, style]}>{children}</Animated.View>
@@ -115,7 +115,7 @@ export function PlaceCard({ slug, name, sub, overview, onPress, width, height = 
   const b = useBrand();
   const photo = photoFor(slug);
   return (
-    <Press onPress={onPress} style={{ width, height, borderRadius: radius.lg, overflow: "hidden", backgroundColor: b.blue }} accessibilityRole="button" accessibilityLabel={name}>
+    <Press onPress={onPress} outerStyle={width ? { width } : undefined} style={{ width, height, borderRadius: radius.lg, overflow: "hidden", backgroundColor: b.blue }} accessibilityRole="button" accessibilityLabel={name}>
       {photo ? <Image source={photo.src} style={{ position: "absolute", inset: 0 }} contentFit="cover" accessibilityLabel={photo.alt} transition={150} />
         : <View style={{ position: "absolute", inset: 0, alignItems: "center", justifyContent: "center" }}><Icon name="mountain" size={64} color={b.ink} /></View>}
       {/* scrim so white text stays readable on any photo */}
@@ -150,20 +150,31 @@ export function PlaceThumb({ slug, size = 52 }: { slug?: string | null; size?: n
 }
 
 // ---------- tiles, sections ----------
-export function ActionTile({ icon, title, sub, tone, onPress, badge }: { icon: IconName; title: string; sub?: string; tone: Tone; onPress: () => void; badge?: number }) {
+export function ActionTile({ icon, title, sub, tone, onPress, badge, compact }: { icon: IconName; title: string; sub?: string; tone: Tone; onPress: () => void; badge?: number; compact?: boolean }) {
   const b = useBrand();
   const fg = toneFg(b, tone);
+  if (compact) {
+    return (
+      <Press onPress={onPress} accessibilityRole="button" accessibilityLabel={title} outerStyle={{ flex: 1 }}
+        style={{ flex: 1, backgroundColor: toneBg(b, tone), borderRadius: radius.md, padding: 12, gap: 10 }}>
+        <View style={{ width: 38, height: 38, borderRadius: 19, backgroundColor: tone === "ink" ? b.yellow : "#fff", alignItems: "center", justifyContent: "center" }}>
+          <Icon name={icon} size={19} color={b.ink} />
+        </View>
+        <T v="small" color={fg} style={{ fontFamily: F.bold, fontSize: 14 }} numberOfLines={1}>{title}</T>
+      </Press>
+    );
+  }
   return (
-    <Press onPress={onPress} accessibilityRole="button" accessibilityLabel={title}
+    <Press onPress={onPress} accessibilityRole="button" accessibilityLabel={title} outerStyle={{ flex: 1 }}
       style={{ flex: 1, minHeight: 128, backgroundColor: toneBg(b, tone), borderRadius: radius.lg, padding: 16, justifyContent: "space-between" }}>
       <View style={{ flexDirection: "row", justifyContent: "space-between", alignItems: "flex-start" }}>
-        <View style={{ width: 46, height: 46, borderRadius: 23, backgroundColor: tone === "ink" ? b.bg : "#fff", alignItems: "center", justifyContent: "center" }}>
+        <View style={{ width: 46, height: 46, borderRadius: 23, backgroundColor: tone === "ink" ? b.yellow : "#fff", alignItems: "center", justifyContent: "center" }}>
           <Icon name={icon} size={23} color={b.ink} />
         </View>
         {!!badge && <View style={{ minWidth: 26, height: 26, borderRadius: 13, backgroundColor: b.ink, alignItems: "center", justifyContent: "center", paddingHorizontal: 7 }}><T v="small" color="#fff" style={{ fontFamily: F.bold }}>{badge}</T></View>}
       </View>
       <View>
-        <T v="h3" color={fg}>{title}</T>
+        <T v="h3" color={fg} numberOfLines={1} adjustsFontSizeToFit>{title}</T>
         {sub ? <T v="small" color={fg} style={{ opacity: 0.8 }} numberOfLines={1}>{sub}</T> : null}
       </View>
     </Press>
@@ -203,10 +214,10 @@ export function DateTile({ iso, tone = "orange" }: { iso: string; tone?: Tone })
 export function StatTile({ icon, value, label, tone }: { icon: IconName; value: number | string; label: string; tone: Tone }) {
   const b = useBrand();
   return (
-    <View style={{ flex: 1, minWidth: 90, backgroundColor: b.surface, borderRadius: radius.md, padding: 12, gap: 6 }}>
-      <IconTile icon={icon} tone={tone} size={34} />
-      <T v="h2" style={{ fontSize: 26, lineHeight: 28 }}>{value}</T>
-      <T v="label" numberOfLines={1}>{label}</T>
+    <View style={{ flex: 1, minWidth: 0, backgroundColor: b.surface, borderRadius: radius.md, padding: 10, gap: 6 }}>
+      <IconTile icon={icon} tone={tone} size={32} />
+      <T v="h2" style={{ fontSize: 24, lineHeight: 26 }}>{value}</T>
+      <T v="label" numberOfLines={1} style={{ fontSize: 10.5, letterSpacing: 0.6 }}>{label}</T>
     </View>
   );
 }
@@ -219,7 +230,7 @@ export function LevelCard({ progress, onPress, compact }: { progress: Progress; 
   return (
     <Press onPress={onPress} disabled={!onPress} accessibilityRole={onPress ? "button" : undefined}
       style={{ backgroundColor: b.text, borderRadius: radius.lg, padding: compact ? 14 : 18, flexDirection: "row", alignItems: "center", gap: 14 }}>
-      <Ring value={lv.progress} size={compact ? 58 : 76} stroke={compact ? 7 : 9} color={b.yellow} track={b.mode === "dark" ? "#2A3042" : "#2A3042"}>
+      <Ring value={lv.progress} size={compact ? 58 : 76} stroke={compact ? 7 : 9} color={b.mode === "dark" ? b.orange : b.yellow} track={b.mode === "dark" ? "#D5DAE4" : "#2A3042"}>
         <T v="h2" color={b.bg} style={{ fontSize: compact ? 20 : 26 }}>{lv.level}</T>
       </Ring>
       <View style={{ flex: 1, gap: 2 }}>

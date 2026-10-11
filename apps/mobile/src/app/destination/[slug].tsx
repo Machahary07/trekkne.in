@@ -133,7 +133,7 @@ export default function DestinationScreen() {
               <PointsHint points={30} label="for planning a lesser-known place" />
               <Carousel>
                 {data.alternatives.map((a) => (
-                  <PlaceCard key={a.id} slug={a.slug} name={a.name} sub={`${a.distance_km} km away · risk ${a.risk_score}`} width={210} height={170}
+                  <PlaceCard key={a.id} slug={a.slug} name={a.name} sub={`${a.distance_km} km away · risk ${a.risk_score}`} width={260} height={200}
                     onPress={() => router.push(`/destination/${a.slug}`)} badge={{ label: a.is_lesser_known ? "Gem" : "Quieter", tone: "green", icon: "leaf" }} />
                 ))}
               </Carousel>

@@ -115,7 +115,7 @@ export function Pill({ label, level, color, bg }: { label: string; level?: Level
   return (
     <View style={{ flexDirection: "row", alignItems: "center", gap: 6, paddingVertical: 5, paddingHorizontal: 10, borderRadius: radius.pill, backgroundColor: fill, alignSelf: "flex-start" }}>
       {level ? <Dot level={level} size={8} /> : color ? <View style={{ width: 8, height: 8, borderRadius: 4, backgroundColor: color }} /> : null}
-      <Text style={{ fontFamily: F.bold, fontSize: 12, color: onColor(fill, b.ink), textTransform: "capitalize" }}>{label}</Text>
+      <Text style={{ fontFamily: F.bold, fontSize: 12, color: onColor(fill, b.ink) }}>{label ? label[0].toUpperCase() + label.slice(1) : label}</Text>
     </View>
   );
 }

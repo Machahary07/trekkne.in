@@ -58,7 +58,7 @@ export default function Home() {
             {tripPhoto ? <PlaceThumb slug={tripPhoto} /> : <IconTile icon="route" tone="yellow" size={52} />}
             <View style={{ flex: 1 }}>
               <T v="h3" color={b.ink} numberOfLines={1}>{data.trip.title}</T>
-              <T v="small" color="#586078">{fmtDay(data.trip.start_date)} · {data.trip.trip_stops.length} stops · {data.trip.party_size} people</T>
+              <T v="small" color="#586078">{fmtDay(data.trip.start_date)} · {data.trip.trip_stops.length} stop{data.trip.trip_stops.length === 1 ? "" : "s"} · {data.trip.party_size} {data.trip.party_size === 1 ? "person" : "people"}</T>
             </View>
             <Icon name="chevronRight" color={b.ink} size={20} />
           </Press>
@@ -69,16 +69,16 @@ export default function Home() {
 
       <LevelCard progress={progress} compact onPress={() => router.push("/profile")} />
 
-      {/* Big, obvious actions */}
+      {/* Big, obvious actions; role tools as a compact row */}
       <Row gap={10} style={{ alignItems: "stretch" }}>
         <ActionTile icon="map" title="Explore" sub={`${all.length} places`} tone="blue" onPress={() => router.push("/explore")} />
         <ActionTile icon="route" title="Plan" sub="Check every stop" tone="green" onPress={() => router.push("/plan")} />
       </Row>
       {(field || steward) && (
-        <Row gap={10} style={{ alignItems: "stretch" }}>
-          {field && <ActionTile icon="camera" title="Report" sub="From the trail" tone="orange" onPress={() => router.push("/report")} />}
-          {field && <ActionTile icon="sphere" title="360 view" sub="Capture now" tone="ink" onPress={() => router.push("/ranger")} />}
-          {steward && <ActionTile icon="flag" title="Community" sub="Closures, rules" tone="yellow" onPress={() => router.push("/community")} />}
+        <Row gap={8} style={{ alignItems: "stretch" }}>
+          {field && <ActionTile compact icon="camera" title="Report" tone="orange" onPress={() => router.push("/report")} />}
+          {field && <ActionTile compact icon="sphere" title="360 view" tone="ink" onPress={() => router.push("/ranger")} />}
+          {steward && <ActionTile compact icon="flag" title="Village" tone="yellow" onPress={() => router.push("/community")} />}
         </Row>
       )}
 
@@ -100,7 +100,7 @@ export default function Home() {
           <Carousel>
             {avoid.map((o) => (
               <PlaceCard key={o.id} slug={o.slug} name={o.name} sub={o.community_closed ? o.notice ?? "Closed today" : `${o.load_ratio != null ? Math.round(Number(o.load_ratio) * 100) + "% of capacity" : o.state_code}`}
-                overview={o} width={230} height={170} onPress={() => router.push(`/destination/${o.slug}`)} badge={{ label: verdict(o).title, tone: "orange", icon: "alert" }} />
+                overview={o} width={290} height={200} onPress={() => router.push(`/destination/${o.slug}`)} badge={{ label: verdict(o).title, tone: "orange", icon: "alert" }} />
             ))}
           </Carousel>
         </>
@@ -112,7 +112,7 @@ export default function Home() {
           <T v="small" muted style={{ marginTop: -6 }}>Lesser-known places. Planning one earns +30 points.</T>
           <Carousel>
             {gems.map((o) => (
-              <PlaceCard key={o.id} slug={o.slug} name={o.name} sub={o.state_code} overview={o} width={200} height={220}
+              <PlaceCard key={o.id} slug={o.slug} name={o.name} sub={o.state_code} overview={o} width={250} height={230}
                 onPress={() => router.push(`/destination/${o.slug}`)} badge={{ label: "Gem", tone: "yellow", icon: "leaf" }} />
             ))}
           </Carousel>

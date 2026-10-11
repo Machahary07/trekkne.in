@@ -50,7 +50,7 @@ export default function Ranger() {
 
       <Row gap={8} style={{ alignItems: "stretch" }}>
         <StatTile icon="shield" value={progress.reports_verified} label="Verified" tone="green" />
-        <StatTile icon="clock" value={pending} label="In review" tone="yellow" />
+        <StatTile icon="clock" value={pending} label="Review" tone="yellow" />
         <StatTile icon="sphere" value={progress.scenes_published} label="360 live" tone="blue" />
         <StatTile icon="users" value={progress.counts_logged} label="Counts" tone="orange" />
       </Row>
