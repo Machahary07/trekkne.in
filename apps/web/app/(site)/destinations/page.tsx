@@ -3,7 +3,8 @@ import { JoinCta } from "@/components/JoinCta";
 import { Explorer } from "@/components/explore/Explorer";
 import { getExplore } from "@/lib/public-data";
 
-export const revalidate = 300;
+// Always fresh: LiveRefresh re-renders this page when its data changes.
+export const dynamic = "force-dynamic";
 
 export const metadata: Metadata = {
   title: "Destinations",

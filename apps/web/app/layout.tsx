@@ -19,6 +19,7 @@ export const metadata: Metadata = {
   description:
     "Ranger-verified, AI-powered travel intelligence for Northeast India. Trail, road, weather and cultural conditions — checked by the people who live there.",
   keywords: ["Northeast India travel", "Meghalaya", "living root bridges", "sustainable tourism", "local guides", "travel advisories"],
+  twitter: { card: "summary_large_image", title: "Trekne — Know Before You Go", description: "Ranger-verified, sustainable trip planning for Northeast India." },
   openGraph: {
     title: "Trekne — Know Before You Go",
     description: "Ranger-verified travel intelligence for Northeast India.",
