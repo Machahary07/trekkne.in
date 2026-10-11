@@ -1,0 +1,447 @@
+<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink"><defs>
+    <!-- shared bits -->
+    <g id="blossom">
+      <g fill="url(#g-petal)" stroke="#D9668F" stroke-width="1" stroke-linejoin="round">
+        <path d="M0 0C-7-6-7-16-3-19L0-16 3-19C7-16 7-6 0 0Z"/>
+        <path transform="rotate(72)" d="M0 0C-7-6-7-16-3-19L0-16 3-19C7-16 7-6 0 0Z"/>
+        <path transform="rotate(144)" d="M0 0C-7-6-7-16-3-19L0-16 3-19C7-16 7-6 0 0Z"/>
+        <path transform="rotate(216)" d="M0 0C-7-6-7-16-3-19L0-16 3-19C7-16 7-6 0 0Z"/>
+        <path transform="rotate(288)" d="M0 0C-7-6-7-16-3-19L0-16 3-19C7-16 7-6 0 0Z"/>
+      </g>
+      <path d="M0 0L8 0M0 0L6.9 4M0 0L4 6.9M0 0L0 8M0 0L-4 6.9M0 0L-6.9 4M0 0L-8 0M0 0L-6.9-4M0 0L-4-6.9M0 0L0-8M0 0L4-6.9M0 0L6.9-4" stroke="#D24F80" stroke-width=".7" stroke-linecap="round"/>
+      <g fill="#F6D55C"><circle cx="8" r="1.1"/><circle cx="6.9" cy="4" r="1.1"/><circle cx="4" cy="6.9" r="1.1"/><circle cy="8" r="1.1"/><circle cx="-4" cy="6.9" r="1.1"/><circle cx="-6.9" cy="4" r="1.1"/><circle cx="-8" r="1.1"/><circle cx="-6.9" cy="-4" r="1.1"/><circle cx="-4" cy="-6.9" r="1.1"/><circle cy="-8" r="1.1"/><circle cx="4" cy="-6.9" r="1.1"/><circle cx="6.9" cy="-4" r="1.1"/></g>
+      <circle r="2.8" fill="#C93A6E"/><circle r="1.2" fill="#B9D86A"/>
+    </g>
+    <radialGradient id="g-petal" cx=".5" cy="1" r="1.1"><stop offset="0" stop-color="#E35A92"/><stop offset=".35" stop-color="#F49BBE"/><stop offset=".75" stop-color="#FBD3E2"/><stop offset="1" stop-color="#FFF3F7"/></radialGradient>
+    <g id="petal">
+      <path d="M0 0C-4-3-9-9-8.5-14C-8-17-5-18.5-2.4-17L0-15 2.4-17C5-18.5 8-17 8.5-14C9-9 4-3 0 0Z" fill="url(#g-petal)" stroke="#D9668F" stroke-width=".9" stroke-linejoin="round"/>
+      <path d="M0-1.5V-13M0-3-3.2-11M0-3 3.2-11" fill="none" stroke="#E35A92" stroke-opacity=".35" stroke-width=".6"/>
+    </g>
+    <g id="floret">
+      <g fill="#F4C6E9" stroke="#10131F" stroke-width="1.2"><circle cx="0" cy="-6" r="4.6"/><circle cx="5.7" cy="-1.9" r="4.6"/><circle cx="3.5" cy="4.9" r="4.6"/><circle cx="-3.5" cy="4.9" r="4.6"/><circle cx="-5.7" cy="-1.9" r="4.6"/></g>
+      <circle r="2.6" fill="#B03A8C"/>
+    </g>
+    <path id="feather" d="M0 0C8-22 8-62 0-84C-8-62-8-22 0 0Z"/>
+
+    <!-- 1 cherry blossom branch -->
+    <symbol id="d-cherry" viewBox="0 0 240 160">
+      <g fill="none" stroke="#4A2E2A" stroke-linecap="round">
+        <path d="M2 40C60 52 100 40 140 60C170 74 200 70 238 48" stroke-width="7"/>
+        <path d="M100 47C110 30 120 22 138 14" stroke-width="4"/>
+        <path d="M160 68C168 90 180 100 198 110" stroke-width="4"/>
+        <path d="M60 46C58 62 64 76 76 86" stroke-width="3.5"/>
+      </g>
+      <use href="#blossom" transform="translate(36 46) scale(1.05)"/>
+      <use href="#blossom" transform="translate(76 86) scale(.9) rotate(20)"/>
+      <use href="#blossom" transform="translate(118 30) scale(1.1) rotate(-12)"/>
+      <use href="#blossom" transform="translate(140 14) scale(.8) rotate(30)"/>
+      <use href="#blossom" transform="translate(152 64) scale(1.15) rotate(8)"/>
+      <use href="#blossom" transform="translate(180 92) scale(.95) rotate(-20)"/>
+      <use href="#blossom" transform="translate(200 112) scale(.8)"/>
+      <use href="#blossom" transform="translate(218 58) scale(1) rotate(40)"/>
+      <g fill="#E0558B" stroke="#10131F" stroke-width="1.6"><circle cx="96" cy="44" r="4.5"/><circle cx="128" cy="18" r="4"/><circle cx="232" cy="46" r="4"/><circle cx="66" cy="66" r="3.5"/></g>
+    </symbol>
+
+    <!-- 2 falling petals -->
+    <symbol id="d-petals" viewBox="0 0 200 140">
+      <use href="#petal" transform="translate(30 34) rotate(-30)"/>
+      <use href="#petal" transform="translate(84 18) rotate(40) scale(.8)"/>
+      <use href="#petal" transform="translate(140 50) rotate(120)"/>
+      <use href="#petal" transform="translate(56 92) rotate(200) scale(.9)"/>
+      <use href="#petal" transform="translate(118 108) rotate(-80) scale(.75)"/>
+      <use href="#petal" transform="translate(176 96) rotate(15) scale(.85)"/>
+      <use href="#petal" transform="translate(12 126) rotate(70) scale(.7)"/>
+    </symbol>
+
+    <!-- 3 auspicious cloud scroll (Buddhist / Japanese) -->
+    <symbol id="d-cloud" viewBox="0 0 200 100">
+      <path d="M22 84C8 84 4 66 18 60C12 40 36 30 48 42C52 22 84 18 92 38C104 20 134 26 136 46C154 36 176 50 168 68C184 70 184 86 170 88Z" fill="#FFFFFF" stroke="#10131F" stroke-width="4" stroke-linejoin="round"/>
+      <g fill="none" stroke="#10131F" stroke-width="3" stroke-linecap="round">
+        <path d="M44 66C42 54 58 52 60 62C61 70 50 72 50 64"/>
+        <path d="M94 60C92 46 112 44 114 56C115 66 102 68 102 58"/>
+        <path d="M140 70C139 60 154 58 155 67C156 74 147 75 147 69"/>
+      </g>
+    </symbol>
+
+    <!-- 4 japi (Assamese bamboo hat) -->
+    <symbol id="d-japi" viewBox="0 0 200 200">
+      <g stroke="#10131F" stroke-width="4" stroke-linejoin="round" stroke-linecap="round">
+        <ellipse cx="100" cy="128" rx="88" ry="25" fill="#EBC07A"/>
+        <ellipse cx="100" cy="128" rx="62" ry="16" fill="none" stroke-width="2.5" opacity=".45"/>
+        <path d="M44 124L100 58 156 124Q100 142 44 124Z" fill="#D2343C"/>
+        <path d="M56 112Q100 124 144 112L151 121Q100 137 49 121Z" fill="#10131F"/>
+        <path d="M76 102L84 92 92 102 100 92 108 102 116 92 124 102" fill="none" stroke="#FFC21A" stroke-width="3.5"/>
+        <circle cx="100" cy="58" r="7" fill="#FFC21A"/>
+      </g>
+      <g fill="#FFFFFF"><path d="M66 116l4 4-4 4-4-4z"/><path d="M83 119l4 4-4 4-4-4z"/><path d="M100 120l4 4-4 4-4-4z"/><path d="M117 119l4 4-4 4-4-4z"/><path d="M134 116l4 4-4 4-4-4z"/></g>
+    </symbol>
+
+    <!-- 5 gamosa (Assam) -->
+    <symbol id="d-gamosa" viewBox="0 0 200 200">
+      <g stroke="#10131F" stroke-width="2.5" stroke-linecap="round">
+        <path d="M42 140V170M50 142V172M58 144V172M66 146V171M74 144V170M82 142V168M90 140V170M98 140V172M106 142V172M114 144V170M122 144V168M130 142V170M138 140V172M146 142V172M154 144V170M162 142V168"/>
+      </g>
+      <rect x="18" y="32" width="164" height="12" rx="6" fill="#EBC07A" stroke="#10131F" stroke-width="4"/>
+      <path d="M34 44H166V150Q150 158 134 150Q118 142 100 150Q82 158 66 150Q50 142 34 150Z" fill="#FFFFFF" stroke="#10131F" stroke-width="4" stroke-linejoin="round"/>
+      <path d="M36 116H164V134Q150 142 134 134Q118 126 100 134Q82 142 66 134Q50 126 36 134Z" fill="#D2343C"/>
+      <path d="M36 106H164" stroke="#D2343C" stroke-width="3"/>
+      <path d="M42 46V146M158 46V146" stroke="#D2343C" stroke-width="2.5"/>
+      <g fill="#FFFFFF"><path d="M52 120l5 5-5 5-5-5z"/><path d="M76 120l5 5-5 5-5-5z"/><path d="M100 120l5 5-5 5-5-5z"/><path d="M124 120l5 5-5 5-5-5z"/><path d="M148 120l5 5-5 5-5-5z"/></g>
+      <g fill="#D2343C"><circle cx="64" cy="86" r="3"/><circle cx="100" cy="80" r="3"/><circle cx="136" cy="86" r="3"/></g>
+    </symbol>
+
+    <!-- 6 Naga shawl, folded -->
+    <symbol id="d-shawl" viewBox="0 0 200 200">
+      <clipPath id="shawl-front"><rect x="24" y="74" width="136" height="96" rx="6"/></clipPath>
+      <rect x="46" y="44" width="130" height="92" rx="6" fill="#10131F" stroke="#10131F" stroke-width="4"/>
+      <g fill="#D2343C"><rect x="46" y="54" width="130" height="10"/><rect x="46" y="70" width="130" height="5"/></g>
+      <g stroke="#10131F" stroke-width="2.5" stroke-linecap="round"><path d="M160 80h14M160 88h14M160 96h14M160 104h14M160 112h14M160 120h14M160 128h14M160 136h14M160 144h14M160 152h14M160 160h14"/></g>
+      <g clip-path="url(#shawl-front)">
+        <rect x="24" y="74" width="136" height="96" fill="#10131F"/>
+        <rect x="24" y="82" width="136" height="12" fill="#D2343C"/>
+        <rect x="24" y="98" width="136" height="3" fill="#FFFFFF"/>
+        <rect x="24" y="104" width="136" height="6" fill="#D2343C"/>
+        <rect x="24" y="114" width="136" height="20" fill="#FFFFFF"/>
+        <rect x="24" y="138" width="136" height="6" fill="#D2343C"/>
+        <rect x="24" y="147" width="136" height="3" fill="#FFFFFF"/>
+        <rect x="24" y="154" width="136" height="12" fill="#D2343C"/>
+        <g fill="#10131F"><path d="M40 118l6 6-6 6-6-6z"/><path d="M64 118l6 6-6 6-6-6z"/><path d="M88 118l6 6-6 6-6-6z"/><path d="M112 118l6 6-6 6-6-6z"/><path d="M136 118l6 6-6 6-6-6z"/></g>
+        <g fill="#D2343C"><circle cx="52" cy="124" r="2"/><circle cx="76" cy="124" r="2"/><circle cx="100" cy="124" r="2"/><circle cx="124" cy="124" r="2"/><circle cx="148" cy="124" r="2"/></g>
+      </g>
+      <rect x="24" y="74" width="136" height="96" rx="6" fill="none" stroke="#10131F" stroke-width="4"/>
+    </symbol>
+
+    <!-- 7 Naga headgear with hornbill feathers -->
+    <symbol id="d-headgear" viewBox="0 0 200 200">
+      <g transform="translate(100 136)" fill="#FFFFFF" stroke="#10131F" stroke-width="3" stroke-linejoin="round">
+        <g transform="rotate(-60)"><use href="#feather"/><path d="M0-62C5-68 5-76 0-84-5-76-5-68 0-62Z" fill="#10131F"/></g>
+        <g transform="rotate(-40)"><use href="#feather"/><path d="M0-62C5-68 5-76 0-84-5-76-5-68 0-62Z" fill="#10131F"/></g>
+        <g transform="rotate(-20)"><use href="#feather"/><path d="M0-62C5-68 5-76 0-84-5-76-5-68 0-62Z" fill="#10131F"/></g>
+        <g><use href="#feather"/><path d="M0-62C5-68 5-76 0-84-5-76-5-68 0-62Z" fill="#10131F"/></g>
+        <g transform="rotate(20)"><use href="#feather"/><path d="M0-62C5-68 5-76 0-84-5-76-5-68 0-62Z" fill="#10131F"/></g>
+        <g transform="rotate(40)"><use href="#feather"/><path d="M0-62C5-68 5-76 0-84-5-76-5-68 0-62Z" fill="#10131F"/></g>
+        <g transform="rotate(60)"><use href="#feather"/><path d="M0-62C5-68 5-76 0-84-5-76-5-68 0-62Z" fill="#10131F"/></g>
+      </g>
+      <path d="M40 140Q100 108 160 140L160 162Q100 132 40 162Z" fill="#D2343C" stroke="#10131F" stroke-width="4" stroke-linejoin="round"/>
+      <g fill="#FFFFFF" stroke="#10131F" stroke-width="1.5"><ellipse cx="52" cy="146" rx="4.5" ry="3.2"/><ellipse cx="70" cy="140" rx="4.5" ry="3.2"/><ellipse cx="85" cy="137" rx="4.5" ry="3.2"/><ellipse cx="100" cy="135" rx="4.5" ry="3.2"/><ellipse cx="115" cy="137" rx="4.5" ry="3.2"/><ellipse cx="130" cy="140" rx="4.5" ry="3.2"/><ellipse cx="148" cy="146" rx="4.5" ry="3.2"/></g>
+      <g stroke="#D2343C" stroke-width="3" stroke-linecap="round"><path d="M42 160L34 184M46 160L42 186M156 160L164 184M152 160L156 186"/></g>
+      <g fill="#FFC21A" stroke="#10131F" stroke-width="2"><circle cx="38" cy="188" r="5"/><circle cx="160" cy="188" r="5"/></g>
+    </symbol>
+
+    <!-- 8 great hornbill -->
+    <symbol id="d-hornbill" viewBox="0 0 200 200">
+      <g stroke="#10131F" stroke-width="4" stroke-linejoin="round" stroke-linecap="round">
+        <path d="M8 164Q100 148 192 168" fill="none" stroke-width="10"/>
+        <path d="M8 164Q100 148 192 168" fill="none" stroke="#C8662F" stroke-width="4"/>
+        <path d="M118 120L170 186 148 194 104 134Z" fill="#FFFFFF"/>
+        <path d="M150 162L162 176 144 184 136 170Z" fill="#10131F"/>
+        <path d="M70 92C70 62 120 62 130 100C138 132 110 152 88 148C66 144 64 114 70 92Z" fill="#10131F"/>
+        <path d="M82 122C86 140 104 146 116 140C104 134 92 128 82 122Z" fill="#FFFFFF" stroke-width="2.5"/>
+        <path d="M86 88C98 90 104 100 100 112C92 106 86 100 80 94Z" fill="#FFF3C4" stroke-width="2.5"/>
+        <circle cx="80" cy="74" r="20" fill="#10131F"/>
+        <path d="M64 70C42 70 24 82 14 102C30 92 46 88 62 86Z" fill="#FFC21A"/>
+        <path d="M66 62C52 54 34 58 24 72C38 68 52 68 64 70Z" fill="#FF6A2B"/>
+        <path d="M96 152L94 162M106 152L108 162" stroke-width="3"/>
+      </g>
+      <circle cx="84" cy="70" r="8" fill="#FFFFFF"/><circle cx="82" cy="71" r="4" fill="#10131F"/>
+    </symbol>
+
+    <!-- 9 prayer flags -->
+    <symbol id="d-flags" viewBox="0 0 320 110">
+      <path d="M4 20Q160 70 316 20" fill="none" stroke="#10131F" stroke-width="3"/>
+      <g stroke="#10131F" stroke-width="2.5" stroke-linejoin="round">
+        <g transform="translate(28 26.5) rotate(15.6)"><path d="M-15 0H15V40L0 34-15 40Z" fill="#7090E4"/></g>
+        <g transform="translate(68 36) rotate(11)"><path d="M-15 0H15V40L0 34-15 40Z" fill="#FFFFFF"/></g>
+        <g transform="translate(108 42) rotate(6.3)"><path d="M-15 0H15V40L0 34-15 40Z" fill="#D2343C"/></g>
+        <g transform="translate(148 44.8) rotate(1.5)"><path d="M-15 0H15V40L0 34-15 40Z" fill="#2DC56E"/></g>
+        <g transform="translate(188 44.2) rotate(-3.3)"><path d="M-15 0H15V40L0 34-15 40Z" fill="#FFC21A"/></g>
+        <g transform="translate(228 40.2) rotate(-8.1)"><path d="M-15 0H15V40L0 34-15 40Z" fill="#7090E4"/></g>
+        <g transform="translate(268 32.8) rotate(-12.8)"><path d="M-15 0H15V40L0 34-15 40Z" fill="#FFFFFF"/></g>
+      </g>
+      <g fill="none" stroke="#10131F" stroke-width="1.6" opacity=".45" stroke-linecap="round">
+        <path transform="translate(28 26.5) rotate(15.6)" d="M-7 12H7M-7 18H5M-7 24H7"/>
+        <path transform="translate(68 36) rotate(11)" d="M-7 12H7M-7 18H5M-7 24H7"/>
+        <path transform="translate(108 42) rotate(6.3)" d="M-7 12H7M-7 18H5M-7 24H7"/>
+        <path transform="translate(148 44.8) rotate(1.5)" d="M-7 12H7M-7 18H5M-7 24H7"/>
+        <path transform="translate(188 44.2) rotate(-3.3)" d="M-7 12H7M-7 18H5M-7 24H7"/>
+        <path transform="translate(228 40.2) rotate(-8.1)" d="M-7 12H7M-7 18H5M-7 24H7"/>
+        <path transform="translate(268 32.8) rotate(-12.8)" d="M-7 12H7M-7 18H5M-7 24H7"/>
+      </g>
+    </symbol>
+
+    <!-- 10 Bihu dhol -->
+    <symbol id="d-dhol" viewBox="0 0 200 200">
+      <g stroke="#10131F" stroke-width="4" stroke-linejoin="round" stroke-linecap="round">
+        <path d="M50 74Q100 24 150 74" fill="none" stroke="#D2343C" stroke-width="7"/>
+        <path d="M50 70C38 100 38 130 50 152H150C162 130 162 100 150 70Z" fill="#C8662F"/>
+        <path d="M54 76L78 146 102 76 126 146 148 78" fill="none" stroke="#F6E7C8" stroke-width="3"/>
+        <ellipse cx="50" cy="111" rx="14" ry="41" fill="#F6E7C8"/>
+        <ellipse cx="150" cy="111" rx="14" ry="41" fill="#F6E7C8"/>
+        <path d="M152 52Q172 36 186 14" fill="none" stroke-width="6"/>
+        <path d="M152 52Q172 36 186 14" fill="none" stroke="#EBC07A" stroke-width="2"/>
+      </g>
+    </symbol>
+
+    <!-- 11 pepa (buffalo-horn pipe) -->
+    <symbol id="d-pepa" viewBox="0 0 200 200">
+      <clipPath id="pepa-clip"><path d="M50 170C26 120 50 52 110 34C134 27 156 25 172 24L178 66C150 64 118 70 96 90C74 110 62 140 60 168Z"/></clipPath>
+      <path d="M50 170C26 120 50 52 110 34C134 27 156 25 172 24L178 66C150 64 118 70 96 90C74 110 62 140 60 168Z" fill="#FFC21A"/>
+      <g clip-path="url(#pepa-clip)" stroke-width="7">
+        <path d="M20 128L90 146" stroke="#FF6A2B"/><path d="M24 94L96 118" stroke="#D2343C"/>
+        <path d="M50 58L104 100" stroke="#FF6A2B"/><path d="M96 26L118 82" stroke="#D2343C"/><path d="M140 16L144 76" stroke="#FF6A2B"/>
+      </g>
+      <path d="M50 170C26 120 50 52 110 34C134 27 156 25 172 24L178 66C150 64 118 70 96 90C74 110 62 140 60 168Z" fill="none" stroke="#10131F" stroke-width="4" stroke-linejoin="round"/>
+      <ellipse cx="175" cy="45" rx="8" ry="21" fill="#10131F"/>
+      <path d="M50 170L60 168 56 194H44Z" fill="#2DC56E" stroke="#10131F" stroke-width="3" stroke-linejoin="round"/>
+      <path d="M84 104Q90 130 86 150" fill="none" stroke="#10131F" stroke-width="2"/>
+      <circle cx="86" cy="156" r="7" fill="#E0558B" stroke="#10131F" stroke-width="2.5"/>
+    </symbol>
+
+    <!-- 12 monastery (Tawang-style gompa) -->
+    <symbol id="d-gompa" viewBox="0 0 200 200">
+      <g stroke="#10131F" stroke-width="4" stroke-linejoin="round" stroke-linecap="round">
+        <path d="M-4 194Q100 150 204 194Z" fill="#2DC56E"/>
+        <rect x="50" y="112" width="100" height="62" fill="#FFFFFF"/>
+        <rect x="50" y="112" width="100" height="12" fill="#8E1F2A"/>
+        <rect x="70" y="80" width="60" height="32" fill="#FFFFFF"/>
+        <rect x="70" y="80" width="60" height="9" fill="#8E1F2A"/>
+        <path d="M36 116L56 102H144L164 116Z" fill="#FFC21A"/>
+        <path d="M56 84L74 68H126L144 84Z" fill="#FFC21A"/>
+        <path d="M100 40L107 68H93Z" fill="#FFC21A"/>
+        <rect x="90" y="146" width="20" height="28" fill="#8E1F2A"/>
+        <rect x="60" y="136" width="14" height="14" fill="#10131F"/>
+        <rect x="126" y="136" width="14" height="14" fill="#10131F"/>
+        <circle cx="100" cy="36" r="5" fill="#FFC21A"/>
+      </g>
+      <g fill="#FFC21A"><rect x="62" y="138" width="10" height="3"/><rect x="128" y="138" width="10" height="3"/></g>
+    </symbol>
+
+    <!-- 13 kopou orchid (foxtail orchid, Assam) -->
+    <symbol id="d-orchid" viewBox="0 0 200 200">
+      <g stroke="#10131F" stroke-width="4" stroke-linejoin="round" stroke-linecap="round">
+        <path d="M16 46C40 30 66 28 84 40C64 44 40 50 22 64Z" fill="#2DC56E"/>
+        <path d="M30 24C52 14 76 18 90 32C70 32 50 34 34 40Z" fill="#2DC56E"/>
+        <path d="M70 40Q150 80 120 180" fill="none" stroke="#2DC56E" stroke-width="5"/>
+      </g>
+      <use href="#floret" x="77" y="48"/><use href="#floret" x="92" y="48"/>
+      <use href="#floret" x="88" y="57"/><use href="#floret" x="103" y="56"/>
+      <use href="#floret" x="96" y="66"/><use href="#floret" x="112" y="64"/>
+      <use href="#floret" x="104" y="75"/><use href="#floret" x="120" y="74"/>
+      <use href="#floret" x="110" y="85"/><use href="#floret" x="126" y="84"/>
+      <use href="#floret" x="114" y="96"/><use href="#floret" x="130" y="95"/>
+      <use href="#floret" x="118" y="107"/><use href="#floret" x="134" y="106"/>
+      <use href="#floret" x="120" y="119"/><use href="#floret" x="136" y="119"/>
+      <use href="#floret" x="120" y="132"/><use href="#floret" x="136" y="132"/>
+      <use href="#floret" x="119" y="146"/><use href="#floret" x="135" y="146"/>
+      <use href="#floret" x="118" y="160"/><use href="#floret" x="132" y="160"/>
+      <use href="#floret" x="122" y="174"/>
+    </symbol>
+
+    <!-- 14 mithun -->
+    <symbol id="d-mithun" viewBox="0 0 200 200">
+      <g stroke="#10131F" stroke-width="4" stroke-linejoin="round" stroke-linecap="round">
+        <path d="M72 70C42 64 20 70 10 54C26 48 52 50 76 58Z" fill="#EFE6D2"/>
+        <path d="M128 70C158 64 180 70 190 54C174 48 148 50 124 58Z" fill="#EFE6D2"/>
+        <path d="M66 76C46 78 36 88 34 94C48 96 62 90 70 84Z" fill="#2A2420"/>
+        <path d="M134 76C154 78 164 88 166 94C152 96 138 90 130 84Z" fill="#2A2420"/>
+        <path d="M64 56C64 44 136 44 136 56L130 120C126 150 112 168 100 168C88 168 74 150 70 120Z" fill="#2A2420"/>
+        <path d="M78 52C90 46 110 46 122 52L116 76C106 70 94 70 84 76Z" fill="#E9D9B4" stroke-width="2.5"/>
+        <ellipse cx="100" cy="154" rx="22" ry="14" fill="#4B3B33" stroke-width="2.5"/>
+      </g>
+      <g fill="#10131F"><ellipse cx="92" cy="156" rx="3" ry="4"/><ellipse cx="108" cy="156" rx="3" ry="4"/></g>
+      <circle cx="84" cy="100" r="9" fill="#FFFFFF"/><circle cx="86" cy="102" r="4.5" fill="#10131F"/>
+      <circle cx="116" cy="100" r="9" fill="#FFFFFF"/><circle cx="118" cy="102" r="4.5" fill="#10131F"/>
+    </symbol>
+
+    <!-- 15 one-horned rhino -->
+    <symbol id="d-rhino" viewBox="0 0 220 160">
+      <g stroke="#10131F" stroke-width="4" stroke-linejoin="round" stroke-linecap="round">
+        <path d="M190 70Q206 76 204 90" fill="none" stroke-width="3"/>
+        <path d="M64 64C76 36 156 34 182 56C198 70 200 96 190 110L188 138H172L170 118H146L144 138H128L126 118H98L96 138H80L78 116C68 112 62 96 64 64Z" fill="#7090E4"/>
+        <path d="M72 66C58 60 36 64 26 76C16 86 12 96 16 104C24 110 40 108 52 104C62 102 72 98 78 92Z" fill="#7090E4"/>
+        <path d="M24 82C17 70 17 60 21 50C26 60 31 70 35 77Z" fill="#EFE6D2"/>
+        <path d="M64 62C62 50 66 44 72 42C74 50 72 58 68 64Z" fill="#7090E4"/>
+        <path d="M102 44C96 70 98 96 104 116M150 42C156 66 156 92 150 116" fill="none" stroke-width="3"/>
+      </g>
+      <g fill="#3D57B5"><circle cx="120" cy="66" r="3"/><circle cx="132" cy="80" r="3"/><circle cx="118" cy="92" r="3"/><circle cx="168" cy="72" r="3"/><circle cx="172" cy="90" r="3"/></g>
+      <circle cx="48" cy="84" r="7" fill="#FFFFFF" stroke="#10131F" stroke-width="2"/><circle cx="46" cy="85" r="3.4" fill="#10131F"/>
+    </symbol>
+
+    <!-- 16 xorai (Assamese bell-metal offering stand) -->
+    <symbol id="d-xorai" viewBox="0 0 200 200">
+      <g stroke="#10131F" stroke-width="4" stroke-linejoin="round" stroke-linecap="round">
+        <path d="M68 182H132L120 150H80Z" fill="#FFC21A"/>
+        <rect x="91" y="122" width="18" height="30" fill="#FFC21A"/>
+        <path d="M34 118Q100 154 166 118Z" fill="#E3A514"/>
+        <ellipse cx="100" cy="118" rx="66" ry="12" fill="#FFC21A"/>
+        <path d="M56 114Q100 36 144 114Z" fill="#FFC21A"/>
+        <path d="M100 42L105 60H95Z" fill="#FFC21A"/>
+        <circle cx="100" cy="38" r="6" fill="#FF6A2B"/>
+      </g>
+      <g fill="none" stroke="#FF6A2B" stroke-width="3" stroke-linecap="round"><path d="M68 100Q100 88 132 100"/><path d="M78 84Q100 74 122 84"/><path d="M76 166H124"/></g>
+    </symbol>
+
+    <!-- 17 Naga gate with crossed horns -->
+    <symbol id="d-gate" viewBox="0 0 200 200">
+      <g stroke="#10131F" stroke-linejoin="round" stroke-linecap="round">
+        <path d="M86 56C98 36 108 22 128 8M114 56C102 36 92 22 72 8" fill="none" stroke-width="13"/>
+        <path d="M86 56C98 36 108 22 128 8M114 56C102 36 92 22 72 8" fill="none" stroke="#EFE6D2" stroke-width="7"/>
+        <path d="M24 76L100 34 176 76Z" fill="#EBC07A" stroke-width="4"/>
+        <path d="M44 72L100 42 156 72" fill="none" stroke="#C8662F" stroke-width="2.5"/>
+        <rect x="30" y="74" width="140" height="18" fill="#C8662F" stroke-width="4"/>
+        <rect x="40" y="92" width="20" height="94" fill="#8A4A24" stroke-width="4"/>
+        <rect x="140" y="92" width="20" height="94" fill="#8A4A24" stroke-width="4"/>
+        <path d="M44 110L56 120 44 130 56 140 44 150 56 160 44 170M144 110L156 120 144 130 156 140 144 150 156 160 144 170" fill="none" stroke="#FFFFFF" stroke-width="2.5"/>
+      </g>
+      <g fill="#FFFFFF" stroke="#10131F" stroke-width="2"><circle cx="70" cy="83" r="4"/><circle cx="100" cy="83" r="4"/><circle cx="130" cy="83" r="4"/></g>
+    </symbol>
+
+    <!-- 18 bamboo -->
+    <symbol id="d-bamboo" viewBox="0 0 200 200">
+      <g stroke="#10131F" stroke-width="4" stroke-linejoin="round" stroke-linecap="round">
+        <rect x="70" y="10" width="22" height="186" rx="10" fill="#2DC56E"/>
+        <rect x="108" y="40" width="18" height="156" rx="9" fill="#7BD99E"/>
+        <path d="M70 62H92M70 118H92M70 170H92M108 86H126M108 140H126" fill="none" stroke-width="3"/>
+        <path d="M92 62C118 52 140 54 160 66C136 70 114 70 92 62Z" fill="#2DC56E"/>
+        <path d="M92 118C118 106 146 112 168 128C140 128 116 126 92 118Z" fill="#2DC56E"/>
+        <path d="M70 92C48 80 26 82 10 94C32 100 52 100 70 92Z" fill="#2DC56E"/>
+        <path d="M108 86C92 70 70 66 52 72C70 82 88 88 108 86Z" fill="#7BD99E"/>
+      </g>
+    </symbol>
+
+    <!-- 19 tea: two leaves and a bud -->
+    <symbol id="d-tea" viewBox="0 0 200 200">
+      <g stroke="#10131F" stroke-width="4" stroke-linejoin="round" stroke-linecap="round">
+        <path d="M100 196C98 150 100 110 104 70" fill="none" stroke="#2A6B3F" stroke-width="5"/>
+        <path d="M102 120C70 120 40 100 30 64C66 66 92 88 102 120Z" fill="#2DC56E"/>
+        <path d="M104 100C130 96 160 76 170 40C134 44 110 68 104 100Z" fill="#2DC56E"/>
+        <path d="M104 72C94 50 98 26 112 8C122 28 118 54 104 72Z" fill="#7BD99E"/>
+        <path d="M100 116C80 106 60 92 44 74M106 96C126 84 146 66 160 48" fill="none" stroke-width="2"/>
+      </g>
+    </symbol>
+
+    <!-- 20 Bodo aronai, with agor motifs: pharo megon (pigeon's eye) and hajw agor (hill) -->
+    <g id="agor-dia"><path d="M0-7L7 0 0 7-7 0Z" fill="#F2B705"/><path d="M0-4L4 0 0 4-4 0Z" fill="#1F8A4C"/><circle r="1.4" fill="#FFFFFF"/></g>
+    <g id="agor-hill"><path d="M-5.5 5L0-4 5.5 5Z" fill="#F2B705"/><path d="M-2.6 5L0 .6 2.6 5Z" fill="#1F8A4C"/></g>
+    <linearGradient id="g-aronai" x1="0" x2="1"><stop offset="0" stop-color="#8E1420"/><stop offset=".3" stop-color="#C2222F"/><stop offset=".7" stop-color="#BE2230"/><stop offset="1" stop-color="#7E101B"/></linearGradient>
+    <pattern id="p-weave" width="4" height="4" patternUnits="userSpaceOnUse"><path d="M0 .5H4M.5 0V4" stroke="#000" stroke-opacity=".08"/></pattern>
+    <symbol id="d-aronai" viewBox="0 0 200 200">
+      <clipPath id="ar-front"><path d="M50 36H106L102 182H46Z"/></clipPath>
+      <clipPath id="ar-back"><path d="M108 36H156L160 168H112Z"/></clipPath>
+      <g stroke-width="1.8" stroke-linecap="round">
+        <path d="M114 168V182M120 168V184M126 168V182M132 168V184M138 168V182M144 168V184M150 168V182M156 168V184" stroke="#A01A26"/>
+        <path d="M117 168V183M129 168V183M141 168V183M153 168V183" stroke="#F2B705"/>
+        <path d="M48 182V197M54 182V199M60 182V197M66 182V199M72 182V197M78 182V199M84 182V197M90 182V199M96 182V197" stroke="#C2222F"/>
+        <path d="M51 182V198M63 182V198M75 182V198M87 182V198M99 182V197" stroke="#F2B705"/>
+      </g>
+      <g clip-path="url(#ar-back)">
+        <rect x="104" y="30" width="60" height="140" fill="url(#g-aronai)"/><rect x="104" y="30" width="60" height="140" fill="url(#p-weave)"/>
+        <path d="M112 36L115 120M152 36L155 120" stroke="#F2B705" stroke-width="1.6"/><path d="M116 36L119 120M148 36L151 120" stroke="#1F8A4C" stroke-width="1.4"/>
+        <rect x="104" y="122" width="60" height="4" fill="#F2B705"/><rect x="104" y="127" width="60" height="1.6" fill="#1F8A4C"/>
+        <use href="#agor-dia" transform="translate(119 138) scale(.85)"/><use href="#agor-dia" transform="translate(131 138) scale(.85)"/><use href="#agor-dia" transform="translate(143 138) scale(.85)"/><use href="#agor-dia" transform="translate(155 138) scale(.85)"/>
+        <use href="#agor-hill" transform="translate(116 153)"/><use href="#agor-hill" transform="translate(127 153)"/><use href="#agor-hill" transform="translate(138 153)"/><use href="#agor-hill" transform="translate(149 153)"/><use href="#agor-hill" transform="translate(160 153)"/>
+        <rect x="104" y="160" width="60" height="3" fill="#F2B705"/><rect x="104" y="30" width="60" height="140" fill="#000" opacity=".2"/>
+      </g>
+      <path d="M108 36H156L160 168H112Z" fill="none" stroke="#10131F" stroke-width="2"/>
+      <rect x="16" y="26" width="168" height="10" rx="5" fill="#EBC07A" stroke="#6E4A00" stroke-width="1.5"/>
+      <path d="M48 38C50 19 158 19 158 38L156 40H50Z" fill="#7E101B" stroke="#10131F" stroke-width="2"/>
+      <path d="M58 30C80 22 128 22 150 30" fill="none" stroke="#F2B705" stroke-width="1.4"/>
+      <g clip-path="url(#ar-front)">
+        <rect x="40" y="30" width="70" height="160" fill="url(#g-aronai)"/><rect x="40" y="30" width="70" height="160" fill="url(#p-weave)"/>
+        <path d="M54 36L51 130M102 36L99 130" stroke="#F2B705" stroke-width="1.8"/><path d="M58 36L55 130M98 36L95 130" stroke="#1F8A4C" stroke-width="1.5"/>
+        <g fill="#F2B705"><path d="M77 58l3 3-3 3-3-3z"/><path d="M76.5 82l3 3-3 3-3-3z"/><path d="M76 106l3 3-3 3-3-3z"/></g>
+        <rect x="40" y="132" width="70" height="4" fill="#F2B705"/><rect x="40" y="137" width="70" height="1.8" fill="#1F8A4C"/>
+        <use href="#agor-dia" transform="translate(54 148)"/><use href="#agor-dia" transform="translate(68 148)"/><use href="#agor-dia" transform="translate(82 148)"/><use href="#agor-dia" transform="translate(96 148)"/>
+        <use href="#agor-hill" transform="translate(51 163)"/><use href="#agor-hill" transform="translate(62 163)"/><use href="#agor-hill" transform="translate(73 163)"/><use href="#agor-hill" transform="translate(84 163)"/><use href="#agor-hill" transform="translate(95 163)"/>
+        <rect x="40" y="171" width="70" height="4" fill="#F2B705"/><rect x="40" y="176" width="70" height="1.6" fill="#1F8A4C"/>
+        <path d="M88 36L84 182" stroke="#000" stroke-opacity=".12" stroke-width="10"/><path d="M60 40L57 120" stroke="#FFF" stroke-opacity=".12" stroke-width="6"/>
+      </g>
+      <path d="M50 36H106L102 182H46Z" fill="none" stroke="#10131F" stroke-width="2"/>
+    </symbol>
+    <pattern id="p-aronai" width="32" height="48" patternUnits="userSpaceOnUse">
+      <rect width="32" height="48" fill="#C2222F"/>
+      <rect y="3" width="32" height="3" fill="#F2B705"/><rect y="7" width="32" height="1.6" fill="#1F8A4C"/>
+      <rect y="42" width="32" height="3" fill="#F2B705"/><rect y="39.4" width="32" height="1.6" fill="#1F8A4C"/>
+      <use href="#agor-dia" transform="translate(16 18)"/>
+      <use href="#agor-hill" transform="translate(5 32)"/><use href="#agor-hill" transform="translate(16 32)"/><use href="#agor-hill" transform="translate(27 32)"/>
+    </pattern>
+
+    <!-- 21 sangai, Manipur's brow-antlered dancing deer, on a Loktak phumdi -->
+    <symbol id="d-sangai" viewBox="0 0 220 160">
+      <g stroke="#10131F" stroke-width="4" stroke-linejoin="round" stroke-linecap="round">
+        <path d="M0 154H220" fill="none" stroke="#7090E4" stroke-width="5"/>
+        <path d="M14 150Q110 128 206 150Z" fill="#2DC56E"/>
+        <rect x="92" y="100" width="10" height="44" rx="5" fill="#A8522A"/>
+        <rect x="112" y="102" width="10" height="42" rx="5" fill="#A8522A"/>
+        <rect x="150" y="100" width="10" height="44" rx="5" fill="#A8522A"/>
+        <rect x="168" y="98" width="10" height="46" rx="5" fill="#A8522A"/>
+        <path d="M184 82C194 76 200 84 194 92Z" fill="#C8662F"/>
+        <path d="M80 92C80 72 120 66 156 70C178 72 190 84 188 98C186 112 170 116 150 116H100C88 116 80 106 80 92Z" fill="#C8662F"/>
+        <path d="M86 96C78 80 68 66 60 54L74 46C82 60 92 72 102 82Z" fill="#C8662F"/>
+        <path d="M70 40C78 30 88 30 92 34C86 40 78 44 72 46Z" fill="#C8662F"/>
+        <path d="M52 38C62 34 74 40 76 50C76 56 68 58 60 58L38 62C30 62 28 56 32 52Z" fill="#C8662F"/>
+        <path d="M60 38C48 30 42 18 46 6M62 38C68 22 82 10 102 8M76 18L82 6M88 12L96 2" fill="none" stroke-width="10"/>
+        <path d="M60 38C48 30 42 18 46 6M62 38C68 22 82 10 102 8M76 18L82 6M88 12L96 2" fill="none" stroke="#EFE6D2" stroke-width="4.5"/>
+      </g>
+      <path d="M104 112C124 116 150 116 168 110" fill="none" stroke="#EBC07A" stroke-width="5" stroke-linecap="round"/>
+      <circle cx="33" cy="57" r="3.2" fill="#10131F"/>
+      <circle cx="58" cy="46" r="7" fill="#FFFFFF" stroke="#10131F" stroke-width="2"/><circle cx="56" cy="47" r="3.4" fill="#10131F"/>
+    </symbol>
+
+    <!-- 22 Ujjayanta Palace, Agartala (Tripura) -->
+    <symbol id="d-palace" viewBox="0 0 200 200">
+      <g stroke="#10131F" stroke-width="4" stroke-linejoin="round" stroke-linecap="round">
+        <rect x="14" y="176" width="172" height="16" rx="8" fill="#7FC8F0"/>
+        <rect x="30" y="112" width="140" height="64" fill="#FFFFFF"/>
+        <rect x="26" y="104" width="148" height="10" fill="#FFC21A"/>
+        <rect x="30" y="84" width="26" height="20" fill="#FFFFFF"/>
+        <rect x="144" y="84" width="26" height="20" fill="#FFFFFF"/>
+        <path d="M28 86C28 70 38 64 43 58C48 64 58 70 58 86Z" fill="#FFFFFF"/>
+        <path d="M142 86C142 70 152 64 157 58C162 64 172 70 172 86Z" fill="#FFFFFF"/>
+        <rect x="78" y="64" width="44" height="42" fill="#FFFFFF"/>
+        <rect x="74" y="60" width="52" height="8" fill="#FFC21A"/>
+        <path d="M74 62C74 38 92 30 100 22C108 30 126 38 126 62Z" fill="#FFFFFF"/>
+        <path d="M100 22V10M43 58V50M157 58V50" fill="none" stroke-width="3"/>
+        <path d="M86 176V150A14 14 0 0 1 114 150V176Z" fill="#8E1F2A"/>
+        <path d="M44 166V146A8 8 0 0 1 60 146V166ZM140 166V146A8 8 0 0 1 156 146V166ZM90 100V84A10 10 0 0 1 110 84V100Z" fill="#10131F"/>
+      </g>
+      <g fill="#FFC21A" stroke="#10131F" stroke-width="2"><circle cx="100" cy="9" r="4.5"/><circle cx="43" cy="49" r="3.5"/><circle cx="157" cy="49" r="3.5"/></g>
+      <path d="M30 124H170" stroke="#8E1F2A" stroke-width="3"/>
+      <path d="M36 184H58M80 186H120M142 184H164" stroke="#FFFFFF" stroke-width="2" stroke-linecap="round" opacity=".8"/>
+    </symbol>
+
+    <!-- ===== patterns for bands ===== -->
+    <pattern id="p-naga" width="48" height="48" patternUnits="userSpaceOnUse">
+      <rect width="48" height="48" fill="#10131F"/>
+      <rect y="4" width="48" height="8" fill="#D2343C"/><rect y="36" width="48" height="8" fill="#D2343C"/>
+      <rect y="15" width="48" height="2" fill="#FFFFFF"/><rect y="31" width="48" height="2" fill="#FFFFFF"/>
+      <path d="M24 17L31 24 24 31 17 24Z" fill="#FFFFFF"/><circle cx="24" cy="24" r="2.5" fill="#D2343C"/>
+      <path d="M0 21L3 24 0 27M48 21L45 24 48 27" fill="#FFFFFF"/>
+    </pattern>
+    <pattern id="p-gamosa" width="40" height="48" patternUnits="userSpaceOnUse">
+      <rect width="40" height="48" fill="#FFFFFF"/>
+      <rect y="5" width="40" height="3" fill="#D2343C"/><rect y="40" width="40" height="3" fill="#D2343C"/>
+      <rect y="13" width="40" height="22" fill="#D2343C"/>
+      <path d="M20 16L28 24 20 32 12 24Z" fill="#FFFFFF"/><circle cx="20" cy="24" r="2.5" fill="#D2343C"/>
+      <g fill="#FFFFFF"><circle cx="4" cy="24" r="2"/><circle cx="36" cy="24" r="2"/></g>
+    </pattern>
+    <pattern id="p-puan" width="36" height="48" patternUnits="userSpaceOnUse">
+      <rect width="36" height="48" fill="#10131F"/>
+      <rect y="0" width="36" height="6" fill="#2DC56E"/><rect y="42" width="36" height="6" fill="#2DC56E"/>
+      <path d="M0 30L9 16 18 30 27 16 36 30" fill="none" stroke="#FFC21A" stroke-width="4" stroke-linejoin="round"/>
+      <path d="M0 38L9 24 18 38 27 24 36 38" fill="none" stroke="#D2343C" stroke-width="3" stroke-linejoin="round"/>
+      <g fill="#FFFFFF"><circle cx="9" cy="10" r="2"/><circle cx="27" cy="10" r="2"/></g>
+    </pattern>
+    <pattern id="p-waves" width="40" height="20" patternUnits="userSpaceOnUse">
+      <rect width="40" height="20" fill="#3D57B5"/>
+      <g><circle cx="0" cy="10" r="19" fill="#7090E4"/><circle cx="0" cy="10" r="14" fill="#3D57B5"/><circle cx="0" cy="10" r="9" fill="#7090E4"/><circle cx="0" cy="10" r="4" fill="#3D57B5"/></g>
+      <g><circle cx="40" cy="10" r="19" fill="#7090E4"/><circle cx="40" cy="10" r="14" fill="#3D57B5"/><circle cx="40" cy="10" r="9" fill="#7090E4"/><circle cx="40" cy="10" r="4" fill="#3D57B5"/></g>
+      <g><circle cx="20" cy="20" r="19" fill="#7090E4"/><circle cx="20" cy="20" r="14" fill="#3D57B5"/><circle cx="20" cy="20" r="9" fill="#7090E4"/><circle cx="20" cy="20" r="4" fill="#3D57B5"/></g>
+    </pattern>
+    <pattern id="p-blossom" width="80" height="48" patternUnits="userSpaceOnUse">
+      <rect width="80" height="48" fill="#FFE3EE"/>
+      <use href="#blossom" transform="translate(20 24) scale(.8)"/>
+      <use href="#petal" transform="translate(54 14) rotate(40) scale(.7)"/>
+      <use href="#petal" transform="translate(64 38) rotate(160) scale(.6)"/>
+    </pattern>
+  </defs></svg>

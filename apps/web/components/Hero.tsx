@@ -4,6 +4,9 @@ import { useEffect, useRef, useState } from "react";
 import { useRouter } from "next/navigation";
 import { Icon, type IconName } from "./Icon";
 import { DatePicker } from "./DatePicker";
+import { CherryBranch, SakuraDefs, SakuraSky } from "./SakuraSky";
+import { PrayerFlags } from "./Doodles";
+import { HeroScene } from "./HeroScene";
 import { matchDestination, type Destination } from "@/lib/destinations";
 import { MAX_DAYS, MAX_PARTY, addDays, todayIST } from "@/lib/trip";
 
@@ -54,7 +57,11 @@ export function Hero({ destinations }: { destinations: Destination[] }) {
   return (
     <div className="wrap">
       <div className="hero">
-        <HeroArt />
+        <HeroScene />
+        <SakuraDefs />
+        <PrayerFlags />
+        <CherryBranch className="hero-branch" />
+        <SakuraSky count={22} />
         <h1>
           <span className="w">Know</span> <span className="w">before</span> <span className="w">you</span>{" "}
           <span className="w ink">go.</span>
@@ -114,40 +121,5 @@ function Stepper({ label, icon, value, max, onChange }: { label: string; icon: I
       <output aria-live="polite">{value}</output>
       <button type="button" aria-label={`More ${label.toLowerCase()}`} disabled={value >= max} onClick={() => onChange(Math.min(max, value + 1))}>+</button>
     </div>
-  );
-}
-
-function HeroArt() {
-  return (
-    // Hills only: the sky is the .hero background gradient, so the band can sit at the
-    // bottom of a viewport-height card without stretching behind the copy.
-    <svg className="hero-art" viewBox="0 200 1440 440" preserveAspectRatio="xMidYMax slice" aria-hidden="true">
-      <circle cx="1110" cy="335" r="108" fill="#FFC21A" />
-      <g fill="#fff" opacity=".9">
-        <rect x="860" y="236" width="150" height="34" rx="17" />
-        <rect x="905" y="216" width="80" height="38" rx="19" />
-        <rect x="1236" y="262" width="120" height="28" rx="14" />
-        <rect x="1266" y="246" width="60" height="32" rx="16" />
-      </g>
-      <path d="M0 420C120 360 220 330 340 370s180-70 320-60 200 90 320 70 200-80 320-60c80 13 120 40 140 50v270H0z" fill="#7090E4" />
-      <path d="M0 470c140-40 260-20 380-50s200 20 340 30 220-50 340-40 240 60 380 40v190H0z" fill="#3D57B5" />
-      <path d="M1028 408h16c4 30-2 60 3 98h-22c4-38-1-68 3-98z" fill="#fff" opacity=".92" />
-      <ellipse cx="1036" cy="505" rx="44" ry="10" fill="#fff" opacity=".55" />
-      <ellipse cx="560" cy="470" rx="300" ry="18" fill="#fff" opacity=".18" />
-      <path d="M0 540c180-40 300-20 460-40s240 30 400 40 280-40 420-30c80 6 130 20 160 25v105H0z" fill="#1F2D6B" />
-      <g fill="#1F2D6B">
-        <path d="M140 528 158 470l18 58z" />
-        <path d="M172 524 186 482l14 42z" />
-        <path d="M1180 512 1198 452l18 60z" />
-        <path d="M1214 516 1229 474l15 42z" />
-        <path d="M760 526 776 476l16 50z" />
-      </g>
-      <path d="M0 600c200-20 400 10 600-5s400 15 600 5c120-6 200 0 240 5v35H0z" fill="#10131F" />
-      <g fill="#10131F">
-        <path d="M300 600 322 528l22 72z" />
-        <path d="M336 600 354 546l18 54z" />
-        <path d="M1320 604 1342 534l22 70z" />
-      </g>
-    </svg>
   );
 }

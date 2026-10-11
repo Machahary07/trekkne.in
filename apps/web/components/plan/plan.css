@@ -92,6 +92,7 @@
 .pln { display: grid; gap: 16px; grid-template-columns: minmax(280px, 380px) minmax(0, 1fr); align-items: start }
 @media (max-width: 960px) { .pln { grid-template-columns: minmax(0, 1fr) } }
 .pln-form { position: sticky; top: calc(var(--head-h) + 12px) }
+.pln-mytrips { justify-self: start }
 @media (max-width: 960px) { .pln-form { position: static } }
 .pln-field { display: grid; gap: 6px }
 .pln-field > span { font: 700 12px/1.2 var(--body); letter-spacing: .08em; text-transform: uppercase; color: var(--muted) }

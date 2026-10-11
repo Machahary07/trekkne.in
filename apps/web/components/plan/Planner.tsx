@@ -189,6 +189,9 @@ export function Planner({ places, events, notices, initialAdd, initialTrip = {},
           <span>Start date</span>
           <DatePicker variant="field" label="Start date" value={plan.start} min={todayIST()} span={plan.days} onChange={(start) => set({ start })} />
         </div>
+        {signedIn && (
+          <Link className="btn btn-ghost btn-sm pln-mytrips" href="/account?tab=trips"><Icon name="route" />View your confirmed trips</Link>
+        )}
         <div className="pl-between">
           <div className="pln-field"><span>Days</span>
             <div className="pln-step">

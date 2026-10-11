@@ -8,9 +8,12 @@ import { RangerRequest } from "@/components/account/RangerRequest";
 import { TripActions } from "@/components/account/TripActions";
 import { SignOutButton } from "@/components/crm/SignOutButton";
 import { getStaff } from "@/lib/auth";
+import { photoThumb, placePhoto } from "@/lib/photos";
 import { STATE_NAMES } from "@/lib/states";
 import { supabaseServer } from "@/lib/supabase/server";
 import { addDays, todayIST } from "@/lib/trip";
+import { FORECAST_DAYS, getForecast, type DayForecast } from "@/lib/weather";
+import { TripWeather, type TripWeatherDay } from "@/components/account/TripWeather";
 // Small buttons and status pills (.btn-sm, .pl-pill) are shared with the planner.
 import "@/components/plan/plan.css";
 import "./account.css";
@@ -51,7 +54,7 @@ export default async function Account({ searchParams }: { searchParams: Promise<
 
   const sb = await supabaseServer();
   const [trips, reports, scenes, counts] = await Promise.all([
-    sb.from("trips").select("id,title,start_date,end_date,party_size,status,trip_stops(id,day,position,destination_id,destinations(name,slug,state_code))").order("start_date"),
+    sb.from("trips").select("id,title,start_date,end_date,party_size,status,trip_stops(id,day,position,destination_id,destinations(name,slug,state_code,cover_url,lat,lng))").order("start_date"),
     sb.from("reports").select("id,body,category,status,created_at,destinations(name,slug)").eq("author_id", profile.id).order("created_at", { ascending: false }).limit(30),
     sb.from("panoramas").select("id,title,status,frame_count,created_at,destinations(name,slug)").eq("author_id", profile.id).order("created_at", { ascending: false }).limit(20),
     sb.from("visitor_counts").select("day,visitors,source,destinations(name,slug)").eq("recorded_by", profile.id).order("day", { ascending: false }).limit(20),
@@ -74,6 +77,17 @@ export default async function Account({ searchParams }: { searchParams: Promise<
         return [d, new Map((data ?? []).map((o) => [o.id, o]))] as const;
       })))
     : {};
+  // Forecast for the first stop of each upcoming day (Open-Meteo, up to 16 days ahead), fetched once per place.
+  const firstStops = upcoming.flatMap((t) => [...new Set(t.trip_stops.map((s) => s.day))].map((day) =>
+    t.trip_stops.filter((s) => s.day === day).sort((a, b) => a.position - b.position)[0])).filter((s) => s.day >= today && s.destinations);
+  const wxPlaces = [...new Map(firstStops.map((s) => [s.destination_id, s])).values()];
+  const forecasts = tab === "trips"
+    ? new Map(await Promise.all(wxPlaces.map(async (s) => {
+        const days = firstStops.filter((x) => x.destination_id === s.destination_id).map((x) => x.day).sort();
+        return [s.destination_id, await getForecast(s.destinations!.lat, s.destinations!.lng, days[0], days[days.length - 1], today)] as const;
+      })))
+    : new Map<string, Map<string, DayForecast>>();
+  const forecastEnd = addDays(today, FORECAST_DAYS - 1);
   const past = myTrips.filter((t) => t.end_date < today || t.status === "cancelled").reverse();
 
   const tabs: { key: Tab; label: string; icon: "route" | "flag" | "user"; count?: number }[] = [
@@ -123,44 +137,66 @@ export default async function Account({ searchParams }: { searchParams: Promise<
               }));
               const checks = t.trip_stops.map((s) => checkStop(overviews[s.day]?.get(s.destination_id), t.party_size, confirmed));
               const issues = checks.filter((c) => c.level === "high").length;
+              // Weather panel: the first upcoming stop of each day (past days are left out).
+              const wxDays: TripWeatherDay[] = byDay.filter(({ day }) => day >= today).map(({ day, stops }) => {
+                const forecast = stops[0] ? forecasts.get(stops[0].destination_id)?.get(day) ?? null : null;
+                return {
+                  day, label: `Day ${byDay.findIndex((x) => x.day === day) + 1}`,
+                  date: fmt(day, { weekday: "short", day: "numeric", month: "short" }),
+                  place: stops[0]?.destinations?.name ?? null, forecast,
+                  missing: forecast ? undefined : !stops[0] ? "free" : day > forecastEnd ? "later" : "unavailable",
+                };
+              });
+              // The whole card carries the first stop's photo, like the planner's stop cards.
+              const cover = byDay.flatMap((d) => d.stops).map((s) => s.destinations && placePhoto(s.destinations.slug, s.destinations.cover_url)).find(Boolean);
               return (
-                <article key={t.id} className="trip">
-                  <div className="trip-head">
-                    <div>
-                      <h2>{t.title}</h2>
-                      <span className="trip-meta">
-                        <span><Icon name="calendar" />{fmt(t.start_date)}{n > 1 && ` – ${fmt(t.end_date)}`} · {n} day{n > 1 ? "s" : ""}</span>
-                        <span><Icon name="users" />{t.party_size} traveller{t.party_size > 1 ? "s" : ""}</span>
-                      </span>
+                <article key={t.id} className="trip" data-img={cover ? "" : undefined}
+                  style={cover ? ({ "--img": `url("${photoThumb(cover, 1920)}")` } as React.CSSProperties) : undefined}>
+                  <div className="trip-main">
+                    <div className="trip-head">
+                      <div>
+                        <h2>{t.title}</h2>
+                        <span className="trip-meta">
+                          <span><Icon name="calendar" />{fmt(t.start_date)}{n > 1 && ` – ${fmt(t.end_date)}`} · {n} day{n > 1 ? "s" : ""}</span>
+                          <span><Icon name="users" />{t.party_size} traveller{t.party_size > 1 ? "s" : ""}</span>
+                        </span>
+                      </div>
+                      <div className="trip-status">
+                        {confirmed
+                          ? <span className="st verified">Confirmed · counts toward crowding</span>
+                          : <span className="st pending">Draft · not counted yet</span>}
+                        {issues > 0 && <span className="pl-pill l-high"><i />{issues} stop{issues > 1 ? "s" : ""} to rethink</span>}
+                      </div>
                     </div>
-                    <div className="trip-status">
-                      {confirmed
-                        ? <span className="st verified">Confirmed · counts toward crowding</span>
-                        : <span className="st pending">Draft · not counted yet</span>}
-                      {issues > 0 && <span className="pl-pill l-high"><i />{issues} stop{issues > 1 ? "s" : ""} to rethink</span>}
+                    <div className="trip-row">
+                      <ol className="trip-days">
+                        {byDay.map(({ day, stops }, i) => (
+                          <li key={day}>
+                            <span className="trip-day"><b>Day {i + 1}</b>{fmt(day, { weekday: "short", day: "numeric", month: "short" })}</span>
+                            {stops.length ? (
+                              <ul>
+                                {stops.map((s) => {
+                                  const c = checkStop(overviews[s.day]?.get(s.destination_id), t.party_size, confirmed);
+                                  return (
+                                    <li key={s.id}>
+                                      <Link href={`/places/${s.destinations?.slug}`}>{s.destinations?.name ?? "A place"}</Link>
+                                      <span className={`trip-check l-${c.level}`}><i />{c.text}</span>
+                                    </li>
+                                  );
+                                })}
+                              </ul>
+                            ) : <span className="trip-free">Free day</span>}
+                          </li>
+                        ))}
+                      </ol>
+                      <TripWeather days={wxDays} readoutSlot={`wx-${t.id}`} />
+                    </div>
+                    <div className="trip-foot">
+                      <TripActions id={t.id} confirmed={confirmed} past={false} />
+                      {/* the weather card's selected hour reads out here, beside the buttons */}
+                      <span className="trip-wx-slot" id={`wx-${t.id}`} />
                     </div>
                   </div>
-                  <ol className="trip-days">
-                    {byDay.map(({ day, stops }, i) => (
-                      <li key={day}>
-                        <span className="trip-day"><b>Day {i + 1}</b>{fmt(day, { weekday: "short", day: "numeric", month: "short" })}</span>
-                        {stops.length ? (
-                          <ul>
-                            {stops.map((s) => {
-                              const c = checkStop(overviews[s.day]?.get(s.destination_id), t.party_size, confirmed);
-                              return (
-                                <li key={s.id}>
-                                  <Link href={`/places/${s.destinations?.slug}`}>{s.destinations?.name ?? "A place"}</Link>
-                                  <span className={`trip-check l-${c.level}`}><i />{c.text}</span>
-                                </li>
-                              );
-                            })}
-                          </ul>
-                        ) : <span className="trip-free">Free day</span>}
-                      </li>
-                    ))}
-                  </ol>
-                  <TripActions id={t.id} confirmed={confirmed} past={false} />
                 </article>
               );
             })}
