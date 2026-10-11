@@ -5,8 +5,7 @@ import { createPortal } from "react-dom";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { Icon } from "./Icon";
-import { useSiteState } from "./SiteState";
-import { RANGER_SIGNUP } from "@/lib/landing";
+import { APP_APK, RANGER_SIGNUP } from "@/lib/landing";
 
 /** Hamburger + slide-down sheet for tablet and phone widths (hidden on desktop via CSS). */
 export function MobileMenu({ links }: { links: ReadonlyArray<readonly [href: string, label: string, soon?: boolean]> }) {
@@ -14,7 +13,6 @@ export function MobileMenu({ links }: { links: ReadonlyArray<readonly [href: str
   const [top, setTop] = useState(72);
   const button = useRef<HTMLButtonElement>(null);
   const sheet = useRef<HTMLElement>(null);
-  const { setJoinRole } = useSiteState();
   const pathname = usePathname();
 
   const toggle = () => {
@@ -82,7 +80,7 @@ export function MobileMenu({ links }: { links: ReadonlyArray<readonly [href: str
                 <Link className="btn btn-ghost" href={RANGER_SIGNUP} onClick={close}>
                   Become a Ranger
                 </Link>
-                <a className="btn btn-ink" href="#join" onClick={() => { setJoinRole("traveller"); close(); }}>
+                <a className="btn btn-ink" href={APP_APK} onClick={close}>
                   Get the app
                 </a>
               </div>

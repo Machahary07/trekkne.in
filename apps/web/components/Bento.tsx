@@ -3,6 +3,7 @@ import { Eyes } from "./Eyes";
 import { DestinationArt } from "./DestinationArt";
 import { DestinationLink } from "./SiteState";
 import { InViewFlag } from "./InViewFlag";
+import { APP_APK } from "@/lib/landing";
 import { TrioCast } from "./bento/TrioCast";
 import { TripAlerts } from "./bento/TripAlerts";
 import { TypeSearch } from "./bento/TypeSearch";
@@ -43,7 +44,7 @@ export function Bento() {
             <h3>Know before you go</h3>
             <div className="badges">
               <div className="store"><AppleLogo /><div><small>Coming soon on</small><strong>iOS</strong></div></div>
-              <div className="store"><PlayLogo /><div><small>Coming soon on</small><strong>Android</strong></div></div>
+              <a className="store" href={APP_APK}><PlayLogo /><div><small>Download for</small><strong>Android</strong></div></a>
             </div>
             <div className="dome" aria-hidden="true"><Eyes /></div>
           </article>

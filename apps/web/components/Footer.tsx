@@ -1,10 +1,10 @@
 import Link from "next/link";
 import { Eyes, Logo } from "./Eyes";
-import { RANGER_SIGNUP } from "@/lib/landing";
+import { APP_APK, RANGER_SIGNUP } from "@/lib/landing";
 
 const COLUMNS = [
   { title: "Explore", links: [["/destinations", "Destinations"], ["/about", "About Trekne"], ["/planner", "Plan a trip"], ["/homestays", "Homestays (soon)"], ["/shop", "Shop local (soon)"], ["/destinations#seasons", "Seasons & festivals"], ["/rangers", "What Rangers do"]] },
-  { title: "Join", links: [[RANGER_SIGNUP, "Become a Ranger"], ["/business", "List your business"], ["/authorities", "Authorities & councils"], ["#join", "Get the app"]] },
+  { title: "Join", links: [[RANGER_SIGNUP, "Become a Ranger"], ["/business", "List your business"], ["/authorities", "Authorities & councils"], [APP_APK, "Get the app (Android)"]] },
   { title: "Trust", links: [["/about#promise-h", "Our promise"], ["/roadmap", "Roadmap"], ["/about#how", "How we verify"]] },
 ] as const;
 
